@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { logoutAction } from "@/lib/actions/auth";
+import { MobileDrawerMenu } from "@/components/mobile-drawer-menu";
 
 export function DashboardShell({
   title,
@@ -32,6 +33,7 @@ export function DashboardShell({
             Log out
           </button>
         </form>
+        <MobileDrawerMenu items={nav} showLogout subtitle={kicker} title={title} variant="dashboard" />
       </header>
       <div className="dashboard-grid">
         <aside className="panel sidebar">

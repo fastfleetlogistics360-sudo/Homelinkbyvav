@@ -1,12 +1,15 @@
+import { AgentSubscriptionCard } from "@/components/agent-subscription-card";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { createRequestResponseAction } from "@/lib/actions/agent";
+import { getRefreshedAgentProfile } from "@/lib/agents";
 import { requireAccountType } from "@/lib/auth";
+import { AGENT_DASHBOARD_NAV } from "@/lib/dashboard-nav";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function AvailableRequestsPage() {
   const user = await requireAccountType("agent");
   const supabase = await createClient();
-  const { data: agent } = await supabase.from("agent_profiles").select("*").eq("user_id", user.id).single();
+  const agent = await getRefreshedAgentProfile(supabase, user.id);
   const approved = agent?.kyc_status === "approved" && !agent?.suspended;
 
   const requestsQuery = approved
@@ -23,16 +26,11 @@ export default async function AvailableRequestsPage() {
   return (
     <DashboardShell
       kicker="Agent dashboard"
-      nav={[
-        ["Overview", "/dashboard/agent"],
-        ["KYC Verification", "/dashboard/agent/kyc"],
-        ["Available Requests", "/dashboard/agent/requests"],
-        ["Accepted Requests", "/dashboard/agent#accepted"],
-        ["Messages", "/dashboard/agent#messages"],
-        ["Reviews", "/dashboard/agent#reviews"]
-      ]}
+      nav={AGENT_DASHBOARD_NAV}
       title="Available Requests"
     >
+      {approved ? <AgentSubscriptionCard agent={agent} compact /> : null}
+
       {!approved ? (
         <section className="panel">
           <span className="badge pending">KYC required</span>

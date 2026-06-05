@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { uploadAgentKycDocuments, uploadAgentProfilePhoto } from "@/lib/storage";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
 export async function saveAgentKycAction(formData: FormData) {
@@ -11,29 +13,51 @@ export async function saveAgentKycAction(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 
-  const operatingLocations = String(formData.get("operating_locations") || "")
-    .split(",")
+  const operatingLocations = formData
+    .getAll("operating_locations")
+    .map(String)
     .map((item) => item.trim())
     .filter(Boolean);
-  const propertySpecialties = String(formData.get("property_specialties") || "")
-    .split(",")
+  const propertySpecialties = formData
+    .getAll("property_specialties")
+    .map(String)
     .map((item) => item.trim())
     .filter(Boolean);
+  const termsAccepted = formData.get("terms_accepted") === "on";
 
-  await supabase
+  if (!termsAccepted) {
+    redirect("/dashboard/agent/kyc?error=Please accept the HomeLink terms and condition to continue.");
+  }
+
+  if (!operatingLocations.length) {
+    redirect("/dashboard/agent/kyc?error=Select at least one operating state.");
+  }
+
+  if (!propertySpecialties.length) {
+    redirect("/dashboard/agent/kyc?error=Select at least one property specialty.");
+  }
+
+  const existingDocuments = String(formData.get("existing_verification_documents") || "")
+    .split("|")
+    .map((item) => item.trim())
+    .filter(Boolean);
+  const uploadedDocuments = await uploadAgentKycDocuments(user.id, formData.getAll("verification_documents"));
+  const uploadedPhoto = await uploadAgentProfilePhoto(user.id, formData.get("profile_photo_file"));
+  const profilePhoto = uploadedPhoto || String(formData.get("existing_profile_photo") || "");
+  const admin = createAdminClient();
+
+  await admin
     .from("agent_profiles")
     .update({
       agency_name: String(formData.get("agency_name")),
       phone: String(formData.get("phone")),
       whatsapp: String(formData.get("whatsapp")),
-      profile_photo: String(formData.get("profile_photo") || ""),
-      verification_documents: String(formData.get("verification_documents") || "")
-        .split(",")
-        .map((item) => item.trim())
-        .filter(Boolean),
+      profile_photo: profilePhoto,
+      verification_documents: [...existingDocuments, ...uploadedDocuments],
       operating_locations: operatingLocations,
       property_specialties: propertySpecialties,
-      kyc_status: "pending"
+      kyc_status: "pending",
+      terms_accepted_at: new Date().toISOString()
     })
     .eq("user_id", user.id);
 
@@ -50,7 +74,7 @@ export async function createRequestResponseAction(formData: FormData) {
 
   const { data: agent } = await supabase
     .from("agent_profiles")
-    .select("agent_id, kyc_status, suspended")
+    .select("agent_id, kyc_status, suspended, agent_plan, weekly_request_limit, weekly_request_used, last_reset_date")
     .eq("user_id", user.id)
     .single();
 
@@ -58,8 +82,14 @@ export async function createRequestResponseAction(formData: FormData) {
     redirect("/dashboard/agent/kyc");
   }
 
+  await supabase.rpc("reset_agent_weekly_quota", { target_agent_id: agent.agent_id });
+  const { data: canAccept } = await supabase.rpc("agent_can_accept_request", { target_agent_id: agent.agent_id });
+  if (!canAccept) {
+    redirect("/dashboard/agent/subscription?quota=exhausted");
+  }
+
   const requestId = String(formData.get("request_id"));
-  await supabase.from("request_responses").insert({
+  const { error } = await supabase.from("request_responses").insert({
     request_id: requestId,
     agent_id: agent.agent_id,
     message: String(formData.get("message")),
@@ -73,6 +103,9 @@ export async function createRequestResponseAction(formData: FormData) {
     inspection_available: formData.get("inspection_available") === "on"
   });
 
+  if (error) redirect(`/dashboard/agent/requests?error=${encodeURIComponent(error.message)}`);
+
+  await supabase.rpc("increment_agent_weekly_usage", { target_agent_id: agent.agent_id });
   await supabase.from("housing_requests").update({ status: "accepted" }).eq("request_id", requestId);
   await supabase.rpc("create_conversation_for_response", { target_request_id: requestId, target_agent_id: agent.agent_id });
 

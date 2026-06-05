@@ -1,6 +1,23 @@
 import { NextResponse } from "next/server";
+import { type AgentPlanId } from "@/lib/constants";
 import { verifyPaystackTransaction } from "@/lib/paystack";
 import { createClient } from "@/lib/supabase/server";
+
+type PaymentMetadata = {
+  product?: unknown;
+  agent_id?: unknown;
+  plan?: unknown;
+  [key: string]: unknown;
+};
+
+function toPaymentMetadata(value: unknown): PaymentMetadata {
+  if (value && typeof value === "object" && !Array.isArray(value)) return value as PaymentMetadata;
+  return {};
+}
+
+function isPaidAgentPlan(plan: unknown): plan is Exclude<AgentPlanId, "free"> {
+  return plan === "premium" || plan === "platinum";
+}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -11,15 +28,44 @@ export async function GET(request: Request) {
   const verified = await verifyPaystackTransaction(reference);
   const paid = verified.status === "success";
 
+  const { data: existingPayment } = await supabase
+    .from("payments")
+    .select("request_id, provider_payload")
+    .eq("reference", reference)
+    .single();
+  const storedMetadata = toPaymentMetadata(existingPayment?.provider_payload);
+  const verifiedMetadata = toPaymentMetadata(verified.metadata);
+  const metadata = {
+    ...storedMetadata,
+    ...verifiedMetadata
+  };
+
   const { data: payment } = await supabase
     .from("payments")
     .update({
       status: paid ? "paid" : verified.status,
-      provider_payload: verified
+      provider_payload: {
+        ...metadata,
+        paystack: verified
+      }
     })
     .eq("reference", reference)
-    .select("request_id")
+    .select("request_id, provider_payload")
     .single();
+
+  if (metadata.product === "agent_subscription") {
+    if (paid && typeof metadata.agent_id === "string" && isPaidAgentPlan(metadata.plan)) {
+      const expiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+      await supabase.rpc("apply_agent_subscription", {
+        target_agent_id: metadata.agent_id,
+        target_plan: metadata.plan,
+        target_expiry: expiry
+      });
+      return NextResponse.redirect(new URL("/dashboard/agent/subscription?payment=verified", request.url));
+    }
+
+    return NextResponse.redirect(new URL("/dashboard/agent/subscription?payment=failed", request.url));
+  }
 
   if (paid && payment?.request_id) {
     await supabase.from("housing_requests").update({ status: "matched" }).eq("request_id", payment.request_id);

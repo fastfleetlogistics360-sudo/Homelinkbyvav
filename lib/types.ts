@@ -2,6 +2,7 @@ export type AccountType = "home_seeker" | "agent";
 export type KycStatus = "pending" | "approved" | "rejected";
 export type RequestStatus = "pending" | "matched" | "accepted" | "fulfilled" | "cancelled";
 export type ResponseStatus = "pending" | "accepted" | "rejected";
+export type AgentPlan = "free" | "premium" | "platinum";
 
 export type Profile = {
   id: string;
@@ -38,6 +39,13 @@ export type AgentProfile = {
   operating_locations: string[];
   property_specialties: string[];
   kyc_status: KycStatus;
+  verification_documents: string[];
+  terms_accepted_at: string | null;
+  agent_plan: AgentPlan;
+  agent_plan_expiry: string | null;
+  weekly_request_limit: number;
+  weekly_request_used: number;
+  last_reset_date: string;
   rating: number;
   total_completed_matches: number;
   suspended: boolean;

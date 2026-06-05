@@ -1,19 +1,20 @@
 import Link from "next/link";
+import { AgentSubscriptionCard } from "@/components/agent-subscription-card";
 import { DashboardShell } from "@/components/dashboard-shell";
+import { getRefreshedAgentProfile } from "@/lib/agents";
 import { requireAccountType } from "@/lib/auth";
+import { getPlanBadge, planForAgent } from "@/lib/agent-plans";
 import { createClient } from "@/lib/supabase/server";
+import { AGENT_DASHBOARD_NAV } from "@/lib/dashboard-nav";
 
 export default async function AgentDashboardPage() {
   const user = await requireAccountType("agent");
   const supabase = await createClient();
 
-  const { data: agent } = await supabase
-    .from("agent_profiles")
-    .select("*")
-    .eq("user_id", user.id)
-    .single();
-
+  const agent = await getRefreshedAgentProfile(supabase, user.id);
   const approved = agent?.kyc_status === "approved" && !agent?.suspended;
+  const plan = planForAgent(agent);
+  const planBadge = getPlanBadge(agent?.agent_plan);
   const { data: responsesData } = await supabase
     .from("request_responses")
     .select("*, housing_requests(*)")
@@ -24,14 +25,7 @@ export default async function AgentDashboardPage() {
   return (
     <DashboardShell
       kicker="Agent dashboard"
-      nav={[
-        ["Overview", "/dashboard/agent"],
-        ["KYC Verification", "/dashboard/agent/kyc"],
-        ["Available Requests", "/dashboard/agent/requests"],
-        ["Accepted Requests", "/dashboard/agent#accepted"],
-        ["Messages", "/dashboard/agent#messages"],
-        ["Reviews", "/dashboard/agent#reviews"]
-      ]}
+      nav={AGENT_DASHBOARD_NAV}
       title={agent?.agency_name || "Agent Dashboard"}
     >
       {!approved ? (
@@ -55,15 +49,19 @@ export default async function AgentDashboardPage() {
           <h2>Accepted leads</h2>
         </article>
         <article className="panel">
-          <span className="badge">{agent?.rating || "New"}</span>
-          <h2>Rating</h2>
+          <span className={`badge plan-badge ${plan.id}`}>{planBadge || "Free Agent"}</span>
+          <h2>Subscription</h2>
         </article>
       </div>
 
+      <AgentSubscriptionCard agent={agent} />
+
       <section className="panel">
         <h2>Profile summary</h2>
+        <p>Membership: {planBadge || "Free Agent"}</p>
         <p>Operating locations: {agent?.operating_locations?.join(", ") || "Not set"}</p>
         <p>Specialties: {agent?.property_specialties?.join(", ") || "Not set"}</p>
+        <p>Rating: {agent?.rating || "New"}</p>
         <p>Completed matches: {agent?.total_completed_matches || 0}</p>
       </section>
 

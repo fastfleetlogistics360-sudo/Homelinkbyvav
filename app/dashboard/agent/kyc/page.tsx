@@ -1,62 +1,38 @@
+import { AgentKycForm } from "@/components/agent-kyc-form";
 import { DashboardShell } from "@/components/dashboard-shell";
-import { saveAgentKycAction } from "@/lib/actions/agent";
+import { getPlanBadge, planForAgent } from "@/lib/agent-plans";
+import { getRefreshedAgentProfile } from "@/lib/agents";
 import { requireAccountType } from "@/lib/auth";
+import { AGENT_DASHBOARD_NAV } from "@/lib/dashboard-nav";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function AgentKycPage() {
+export default async function AgentKycPage({
+  searchParams
+}: {
+  searchParams?: Promise<{ error?: string }>;
+}) {
+  const params = await searchParams;
   const user = await requireAccountType("agent");
   const supabase = await createClient();
-  const { data: agent } = await supabase.from("agent_profiles").select("*").eq("user_id", user.id).single();
+  const agent = await getRefreshedAgentProfile(supabase, user.id);
+  const plan = planForAgent(agent);
+  const planBadge = getPlanBadge(agent?.agent_plan);
 
   return (
     <DashboardShell
       kicker="Agent dashboard"
-      nav={[
-        ["Overview", "/dashboard/agent"],
-        ["KYC Verification", "/dashboard/agent/kyc"],
-        ["Available Requests", "/dashboard/agent/requests"],
-        ["Accepted Requests", "/dashboard/agent#accepted"],
-        ["Messages", "/dashboard/agent#messages"],
-        ["Reviews", "/dashboard/agent#reviews"]
-      ]}
+      nav={AGENT_DASHBOARD_NAV}
       title="KYC Verification"
     >
-      <form className="panel" action={saveAgentKycAction}>
-        <span className={`badge ${agent?.kyc_status || "pending"}`}>{agent?.kyc_status || "pending"}</span>
-        <div className="form-grid">
-          <label>
-            Agency name
-            <input name="agency_name" defaultValue={agent?.agency_name || ""} required />
-          </label>
-          <label>
-            Phone
-            <input name="phone" defaultValue={agent?.phone || ""} required />
-          </label>
-          <label>
-            WhatsApp
-            <input name="whatsapp" defaultValue={agent?.whatsapp || ""} required />
-          </label>
-          <label>
-            Profile photo URL
-            <input name="profile_photo" defaultValue={agent?.profile_photo || ""} />
-          </label>
+      <section className="panel">
+        <div className="response-title-row">
+          <span className={`badge ${agent?.kyc_status || "pending"}`}>{agent?.kyc_status || "pending"}</span>
+          <span className={`badge plan-badge ${plan.id}`}>{planBadge || "Free Agent"}</span>
         </div>
-        <label>
-          Operating locations, comma separated
-          <input name="operating_locations" defaultValue={agent?.operating_locations?.join(", ") || ""} required />
-        </label>
-        <label>
-          Property specialties, comma separated
-          <input name="property_specialties" defaultValue={agent?.property_specialties?.join(", ") || ""} required />
-        </label>
-        <label>
-          Verification documents, comma separated
-          <textarea name="verification_documents" defaultValue={agent?.verification_documents?.join(", ") || ""} rows={4} />
-        </label>
-        <button className="button primary" type="submit">
-          Submit KYC details
-        </button>
-      </form>
+        <h2>Complete agent verification</h2>
+        <p>Upload clear documents and choose only the locations and property types you actively serve.</p>
+      </section>
+      <AgentKycForm agent={agent} error={params?.error} />
     </DashboardShell>
   );
 }

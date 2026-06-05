@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { markRequestFulfilledAction } from "@/lib/actions/requests";
+import { getPlanBadge, planForAgent } from "@/lib/agent-plans";
 import { requireAccountType } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
@@ -16,7 +17,7 @@ export default async function SeekerDashboardPage() {
 
   const { data: requestsData } = await supabase
     .from("housing_requests")
-    .select("*, request_responses(*, agent_profiles(agency_name, phone, whatsapp, rating))")
+    .select("*, request_responses(*, agent_profiles(agency_name, phone, whatsapp, rating, agent_plan))")
     .eq("home_seeker_id", profile?.home_seeker_id)
     .order("created_at", { ascending: false });
   const requests = requestsData ?? [];
@@ -66,27 +67,37 @@ export default async function SeekerDashboardPage() {
               <p>{request.extra_notes}</p>
               <h4>Agent responses</h4>
               {request.request_responses?.length ? (
-                request.request_responses.map((response: any) => (
-                  <div className="card" key={response.response_id}>
-                    <strong>{response.property_title}</strong>
-                    <p>{response.message}</p>
-                    <p>
-                      {response.agent_profiles?.agency_name} • {response.property_price}
-                    </p>
-                    <div className="row-actions">
-                      {response.agent_profiles?.phone ? (
-                        <a className="button secondary" href={`tel:${response.agent_profiles.phone}`}>
-                          Call
-                        </a>
-                      ) : null}
-                      {response.agent_profiles?.whatsapp ? (
-                        <a className="button secondary" href={`https://wa.me/${response.agent_profiles.whatsapp}`}>
-                          WhatsApp
-                        </a>
-                      ) : null}
-                    </div>
-                  </div>
-                ))
+                [...request.request_responses]
+                  .sort((a: any, b: any) => planForAgent(b.agent_profiles).rank - planForAgent(a.agent_profiles).rank)
+                  .map((response: any) => {
+                    const planBadge = getPlanBadge(response.agent_profiles?.agent_plan);
+                    return (
+                      <div className="card" key={response.response_id}>
+                        <div className="response-title-row">
+                          <strong>{response.property_title}</strong>
+                          <span className={`badge plan-badge ${planForAgent(response.agent_profiles).id}`}>
+                            {planBadge || "Free Agent"}
+                          </span>
+                        </div>
+                        <p>{response.message}</p>
+                        <p>
+                          {response.agent_profiles?.agency_name} • {response.property_price}
+                        </p>
+                        <div className="row-actions">
+                          {response.agent_profiles?.phone ? (
+                            <a className="button secondary" href={`tel:${response.agent_profiles.phone}`}>
+                              Call
+                            </a>
+                          ) : null}
+                          {response.agent_profiles?.whatsapp ? (
+                            <a className="button secondary" href={`https://wa.me/${response.agent_profiles.whatsapp}`}>
+                              WhatsApp
+                            </a>
+                          ) : null}
+                        </div>
+                      </div>
+                    );
+                  })
               ) : (
                 <p>No agent responses yet.</p>
               )}
