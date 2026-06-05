@@ -1,12 +1,16 @@
 import Link from "next/link";
+import { Footer } from "@/components/footer";
+import { Header } from "@/components/header";
 import { HeroSlider } from "@/components/hero-slider";
 
 export default function HomePage() {
   return (
-    <main>
-      <HeroSlider />
+    <>
+      <Header />
+      <main>
+        <HeroSlider />
 
-      <section className="section white section-grid" id="about">
+        <section className="section white section-grid" id="about">
         <div>
           <p className="kicker">About HomeLink</p>
           <h2>Built for request-first apartment search.</h2>
@@ -15,24 +19,36 @@ export default function HomePage() {
           Home seekers describe what they need. Verified agents in the matching service area respond
           with available apartments, inspection details, and direct communication.
         </p>
-      </section>
+        </section>
 
-      <section className="section cards" id="how" aria-label="How HomeLink works">
-        {[
-          ["01", "Submit your housing request", "Choose location, apartment type, bedrooms, budget, duration, and move-in date."],
-          ["02", "Verified agents get notified", "Only approved agents with matching locations and specialties can see it."],
-          ["03", "Get matched fast", "Agents respond with property details, price, images, and inspection availability."],
-          ["04", "Inspect and move in", "Chat, call, WhatsApp, compare responses, and mark your request fulfilled."]
-        ].map(([step, title, copy]) => (
-          <article className="card" key={title}>
-            <p className="kicker">{step}</p>
-            <h3>{title}</h3>
-            <p>{copy}</p>
-          </article>
-        ))}
-      </section>
+        <section className="section" id="how" aria-label="How HomeLink works">
+          <div className="section-title-row">
+            <div>
+              <p className="kicker">How It Works</p>
+              <h2>Smart request cards, fast matching.</h2>
+            </div>
+            <Link className="button secondary" href="/auth/signup?type=home_seeker">
+              Start now
+            </Link>
+          </div>
+          <div className="smart-card-rail">
+            {[
+              ["01", "Request", "Tell us location, budget, bedrooms, and move-in date.", "15% faster"],
+              ["02", "Notify", "Verified matching agents get your request instantly.", "Verified"],
+              ["03", "Compare", "Review responses, prices, inspection details, and chat.", "Smart match"],
+              ["04", "Move", "Inspect, choose an agent, and mark your request fulfilled.", "Done"]
+            ].map(([step, title, copy, tag]) => (
+              <article className="smart-card" key={title}>
+                <span className="promo-tag">{tag}</span>
+                <strong>{step}</strong>
+                <h3>{title}</h3>
+                <p>{copy}</p>
+              </article>
+            ))}
+          </div>
+        </section>
 
-      <section className="section white" id="agents">
+        <section className="section white" id="agents">
         <div className="section-grid">
           <div>
             <p className="kicker">Agent onboarding</p>
@@ -53,7 +69,9 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </section>
-    </main>
+        </section>
+      </main>
+      <Footer />
+    </>
   );
 }

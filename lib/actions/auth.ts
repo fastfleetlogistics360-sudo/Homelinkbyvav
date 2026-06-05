@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { ensureProfile } from "@/lib/auth";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
 const authSchema = z.object({
@@ -23,13 +25,17 @@ export async function signUpAction(formData: FormData) {
   });
 
   const supabase = await createClient();
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://homelinkbyvav.vercel.app";
+  const nextPath = parsed.account_type === "agent" ? "/dashboard/agent/kyc" : "/dashboard/seeker";
   const { data, error } = await supabase.auth.signUp({
     email: parsed.email,
     password: parsed.password,
     options: {
+      emailRedirectTo: `${appUrl}/auth/callback?next=${encodeURIComponent(nextPath)}`,
       data: {
         account_type: parsed.account_type,
-        full_name: parsed.full_name
+        full_name: parsed.full_name,
+        agency_name: parsed.agency_name || ""
       }
     }
   });
@@ -37,7 +43,8 @@ export async function signUpAction(formData: FormData) {
   if (error) redirect(`/auth/signup?error=${encodeURIComponent(error.message)}`);
   if (!data.user) redirect("/auth/login?message=Check your email to confirm your account.");
 
-  await supabase.from("profiles").upsert({
+  const admin = createAdminClient();
+  await admin.from("profiles").upsert({
     id: data.user.id,
     account_type: parsed.account_type,
     full_name: parsed.full_name,
@@ -45,19 +52,29 @@ export async function signUpAction(formData: FormData) {
   });
 
   if (parsed.account_type === "home_seeker") {
-    await supabase.from("home_seeker_profiles").upsert({
-      user_id: data.user.id,
-      full_name: parsed.full_name
-    });
+    await admin
+      .from("home_seeker_profiles")
+      .upsert(
+        {
+          user_id: data.user.id,
+          full_name: parsed.full_name
+        },
+        { onConflict: "user_id" }
+      );
   } else {
-    await supabase.from("agent_profiles").upsert({
-      user_id: data.user.id,
-      full_name: parsed.full_name,
-      agency_name: parsed.agency_name || parsed.full_name,
-      kyc_status: "pending",
-      operating_locations: [],
-      property_specialties: []
-    });
+    await admin
+      .from("agent_profiles")
+      .upsert(
+        {
+          user_id: data.user.id,
+          full_name: parsed.full_name,
+          agency_name: parsed.agency_name || parsed.full_name,
+          kyc_status: "pending",
+          operating_locations: [],
+          property_specialties: []
+        },
+        { onConflict: "user_id" }
+      );
   }
 
   revalidatePath("/", "layout");
@@ -68,11 +85,11 @@ export async function loginAction(formData: FormData) {
   const email = String(formData.get("email") || "");
   const password = String(formData.get("password") || "");
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) redirect(`/auth/login?error=${encodeURIComponent(error.message)}`);
 
-  const { data: profile } = await supabase.from("profiles").select("account_type").eq("email", email).single();
+  const profile = data.user ? await ensureProfile(data.user) : null;
   revalidatePath("/", "layout");
   redirect(profile?.account_type === "agent" ? "/dashboard/agent" : "/dashboard/seeker");
 }

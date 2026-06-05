@@ -38,6 +38,7 @@ cp .env.example .env.local
 3. Fill in:
 
 ```env
+NEXT_PUBLIC_APP_URL=https://homelinkbyvav.vercel.app
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
@@ -59,6 +60,25 @@ npm run dev
 ```
 
 Then visit `http://localhost:3000`.
+
+## Supabase Auth Redirect Settings
+
+In Supabase Dashboard, open `Authentication` → `URL Configuration`.
+
+Set:
+
+```txt
+Site URL: https://homelinkbyvav.vercel.app
+```
+
+Add these redirect URLs:
+
+```txt
+https://homelinkbyvav.vercel.app/auth/callback
+http://localhost:3000/auth/callback
+```
+
+This prevents email verification links from going back to localhost after deployment.
 
 ## Implemented
 

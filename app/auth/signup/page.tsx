@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { Footer } from "@/components/footer";
+import { Header } from "@/components/header";
+import { PasswordField } from "@/components/password-field";
 import { signUpAction } from "@/lib/actions/auth";
 
 export default async function SignUpPage({
@@ -10,8 +13,10 @@ export default async function SignUpPage({
   const defaultType = params?.type === "agent" ? "agent" : "home_seeker";
 
   return (
-    <main className="auth-wrap">
-      <form className="panel auth-card" action={signUpAction}>
+    <>
+      <Header />
+      <main className="auth-wrap">
+        <form className="panel auth-card" action={signUpAction}>
         <p className="kicker">Create account</p>
         <h2>Choose Home Seeker or Agent</h2>
         {params?.error ? <p className="badge rejected">{params.error}</p> : null}
@@ -34,17 +39,16 @@ export default async function SignUpPage({
           Email
           <input name="email" type="email" required />
         </label>
-        <label>
-          Password
-          <input name="password" type="password" minLength={8} required />
-        </label>
+        <PasswordField />
         <button className="button primary full" type="submit">
           Sign Up
         </button>
         <p>
           Already registered? <Link href="/auth/login">Login</Link>
         </p>
-      </form>
-    </main>
+        </form>
+      </main>
+      <Footer />
+    </>
   );
 }

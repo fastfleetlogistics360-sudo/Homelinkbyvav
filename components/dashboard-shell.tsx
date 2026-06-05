@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
+import { logoutAction } from "@/lib/actions/auth";
 
 export function DashboardShell({
   title,
@@ -13,8 +15,24 @@ export function DashboardShell({
 }) {
   return (
     <main className="dashboard">
-      <p className="kicker">{kicker}</p>
-      <h1>{title}</h1>
+      <header className="dashboard-topbar">
+        <Link className="brand" href="/">
+          <Image src="/images/homelink-logo.png" alt="" width={48} height={48} />
+          <span>
+            HomeLink
+            <small>by V-A.V</small>
+          </span>
+        </Link>
+        <div className="dashboard-title">
+          <p className="kicker">{kicker}</p>
+          <h1>{title}</h1>
+        </div>
+        <form action={logoutAction}>
+          <button className="button secondary" type="submit">
+            Log out
+          </button>
+        </form>
+      </header>
       <div className="dashboard-grid">
         <aside className="panel sidebar">
           {nav.map(([label, href]) => (

@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { Footer } from "@/components/footer";
+import { Header } from "@/components/header";
+import { PasswordField } from "@/components/password-field";
 import { loginAction } from "@/lib/actions/auth";
 
 export default async function LoginPage({
@@ -8,8 +11,10 @@ export default async function LoginPage({
 }) {
   const params = await searchParams;
   return (
-    <main className="auth-wrap">
-      <form className="panel auth-card" action={loginAction}>
+    <>
+      <Header />
+      <main className="auth-wrap">
+        <form className="panel auth-card" action={loginAction}>
         <p className="kicker">Login</p>
         <h2>Welcome back to HomeLink by V-A.V</h2>
         {params?.error ? <p className="badge rejected">{params.error}</p> : null}
@@ -18,17 +23,16 @@ export default async function LoginPage({
           Email
           <input name="email" type="email" required />
         </label>
-        <label>
-          Password
-          <input name="password" type="password" required />
-        </label>
+        <PasswordField minLength={1} />
         <button className="button primary full" type="submit">
           Login
         </button>
         <p>
           Need an account? <Link href="/auth/signup">Sign up</Link>
         </p>
-      </form>
-    </main>
+        </form>
+      </main>
+      <Footer />
+    </>
   );
 }
