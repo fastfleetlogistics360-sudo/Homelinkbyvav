@@ -1,3 +1,6 @@
+-- ============================================================================
+-- Source: supabase/migrations/001_homelink_schema.sql
+-- ============================================================================
 -- HomeLink by V-A.V app-ready Supabase schema
 -- Run this in Supabase SQL Editor after creating the project.
 
@@ -446,3 +449,416 @@ begin
   end if;
 end;
 $$;
+
+
+
+-- ============================================================================
+-- Source: supabase/migrations/002_agent_subscription_tiers.sql
+-- ============================================================================
+-- Agent subscription tiers for HomeLink by V-A.V
+-- Safe additive migration. Does not remove or rename existing tables/columns.
+
+do $$ begin
+  create type public.agent_plan as enum ('free', 'premium', 'platinum');
+exception when duplicate_object then null; end $$;
+
+alter table public.agent_profiles
+  add column if not exists agent_plan public.agent_plan not null default 'free',
+  add column if not exists agent_plan_expiry timestamptz,
+  add column if not exists weekly_request_limit integer not null default 10,
+  add column if not exists weekly_request_used integer not null default 0,
+  add column if not exists last_reset_date date not null default current_date;
+
+update public.agent_profiles
+set
+  weekly_request_limit = case
+    when agent_plan = 'premium' then 50
+    when agent_plan = 'platinum' then -1
+    else 10
+  end,
+  weekly_request_used = coalesce(weekly_request_used, 0),
+  last_reset_date = coalesce(last_reset_date, current_date);
+
+create or replace function public.agent_week_start(input_date date default current_date)
+returns date
+language sql
+immutable
+as $$
+  select (date_trunc('week', input_date::timestamp))::date;
+$$;
+
+alter table public.agent_profiles
+  alter column last_reset_date set default public.agent_week_start(current_date);
+
+update public.agent_profiles
+set last_reset_date = public.agent_week_start(coalesce(last_reset_date, current_date));
+
+create or replace function public.refresh_agent_subscription(target_agent_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  update public.agent_profiles
+  set
+    agent_plan = 'free',
+    agent_plan_expiry = null,
+    weekly_request_limit = 10,
+    weekly_request_used = 0,
+    last_reset_date = public.agent_week_start(current_date)
+  where agent_id = target_agent_id
+    and agent_plan in ('premium', 'platinum')
+    and agent_plan_expiry is not null
+    and agent_plan_expiry < now();
+end;
+$$;
+
+create or replace function public.reset_agent_weekly_quota(target_agent_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  current_week date := public.agent_week_start(current_date);
+begin
+  perform public.refresh_agent_subscription(target_agent_id);
+
+  update public.agent_profiles
+  set
+    weekly_request_used = 0,
+    last_reset_date = current_week,
+    weekly_request_limit = case
+      when agent_plan = 'premium' then 50
+      when agent_plan = 'platinum' then -1
+      else 10
+    end
+  where agent_id = target_agent_id
+    and public.agent_week_start(last_reset_date) < current_week;
+end;
+$$;
+
+create or replace function public.agent_can_accept_request(target_agent_id uuid)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  target_agent public.agent_profiles;
+begin
+  perform public.reset_agent_weekly_quota(target_agent_id);
+
+  select * into target_agent
+  from public.agent_profiles
+  where agent_id = target_agent_id;
+
+  if not found then
+    return false;
+  end if;
+
+  if target_agent.agent_plan = 'platinum' then
+    return true;
+  end if;
+
+  return target_agent.weekly_request_used < target_agent.weekly_request_limit;
+end;
+$$;
+
+create or replace function public.increment_agent_weekly_usage(target_agent_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  perform public.reset_agent_weekly_quota(target_agent_id);
+
+  update public.agent_profiles
+  set weekly_request_used = weekly_request_used + 1
+  where agent_id = target_agent_id
+    and agent_plan <> 'platinum';
+end;
+$$;
+
+create or replace function public.apply_agent_subscription(
+  target_agent_id uuid,
+  target_plan public.agent_plan,
+  target_expiry timestamptz default null
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  update public.agent_profiles
+  set
+    agent_plan = target_plan,
+    agent_plan_expiry = target_expiry,
+    weekly_request_limit = case
+      when target_plan = 'premium' then 50
+      when target_plan = 'platinum' then -1
+      else 10
+    end,
+    weekly_request_used = 0,
+    last_reset_date = public.agent_week_start(current_date)
+  where agent_id = target_agent_id;
+end;
+$$;
+
+create or replace function public.match_agents_for_request(target_request_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  target_request public.housing_requests;
+begin
+  select * into target_request from public.housing_requests where request_id = target_request_id;
+  if not found then return; end if;
+
+  insert into public.request_matches (request_id, agent_id, notified_at)
+  select target_request.request_id, agent.agent_id, now()
+  from public.agent_profiles agent
+  where agent.kyc_status = 'approved'
+    and agent.suspended = false
+    and target_request.preferred_location = any(agent.operating_locations)
+    and target_request.property_type = any(agent.property_specialties)
+  order by case
+    when agent.agent_plan = 'platinum' then 3
+    when agent.agent_plan = 'premium' then 2
+    else 1
+  end desc, agent.rating desc, agent.total_completed_matches desc
+  on conflict (request_id, agent_id) do nothing;
+
+  if exists (select 1 from public.request_matches where request_id = target_request.request_id) then
+    update public.housing_requests set status = 'matched' where request_id = target_request.request_id;
+  end if;
+end;
+$$;
+
+create or replace function public.notify_matched_agents(target_request_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  perform public.match_agents_for_request(target_request_id);
+
+  insert into public.notifications (user_id, type, message)
+  select
+    agent.user_id,
+    case
+      when agent.agent_plan = 'platinum' then 'new_housing_request_priority_sms_placeholder'
+      when agent.agent_plan = 'premium' then 'new_housing_request_email'
+      else 'new_housing_request'
+    end,
+    case
+      when agent.agent_plan = 'platinum' then 'Priority request available. SMS placeholder queued for future provider.'
+      when agent.agent_plan = 'premium' then 'New matching housing request is available. Email alert enabled.'
+      else 'New matching housing request is available.'
+    end
+  from public.request_matches match
+  join public.agent_profiles agent on agent.agent_id = match.agent_id
+  where match.request_id = target_request_id;
+end;
+$$;
+
+
+
+-- ============================================================================
+-- Source: supabase/migrations/003_admin_hero_and_kyc_uploads.sql
+-- ============================================================================
+-- Admin-managed hero slides and KYC upload metadata.
+-- Safe additive migration. Does not remove or rename existing tables/columns.
+
+alter table public.agent_profiles
+  add column if not exists terms_accepted_at timestamptz;
+
+create table if not exists public.hero_slides (
+  slide_id uuid primary key default gen_random_uuid(),
+  sort_order integer not null default 1,
+  image_url text not null default '/images/homelink-logo.png',
+  kicker text not null,
+  title text not null,
+  copy text not null,
+  primary_label text not null,
+  primary_url text not null,
+  secondary_label text not null,
+  secondary_url text not null,
+  is_active boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+drop trigger if exists touch_hero_slides_updated_at on public.hero_slides;
+create trigger touch_hero_slides_updated_at before update on public.hero_slides
+for each row execute function public.touch_updated_at();
+
+insert into public.hero_slides (
+  sort_order,
+  image_url,
+  kicker,
+  title,
+  copy,
+  primary_label,
+  primary_url,
+  secondary_label,
+  secondary_url,
+  is_active
+)
+select *
+from (
+  values
+    (
+      1,
+      '/images/homelink-logo.png',
+      'Request a Home. Get Matched Fast.',
+      'Submit your apartment request. Verified agents respond.',
+      'Tell HomeLink your location, apartment type, bedrooms, budget, rent duration, and move-in date.',
+      'Request a Home',
+      '/auth/signup?type=home_seeker',
+      'Join as Agent',
+      '/auth/signup?type=agent',
+      true
+    ),
+    (
+      2,
+      '/images/homelink-logo.png',
+      'Verified agents only',
+      'Approved agents receive matching requests instantly.',
+      'Agents complete KYC and only receive requests inside their approved operating locations and specialties.',
+      'Start Agent Onboarding',
+      '/auth/signup?type=agent',
+      'How It Works',
+      '/#how',
+      true
+    ),
+    (
+      3,
+      '/images/homelink-logo.png',
+      'Compare. Chat. Inspect.',
+      'Chat with agents and move faster.',
+      'Compare responses, chat, call, WhatsApp, inspect, and mark your request fulfilled.',
+      'Create Account',
+      '/auth/signup',
+      'Learn More',
+      '/#about',
+      true
+    )
+) as defaults (
+  sort_order,
+  image_url,
+  kicker,
+  title,
+  copy,
+  primary_label,
+  primary_url,
+  secondary_label,
+  secondary_url,
+  is_active
+)
+where not exists (select 1 from public.hero_slides);
+
+alter table public.hero_slides enable row level security;
+
+drop policy if exists "active hero slides are public" on public.hero_slides;
+create policy "active hero slides are public" on public.hero_slides for select
+using (is_active = true);
+
+
+
+-- ============================================================================
+-- Source: supabase/migrations/004_testimonials_management.sql
+-- ============================================================================
+-- Admin-managed testimonials for HomeLink by V-A.V.
+-- Safe additive migration. Does not remove or rename existing tables/columns.
+
+create table if not exists public.testimonials (
+  testimonial_id uuid primary key default gen_random_uuid(),
+  name text not null,
+  role text not null,
+  location text not null,
+  rating integer not null default 5 check (rating between 1 and 5),
+  message text not null,
+  profile_photo text,
+  is_featured boolean not null default false,
+  is_approved boolean not null default false,
+  is_enabled boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+drop trigger if exists touch_testimonials_updated_at on public.testimonials;
+create trigger touch_testimonials_updated_at before update on public.testimonials
+for each row execute function public.touch_updated_at();
+
+insert into public.testimonials (
+  name,
+  role,
+  location,
+  rating,
+  message,
+  profile_photo,
+  is_featured,
+  is_approved,
+  is_enabled
+)
+select *
+from (
+  values
+    (
+      'Mariam A.',
+      'Home seeker',
+      'Yaba, Lagos',
+      5,
+      'I stopped jumping from one agent to another. I sent one request and got clear responses from agents who actually understood my budget.',
+      null,
+      true,
+      true,
+      true
+    ),
+    (
+      'Tunde Bello',
+      'Verified agent',
+      'Ibadan, Oyo',
+      5,
+      'HomeLink gives me serious clients in my area. The request details are clear, so I can respond with the right apartment fast.',
+      null,
+      true,
+      true,
+      true
+    ),
+    (
+      'Chinwe Okafor',
+      'Home seeker',
+      'Lekki, Lagos',
+      4,
+      'The best part was comparing agent responses before making calls. It made the search feel calmer and more transparent.',
+      null,
+      false,
+      true,
+      true
+    )
+) as defaults (
+  name,
+  role,
+  location,
+  rating,
+  message,
+  profile_photo,
+  is_featured,
+  is_approved,
+  is_enabled
+)
+where not exists (select 1 from public.testimonials);
+
+alter table public.testimonials enable row level security;
+
+drop policy if exists "approved testimonials are public" on public.testimonials;
+create policy "approved testimonials are public" on public.testimonials for select
+using (is_approved = true and is_enabled = true);

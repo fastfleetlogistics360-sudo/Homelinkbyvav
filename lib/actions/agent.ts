@@ -23,17 +23,19 @@ export async function saveAgentKycAction(formData: FormData) {
     .map(String)
     .map((item) => item.trim())
     .filter(Boolean);
+  const uniqueOperatingLocations = Array.from(new Set(operatingLocations));
+  const uniquePropertySpecialties = Array.from(new Set(propertySpecialties));
   const termsAccepted = formData.get("terms_accepted") === "on";
 
   if (!termsAccepted) {
     redirect("/dashboard/agent/kyc?error=Please accept the HomeLink terms and condition to continue.");
   }
 
-  if (!operatingLocations.length) {
+  if (!uniqueOperatingLocations.length) {
     redirect("/dashboard/agent/kyc?error=Select at least one operating state.");
   }
 
-  if (!propertySpecialties.length) {
+  if (!uniquePropertySpecialties.length) {
     redirect("/dashboard/agent/kyc?error=Select at least one property specialty.");
   }
 
@@ -45,8 +47,14 @@ export async function saveAgentKycAction(formData: FormData) {
   const uploadedPhoto = await uploadAgentProfilePhoto(user.id, formData.get("profile_photo_file"));
   const profilePhoto = uploadedPhoto || String(formData.get("existing_profile_photo") || "");
   const admin = createAdminClient();
+  const { data: existingAgent } = await admin
+    .from("agent_profiles")
+    .select("kyc_status")
+    .eq("user_id", user.id)
+    .single();
+  const nextKycStatus = existingAgent?.kyc_status === "approved" ? "approved" : "pending";
 
-  await admin
+  const { error } = await admin
     .from("agent_profiles")
     .update({
       agency_name: String(formData.get("agency_name")),
@@ -54,15 +62,19 @@ export async function saveAgentKycAction(formData: FormData) {
       whatsapp: String(formData.get("whatsapp")),
       profile_photo: profilePhoto,
       verification_documents: [...existingDocuments, ...uploadedDocuments],
-      operating_locations: operatingLocations,
-      property_specialties: propertySpecialties,
-      kyc_status: "pending",
-      terms_accepted_at: new Date().toISOString()
+      operating_locations: uniqueOperatingLocations,
+      property_specialties: uniquePropertySpecialties,
+      kyc_status: nextKycStatus
     })
     .eq("user_id", user.id);
 
+  if (error) {
+    redirect(`/dashboard/agent/kyc?error=${encodeURIComponent(error.message)}`);
+  }
+
   revalidatePath("/dashboard/agent");
-  redirect("/dashboard/agent");
+  revalidatePath("/dashboard/agent/kyc");
+  redirect(nextKycStatus === "approved" ? "/dashboard/agent" : "/dashboard/agent/kyc?submitted=1");
 }
 
 export async function createRequestResponseAction(formData: FormData) {

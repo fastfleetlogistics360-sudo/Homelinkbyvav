@@ -52,8 +52,22 @@ export async function updateAgentKycStatusAction(formData: FormData) {
   }
 
   const supabase = createAdminClient();
-  const { data: agent } = await supabase.from("agent_profiles").select("user_id, agency_name").eq("agent_id", agentId).single();
-  await supabase.from("agent_profiles").update({ kyc_status: status }).eq("agent_id", agentId);
+  const { data: agent, error: agentError } = await supabase
+    .from("agent_profiles")
+    .select("user_id, agency_name")
+    .eq("agent_id", agentId)
+    .single();
+  if (agentError || !agent) {
+    redirect(`/admin?error=${encodeURIComponent(agentError?.message || "Agent profile not found.")}`);
+  }
+
+  const { error: updateError } = await supabase
+    .from("agent_profiles")
+    .update({ kyc_status: status })
+    .eq("agent_id", agentId);
+  if (updateError) {
+    redirect(`/admin?error=${encodeURIComponent(updateError.message)}`);
+  }
 
   if (agent?.user_id) {
     await supabase.from("notifications").insert({
@@ -68,7 +82,9 @@ export async function updateAgentKycStatusAction(formData: FormData) {
 
   revalidatePath("/admin");
   revalidatePath("/dashboard/agent");
-  redirect(`/admin?message=${encodeURIComponent(`${agent?.agency_name || "Agent"} KYC ${status} by ${user.email}.`)}`);
+  revalidatePath("/dashboard/agent/kyc");
+  revalidatePath("/dashboard/agent/requests");
+  redirect(`/admin?message=${encodeURIComponent(`${agent.agency_name || "Agent"} KYC ${status} by ${user.email}.`)}`);
 }
 
 export async function saveHeroSlideAction(formData: FormData) {
