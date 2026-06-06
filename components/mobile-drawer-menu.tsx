@@ -4,7 +4,7 @@ import { Activity, HelpCircle, LogOut, Menu, Tag, UserRound, Wallet, X } from "l
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { logoutAction } from "@/lib/actions/auth";
+import { deleteAccountAction, logoutAction } from "@/lib/actions/auth";
 
 type DrawerItem = [string, string];
 
@@ -91,12 +91,26 @@ export function MobileDrawerMenu({
         ) : null}
 
         {showLogout ? (
-          <form className="mobile-drawer-signout" action={logoutAction}>
-            <button className="button secondary full" type="submit">
-              <LogOut size={18} />
-              Sign out
-            </button>
-          </form>
+          <div className="mobile-drawer-account-actions">
+            <form action={logoutAction}>
+              <button className="button secondary full" type="submit">
+                <LogOut size={18} />
+                Sign out
+              </button>
+            </form>
+            <form
+              action={deleteAccountAction}
+              onSubmit={(event) => {
+                if (!window.confirm("Delete your HomeLink account permanently? This cannot be undone.")) {
+                  event.preventDefault();
+                }
+              }}
+            >
+              <button className="button secondary danger full" type="submit">
+                Delete account
+              </button>
+            </form>
+          </div>
         ) : null}
       </aside>
     </>

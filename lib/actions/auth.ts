@@ -100,3 +100,19 @@ export async function logoutAction() {
   revalidatePath("/", "layout");
   redirect("/");
 }
+
+export async function deleteAccountAction() {
+  const supabase = await createClient();
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+
+  if (!user) redirect("/auth/login");
+
+  const admin = createAdminClient();
+  await admin.auth.admin.deleteUser(user.id);
+  await supabase.auth.signOut();
+
+  revalidatePath("/", "layout");
+  redirect("/?account=deleted");
+}

@@ -12,6 +12,7 @@ export default async function NewRequestPage() {
       nav={[
         ["Overview", "/dashboard/seeker"],
         ["Create Apartment Request", "/dashboard/seeker/requests/new"],
+        ["Transaction History", "/dashboard/seeker#transactions"],
         ["Messages", "/dashboard/seeker#messages"],
         ["Profile Settings", "/dashboard/seeker#profile"]
       ]}

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AgentSubscriptionCard } from "@/components/agent-subscription-card";
 import { DashboardShell } from "@/components/dashboard-shell";
+import { TransactionHistory } from "@/components/transaction-history";
 import { getRefreshedAgentProfile } from "@/lib/agents";
 import { requireAccountType } from "@/lib/auth";
 import { getPlanBadge, planForAgent } from "@/lib/agent-plans";
@@ -21,6 +22,12 @@ export default async function AgentDashboardPage() {
     .eq("agent_id", agent?.agent_id)
     .order("created_at", { ascending: false });
   const responses = responsesData ?? [];
+  const { data: paymentsData } = await supabase
+    .from("payments")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+  const payments = paymentsData ?? [];
 
   return (
     <DashboardShell
@@ -82,6 +89,8 @@ export default async function AgentDashboardPage() {
           <p>No accepted leads yet.</p>
         )}
       </section>
+
+      <TransactionHistory payments={payments} />
     </DashboardShell>
   );
 }

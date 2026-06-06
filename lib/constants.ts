@@ -1,6 +1,12 @@
 export const APP_NAME = "HomeLink by V-A.V";
 export const TAGLINE = "Request a Home. Get Matched Fast.";
 export const DEFAULT_ADMIN_EMAIL = "olasunkanmijoshua765@gmail.com";
+export const DEFAULT_ADMIN_PASSWORD = "Homelink360@#";
+
+export const VAV_SOCIAL_LINKS = {
+  instagram: "https://www.instagram.com/v.a.v_online?igsh=Zm4xMTYxdm9pYWhp&utm_source=qr",
+  whatsapp: "https://wa.me/2348164214411"
+} as const;
 
 export const NIGERIA_STATES = [
   "Abia",

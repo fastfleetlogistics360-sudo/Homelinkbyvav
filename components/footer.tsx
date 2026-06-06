@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { Mail } from "lucide-react";
-import { FacebookLogo, InstagramLogo, LinkedinLogo, WhatsAppLogo, XLogo } from "@/components/social-icons";
-import { APP_NAME, TAGLINE } from "@/lib/constants";
+import { InstagramLogo, WhatsAppLogo } from "@/components/social-icons";
+import { APP_NAME, TAGLINE, VAV_SOCIAL_LINKS } from "@/lib/constants";
 
 export function Footer() {
   return (
@@ -10,23 +9,11 @@ export function Footer() {
         <strong>{APP_NAME}</strong>
         <p>{TAGLINE}</p>
         <div className="socials" aria-label="Social links">
-          <Link href="https://facebook.com" aria-label="Facebook">
-            <FacebookLogo />
-          </Link>
-          <Link href="https://instagram.com" aria-label="Instagram">
+          <Link href={VAV_SOCIAL_LINKS.instagram} aria-label="Instagram" target="_blank" rel="noreferrer">
             <InstagramLogo />
           </Link>
-          <Link href="https://x.com" aria-label="X">
-            <XLogo />
-          </Link>
-          <Link href="https://linkedin.com" aria-label="LinkedIn">
-            <LinkedinLogo />
-          </Link>
-          <Link href="https://wa.me/" aria-label="WhatsApp">
+          <Link href={VAV_SOCIAL_LINKS.whatsapp} aria-label="WhatsApp" target="_blank" rel="noreferrer">
             <WhatsAppLogo />
-          </Link>
-          <Link href="mailto:hello@homelink.ng" aria-label="Email">
-            <Mail size={18} />
           </Link>
         </div>
       </div>

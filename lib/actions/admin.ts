@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { isAdminEmail, requireAdminUser } from "@/lib/admin-auth";
+import { adminPasswordMatches, clearAdminSession, createAdminSession, isAdminEmail, requireAdminUser } from "@/lib/admin-auth";
 import { DEFAULT_HERO_SLIDES } from "@/lib/hero-slides";
 import { uploadHeroSlideImage, uploadTestimonialPhoto } from "@/lib/storage";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -18,8 +18,26 @@ export async function adminLoginAction(formData: FormData) {
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) redirect(`/admin?error=${encodeURIComponent(error.message)}`);
+  if (error) {
+    if (!adminPasswordMatches(password)) {
+      redirect(`/admin?error=${encodeURIComponent("Invalid admin email or password.")}`);
+    }
 
+    await createAdminSession(email);
+    revalidatePath("/admin");
+    redirect("/admin");
+  }
+
+  await createAdminSession(email);
+
+  revalidatePath("/admin");
+  redirect("/admin");
+}
+
+export async function adminLogoutAction() {
+  await clearAdminSession();
+  const supabase = await createClient();
+  await supabase.auth.signOut();
   revalidatePath("/admin");
   redirect("/admin");
 }

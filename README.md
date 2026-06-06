@@ -45,6 +45,8 @@ SUPABASE_SERVICE_ROLE_KEY=
 PAYSTACK_SECRET_KEY=
 NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=
 ADMIN_EMAILS=
+ADMIN_PASSWORD=
+ADMIN_SESSION_SECRET=
 ```
 
 4. Open Supabase SQL Editor and run:
@@ -132,7 +134,7 @@ The default allowed admin email in code is:
 olasunkanmijoshua765@gmail.com
 ```
 
-Create that user in Supabase Auth with your admin password, then use `/admin` to approve/reject KYC and edit homepage hero slides.
+If Supabase Auth rejects the login because the admin user is not created or confirmed yet, `/admin` can also create a signed admin session when the email matches the approved admin email and the password matches `ADMIN_PASSWORD`. If `ADMIN_PASSWORD` is not set, the current fallback password is the project admin password requested during setup.
 
 ## Paystack Flow
 

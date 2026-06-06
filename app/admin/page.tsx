@@ -2,17 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   adminLoginAction,
+  adminLogoutAction,
   deleteTestimonialAction,
   saveHeroSlideAction,
   saveTestimonialAction,
   updateAgentKycStatusAction,
   updateTestimonialStatusAction
 } from "@/lib/actions/admin";
-import { logoutAction } from "@/lib/actions/auth";
-import { getSessionUser } from "@/lib/auth";
 import { DEFAULT_ADMIN_EMAIL } from "@/lib/constants";
 import { getHeroSlides } from "@/lib/hero-slides";
-import { isAdminEmail } from "@/lib/admin-auth";
+import { getAdminSession } from "@/lib/admin-auth";
 import { resolvePrivateStorageUrl } from "@/lib/storage";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getTestimonials } from "@/lib/testimonials";
@@ -26,9 +25,9 @@ type AdminPageProps = {
 
 export default async function AdminPage({ searchParams }: AdminPageProps) {
   const params = await searchParams;
-  const user = await getSessionUser();
+  const admin = await getAdminSession();
 
-  if (!user || !isAdminEmail(user.email)) {
+  if (!admin) {
     return (
       <main className="admin-login">
         <form className="panel auth-card" action={adminLoginAction}>
@@ -90,7 +89,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           <p className="kicker">Admin ops</p>
           <h1>Platform moderation</h1>
         </div>
-        <form action={logoutAction}>
+        <form action={adminLogoutAction}>
           <button className="button secondary" type="submit">
             Log out
           </button>
