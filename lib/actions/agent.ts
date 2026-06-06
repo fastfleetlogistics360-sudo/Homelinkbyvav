@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { uploadAgentKycDocuments, uploadAgentProfilePhoto } from "@/lib/storage";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { isAgentKycApproved } from "@/lib/kyc";
 import { createClient } from "@/lib/supabase/server";
 
 export async function saveAgentKycAction(formData: FormData) {
@@ -43,18 +43,26 @@ export async function saveAgentKycAction(formData: FormData) {
     .split("|")
     .map((item) => item.trim())
     .filter(Boolean);
-  const uploadedDocuments = await uploadAgentKycDocuments(user.id, formData.getAll("verification_documents"));
-  const uploadedPhoto = await uploadAgentProfilePhoto(user.id, formData.get("profile_photo_file"));
+  let uploadedDocuments: string[] = [];
+  let uploadedPhoto: string | null = null;
+
+  try {
+    uploadedDocuments = await uploadAgentKycDocuments(user.id, formData.getAll("verification_documents"));
+    uploadedPhoto = await uploadAgentProfilePhoto(user.id, formData.get("profile_photo_file"));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unable to upload KYC files.";
+    redirect(`/dashboard/agent/kyc?error=${encodeURIComponent(message)}`);
+  }
+
   const profilePhoto = uploadedPhoto || String(formData.get("existing_profile_photo") || "");
-  const admin = createAdminClient();
-  const { data: existingAgent } = await admin
+  const { data: existingAgent } = await supabase
     .from("agent_profiles")
     .select("kyc_status")
     .eq("user_id", user.id)
     .single();
-  const nextKycStatus = existingAgent?.kyc_status === "approved" ? "approved" : "pending";
+  const nextKycStatus = isAgentKycApproved(existingAgent) ? "approved" : "pending";
 
-  const { error } = await admin
+  const { error } = await supabase
     .from("agent_profiles")
     .update({
       agency_name: String(formData.get("agency_name")),
@@ -90,12 +98,13 @@ export async function createRequestResponseAction(formData: FormData) {
     .eq("user_id", user.id)
     .single();
 
-  if (!agent || agent.kyc_status !== "approved" || agent.suspended) {
+  if (!agent || !isAgentKycApproved(agent)) {
     redirect("/dashboard/agent/kyc");
   }
+  const agentId = agent.agent_id;
 
-  await supabase.rpc("reset_agent_weekly_quota", { target_agent_id: agent.agent_id });
-  const { data: canAccept } = await supabase.rpc("agent_can_accept_request", { target_agent_id: agent.agent_id });
+  await supabase.rpc("reset_agent_weekly_quota", { target_agent_id: agentId });
+  const { data: canAccept } = await supabase.rpc("agent_can_accept_request", { target_agent_id: agentId });
   if (!canAccept) {
     redirect("/dashboard/agent/subscription?quota=exhausted");
   }
@@ -103,7 +112,7 @@ export async function createRequestResponseAction(formData: FormData) {
   const requestId = String(formData.get("request_id"));
   const { error } = await supabase.from("request_responses").insert({
     request_id: requestId,
-    agent_id: agent.agent_id,
+    agent_id: agentId,
     message: String(formData.get("message")),
     property_title: String(formData.get("property_title")),
     property_location: String(formData.get("property_location")),
@@ -117,9 +126,9 @@ export async function createRequestResponseAction(formData: FormData) {
 
   if (error) redirect(`/dashboard/agent/requests?error=${encodeURIComponent(error.message)}`);
 
-  await supabase.rpc("increment_agent_weekly_usage", { target_agent_id: agent.agent_id });
+  await supabase.rpc("increment_agent_weekly_usage", { target_agent_id: agentId });
   await supabase.from("housing_requests").update({ status: "accepted" }).eq("request_id", requestId);
-  await supabase.rpc("create_conversation_for_response", { target_request_id: requestId, target_agent_id: agent.agent_id });
+  await supabase.rpc("create_conversation_for_response", { target_request_id: requestId, target_agent_id: agentId });
 
   revalidatePath("/dashboard/agent");
   redirect("/dashboard/agent");

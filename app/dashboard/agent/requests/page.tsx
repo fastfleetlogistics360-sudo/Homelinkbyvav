@@ -4,13 +4,14 @@ import { createRequestResponseAction } from "@/lib/actions/agent";
 import { getRefreshedAgentProfile } from "@/lib/agents";
 import { requireAccountType } from "@/lib/auth";
 import { AGENT_DASHBOARD_NAV } from "@/lib/dashboard-nav";
+import { isAgentKycApproved } from "@/lib/kyc";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function AvailableRequestsPage() {
   const user = await requireAccountType("agent");
   const supabase = await createClient();
   const agent = await getRefreshedAgentProfile(supabase, user.id);
-  const approved = agent?.kyc_status === "approved" && !agent?.suspended;
+  const approved = isAgentKycApproved(agent);
 
   const requestsQuery = approved
     ? await supabase

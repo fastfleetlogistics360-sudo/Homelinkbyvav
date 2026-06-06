@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { saveAgentKycAction } from "@/lib/actions/agent";
-import { NIGERIA_STATE_CITIES, PROPERTY_TYPES } from "@/lib/constants";
+import { NIGERIA_STATE_CITIES } from "@/lib/constants";
 import { type AgentProfile } from "@/lib/types";
 
 const COVERAGE_TYPES = [
@@ -98,37 +98,37 @@ export function AgentKycForm({ agent, error }: { agent?: Partial<AgentProfile> |
   const [selectedStates, setSelectedStates] = useState<string[]>(() => getInitialStates(locations));
   const [selectedCities, setSelectedCities] = useState<string[]>(() => getInitialCities(locations));
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>(() => agent?.property_specialties || []);
+  const [businessState, setBusinessState] = useState("");
+  const [businessCity, setBusinessCity] = useState("");
+  const [serviceState, setServiceState] = useState(() => getInitialStates(locations)[0] || "");
+  const [serviceCity, setServiceCity] = useState("");
   const stateOptions = Object.keys(NIGERIA_STATE_CITIES);
-  const selectedStateCities = useMemo(
-    () =>
-      selectedStates.flatMap((state) =>
-        (NIGERIA_STATE_CITIES[state] || []).map((city) => ({
-          state,
-          city,
-          value: `${state} - ${city}`
-        }))
-      ),
-    [selectedStates]
-  );
+  const businessCityOptions = useMemo(() => (businessState ? NIGERIA_STATE_CITIES[businessState] || [] : []), [businessState]);
+  const serviceCityOptions = useMemo(() => (serviceState ? NIGERIA_STATE_CITIES[serviceState] || [] : []), [serviceState]);
   const locationInputs = Array.from(new Set([...splitLocations(preferredLocations), ...selectedStates, ...selectedCities]));
   const specialtyInputs = Array.from(new Set(selectedSpecialties));
 
-  function toggleState(state: string) {
-    setSelectedStates((current) => {
-      if (current.includes(state)) {
-        setSelectedCities((cities) => cities.filter((city) => !city.startsWith(`${state} - `)));
-        return current.filter((item) => item !== state);
-      }
-      return [...current, state];
-    });
-  }
-
-  function toggleCity(value: string) {
-    setSelectedCities((current) => (current.includes(value) ? current.filter((item) => item !== value) : [...current, value]));
-  }
-
   function toggleSpecialty(value: string) {
     setSelectedSpecialties((current) => (current.includes(value) ? current.filter((item) => item !== value) : [...current, value]));
+  }
+
+  function addServiceLocation() {
+    if (!serviceState) return;
+    const cityValue = serviceCity ? `${serviceState} - ${serviceCity}` : "";
+    setSelectedStates((current) => (current.includes(serviceState) ? current : [...current, serviceState]));
+    if (cityValue) {
+      setSelectedCities((current) => (current.includes(cityValue) ? current : [...current, cityValue]));
+    }
+  }
+
+  function removeServiceLocation(value: string) {
+    if (value.includes(" - ")) {
+      setSelectedCities((current) => current.filter((item) => item !== value));
+      return;
+    }
+
+    setSelectedStates((current) => current.filter((item) => item !== value));
+    setSelectedCities((current) => current.filter((item) => !item.startsWith(`${value} - `)));
   }
 
   return (
@@ -218,16 +218,36 @@ export function AgentKycForm({ agent, error }: { agent?: Partial<AgentProfile> |
           </label>
           <div className="kyc-two-col">
             <label className="signup-field">
-              <span>City</span>
-              <input name="business_city" placeholder="Select city" />
-            </label>
-            <label className="signup-field">
               <span>State</span>
               <span className="signup-select-shell">
-                <select name="business_state">
+                <select
+                  name="business_state"
+                  onChange={(event) => {
+                    setBusinessState(event.target.value);
+                    setBusinessCity("");
+                  }}
+                  value={businessState}
+                >
                   <option value="">Select state</option>
                   {stateOptions.map((state) => (
                     <option key={state}>{state}</option>
+                  ))}
+                </select>
+                <ChevronDown size={18} />
+              </span>
+            </label>
+            <label className="signup-field">
+              <span>City</span>
+              <span className="signup-select-shell">
+                <select
+                  disabled={!businessState}
+                  name="business_city"
+                  onChange={(event) => setBusinessCity(event.target.value)}
+                  value={businessCity}
+                >
+                  <option value="">{businessState ? "Select city" : "Select state first"}</option>
+                  {businessCityOptions.map((city) => (
+                    <option key={city}>{city}</option>
                   ))}
                 </select>
                 <ChevronDown size={18} />
@@ -336,39 +356,59 @@ export function AgentKycForm({ agent, error }: { agent?: Partial<AgentProfile> |
 
           <div className="kyc-check-panel">
             <p>Operating States</p>
-            <div className="kyc-check-grid compact">
-              {stateOptions.map((state) => (
-                <label key={state}>
-                  <input checked={selectedStates.includes(state)} onChange={() => toggleState(state)} type="checkbox" />
-                  <span>{state}</span>
-                </label>
-              ))}
+            <div className="kyc-location-builder">
+              <label className="signup-field">
+                <span>State</span>
+                <span className="signup-select-shell">
+                  <select
+                    onChange={(event) => {
+                      setServiceState(event.target.value);
+                      setServiceCity("");
+                    }}
+                    value={serviceState}
+                  >
+                    <option value="">Select state</option>
+                    {stateOptions.map((state) => (
+                      <option key={state}>{state}</option>
+                    ))}
+                  </select>
+                  <ChevronDown size={18} />
+                </span>
+              </label>
+              <label className="signup-field">
+                <span>City</span>
+                <span className="signup-select-shell">
+                  <select disabled={!serviceState} onChange={(event) => setServiceCity(event.target.value)} value={serviceCity}>
+                    <option value="">{serviceState ? "Select city or leave blank for whole state" : "Select state first"}</option>
+                    {serviceCityOptions.map((city) => (
+                      <option key={city}>{city}</option>
+                    ))}
+                  </select>
+                  <ChevronDown size={18} />
+                </span>
+              </label>
+              <button className="kyc-add-location" onClick={addServiceLocation} type="button">
+                Add location
+              </button>
             </div>
-          </div>
-
-          <div className="kyc-check-panel">
-            <p>Cities and Service Areas</p>
-            {selectedStateCities.length ? (
-              <div className="kyc-check-grid">
-                {selectedStateCities.map(({ city, state, value }) => (
-                  <label key={value}>
-                    <input checked={selectedCities.includes(value)} onChange={() => toggleCity(value)} type="checkbox" />
-                    <span>
-                      {city}
-                      <small>{state}</small>
-                    </span>
-                  </label>
+            {locationInputs.length ? (
+              <div className="kyc-location-tags">
+                {locationInputs.map((location) => (
+                  <button key={location} onClick={() => removeServiceLocation(location)} type="button">
+                    {location}
+                    <span aria-hidden="true">x</span>
+                  </button>
                 ))}
               </div>
             ) : (
-              <small>Select an operating state to reveal city options.</small>
+              <small>Select at least one state or city you actively serve.</small>
             )}
           </div>
 
           <div className="kyc-check-panel">
             <p>Property Specialties</p>
             <div className="kyc-check-grid">
-              {PROPERTY_TYPES.map((type) => (
+              {COVERAGE_TYPES.map((type) => (
                 <label key={type}>
                   <input checked={selectedSpecialties.includes(type)} onChange={() => toggleSpecialty(type)} type="checkbox" />
                   <span>{type}</span>

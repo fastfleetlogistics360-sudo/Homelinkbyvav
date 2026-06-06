@@ -7,6 +7,7 @@ import { getPlanBadge, planForAgent } from "@/lib/agent-plans";
 import { getRefreshedAgentProfile } from "@/lib/agents";
 import { requireAccountType } from "@/lib/auth";
 import { AGENT_DASHBOARD_NAV } from "@/lib/dashboard-nav";
+import { isAgentKycApproved } from "@/lib/kyc";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function AgentKycPage({
@@ -21,7 +22,7 @@ export default async function AgentKycPage({
   const plan = planForAgent(agent);
   const planBadge = getPlanBadge(agent?.agent_plan);
 
-  if (params?.submitted === "1" && agent?.kyc_status === "approved") {
+  if (params?.submitted === "1" && isAgentKycApproved(agent)) {
     redirect("/dashboard/agent");
   }
 

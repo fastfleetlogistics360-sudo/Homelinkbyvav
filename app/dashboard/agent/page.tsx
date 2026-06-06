@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import type { CSSProperties } from "react";
 import {
-  Bell,
   Building2,
   Check,
   ChevronRight,
@@ -15,21 +14,22 @@ import {
   Plus,
   Search,
   Settings,
-  ShieldCheck,
   UserRound
 } from "lucide-react";
+import { DashboardNotifications } from "@/components/dashboard-notifications";
 import { MobileDrawerMenu } from "@/components/mobile-drawer-menu";
 import { getRefreshedAgentProfile } from "@/lib/agents";
 import { requireAccountType } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { AGENT_DASHBOARD_NAV } from "@/lib/dashboard-nav";
+import { getAgentKycProgress, isAgentKycApproved, normalizeKycStatus } from "@/lib/kyc";
 
 export default async function AgentDashboardPage() {
   const user = await requireAccountType("agent");
   const supabase = await createClient();
 
   const agent = await getRefreshedAgentProfile(supabase, user.id);
-  const approved = agent?.kyc_status === "approved" && !agent?.suspended;
+  const approved = isAgentKycApproved(agent);
   const { data: responsesData } = await supabase
     .from("request_responses")
     .select("*, housing_requests(*)")
@@ -48,9 +48,17 @@ export default async function AgentDashboardPage() {
     : { count: 0 };
   const newRequestCount = requestsQuery.count || 0;
   const activeMatches = responses.filter((response) => response.status === "pending" || response.status === "accepted").length;
-  const kycStatus = agent?.kyc_status || "pending";
-  const kycSteps = approved ? 5 : 2;
-  const kycPercent = approved ? 100 : 40;
+  const acceptedResponses = responses.filter((response) => response.status === "accepted");
+  const kycStatus = normalizeKycStatus(agent?.kyc_status);
+  const kycProgress = getAgentKycProgress(agent);
+  const { percent: kycPercent, steps: kycSteps } = kycProgress;
+  const { data: notificationsData } = await supabase
+    .from("notifications")
+    .select("notification_id, type, message, read, created_at")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(6);
+  const notifications = notificationsData ?? [];
   const kycCard =
     kycStatus === "approved"
       ? {
@@ -79,10 +87,10 @@ export default async function AgentDashboardPage() {
             className: "pending"
           };
   const agentStats = [
-    { label: "New Requests", value: newRequestCount, Icon: ClipboardList, tone: "blue" },
-    { label: "Agent Responses", value: responses.length, Icon: MessageSquare, tone: "green" },
-    { label: "Active Matches", value: activeMatches, Icon: Handshake, tone: "gold" },
-    { label: "Total Responses", value: responses.length, Icon: LayoutDashboard, tone: "purple" }
+    { label: "New Requests", value: newRequestCount, Icon: ClipboardList, tone: "blue", href: "/dashboard/agent/requests" },
+    { label: "Agent Responses", value: responses.length, Icon: MessageSquare, tone: "green", href: "#accepted" },
+    { label: "Active Matches", value: activeMatches, Icon: Handshake, tone: "gold", href: "#accepted" },
+    { label: "Total Responses", value: responses.length, Icon: LayoutDashboard, tone: "purple", href: "#accepted" }
   ];
 
   return (
@@ -95,19 +103,9 @@ export default async function AgentDashboardPage() {
             <small>by V-A.V</small>
           </span>
         </Link>
-        <button className="dashboard-bell" aria-label="Notifications" type="button">
-          <Bell size={28} />
-          <span />
-        </button>
+        <DashboardNotifications notifications={notifications} returnTo="/dashboard/agent" />
         <MobileDrawerMenu items={AGENT_DASHBOARD_NAV} showLogout subtitle="Agent dashboard" title={agent?.agency_name || "Agent Dashboard"} variant="dashboard" />
       </header>
-
-      {!approved ? (
-        <section className="agent-pending-banner">
-          <strong>KYC Verification Pending</strong>
-          <span>Complete verification approval to start receiving apartment requests.</span>
-        </section>
-      ) : null}
 
       <section className="agent-hero-reference">
         <div>
@@ -129,20 +127,19 @@ export default async function AgentDashboardPage() {
           </div>
         </div>
         <div className="agent-shield-art" aria-hidden="true">
-          <ShieldCheck size={150} />
-          <span />
+          <Image alt="" fill priority sizes="(max-width: 640px) 48vw, 320px" src="/images/agent-hero-shield.png" />
         </div>
       </section>
 
       <section className="agent-stat-grid">
-        {agentStats.map(({ label, value, Icon, tone }) => (
+        {agentStats.map(({ label, value, Icon, tone, href }) => (
           <article key={label} className="agent-stat-card">
             <span className={tone}>
               <Icon size={30} />
             </span>
             <strong>{value}</strong>
             <p>{label}</p>
-            <Link href="/dashboard/agent/requests">
+            <Link href={href}>
               View all
               <ChevronRight size={18} />
             </Link>
@@ -170,14 +167,14 @@ export default async function AgentDashboardPage() {
       <section className="agent-quick-actions">
         <h2>Quick Actions</h2>
         <div>
-          <a href="#properties">
+          <Link href="#properties">
             <span className="blue">
               <Plus size={30} />
             </span>
             <strong>Add Property</strong>
             <small>List a new property</small>
             <ChevronRight size={26} />
-          </a>
+          </Link>
           <Link href="/dashboard/agent/requests">
             <span className="green">
               <Search size={30} />
@@ -194,14 +191,106 @@ export default async function AgentDashboardPage() {
             <small>Manage your documents</small>
             <ChevronRight size={26} />
           </Link>
-          <a href="#profile">
+          <Link href="#profile">
             <span className="gold">
               <Settings size={30} />
             </span>
             <strong>Account Settings</strong>
             <small>Manage your account</small>
             <ChevronRight size={26} />
-          </a>
+          </Link>
+        </div>
+      </section>
+
+      <section className="agent-dashboard-section" id="accepted">
+        <div className="mobile-section-row">
+          <h2>Matches</h2>
+          <Link href="/dashboard/agent/requests">View requests</Link>
+        </div>
+        {responses.length ? (
+          <div className="agent-mini-list">
+            {responses.slice(0, 3).map((response) => (
+              <article key={response.response_id}>
+                <span className={`badge ${response.status}`}>{response.status}</span>
+                <strong>{response.property_title}</strong>
+                <small>
+                  {response.housing_requests?.property_type} in {response.housing_requests?.area || response.housing_requests?.preferred_location}
+                </small>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p className="dashboard-muted-copy">No matches or responses yet.</p>
+        )}
+      </section>
+
+      <section className="agent-dashboard-section" id="properties">
+        <div className="mobile-section-row">
+          <h2>Properties</h2>
+          <Link href="/dashboard/agent/requests">Add property</Link>
+        </div>
+        <p className="dashboard-muted-copy">
+          Add property options by responding to matching home seeker requests. Approved agents can submit property title,
+          location, price, images, and inspection availability from Available Requests.
+        </p>
+        <div className="agent-mini-list">
+          {acceptedResponses.length ? (
+            acceptedResponses.slice(0, 3).map((response) => (
+              <article key={response.response_id}>
+                <span className="badge approved">Listed</span>
+                <strong>{response.property_title}</strong>
+                <small>
+                  {response.property_location} | {response.property_price}
+                </small>
+              </article>
+            ))
+          ) : (
+            <article>
+              <span className="badge pending">No listings</span>
+              <strong>No property options submitted yet.</strong>
+              <small>Open Available Requests to add your first property response.</small>
+            </article>
+          )}
+        </div>
+      </section>
+
+      <section className="agent-dashboard-section" id="messages">
+        <div className="mobile-section-row">
+          <h2>Messages</h2>
+          <Link href="/dashboard/agent/requests">Find seekers</Link>
+        </div>
+        <p className="dashboard-muted-copy">
+          Conversations are created after you respond to a home seeker request.
+        </p>
+      </section>
+
+      <section className="agent-dashboard-section" id="transactions">
+        <div className="mobile-section-row">
+          <h2>Transactions</h2>
+          <Link href="/dashboard/agent/subscription">Upgrade plan</Link>
+        </div>
+        <p className="dashboard-muted-copy">Subscription and response activity will appear here.</p>
+      </section>
+
+      <section className="agent-dashboard-section" id="reviews">
+        <h2>Reviews</h2>
+        <p className="dashboard-muted-copy">Client reviews will appear here after completed matches.</p>
+      </section>
+
+      <section className="agent-dashboard-section" id="profile">
+        <div className="mobile-section-row">
+          <h2>Profile</h2>
+          <Link href="/dashboard/agent/kyc">Update KYC</Link>
+        </div>
+        <div className="agent-profile-grid">
+          <span>Agency</span>
+          <strong>{agent?.agency_name || "Not set"}</strong>
+          <span>Phone</span>
+          <strong>{agent?.phone || "Not set"}</strong>
+          <span>Locations</span>
+          <strong>{agent?.operating_locations?.join(", ") || "Not set"}</strong>
+          <span>Specialties</span>
+          <strong>{agent?.property_specialties?.join(", ") || "Not set"}</strong>
         </div>
       </section>
 
@@ -214,18 +303,18 @@ export default async function AgentDashboardPage() {
           <FileText size={28} />
           Requests
         </Link>
-        <a href="#accepted">
+        <Link href="#accepted">
           <Handshake size={28} />
           Matches
-        </a>
-        <a href="#properties">
+        </Link>
+        <Link href="#properties">
           <Building2 size={28} />
           Properties
-        </a>
-        <a href="#profile">
+        </Link>
+        <Link href="#profile">
           <UserRound size={28} />
           Profile
-        </a>
+        </Link>
       </nav>
     </main>
   );

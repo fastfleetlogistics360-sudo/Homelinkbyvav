@@ -1,5 +1,12 @@
-const CACHE_NAME = "homelink-shell-v1";
-const SHELL_ASSETS = ["/", "/offline.html", "/manifest.webmanifest", "/images/homelink-logo.png"];
+const CACHE_NAME = "homelink-shell-v2";
+const SHELL_ASSETS = [
+  "/",
+  "/offline.html",
+  "/manifest.webmanifest",
+  "/images/homelink-logo.png",
+  "/images/seeker-hero-house.png",
+  "/images/agent-hero-shield.png"
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL_ASSETS)));

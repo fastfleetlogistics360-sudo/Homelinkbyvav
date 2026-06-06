@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import {
-  Bell,
   ChevronRight,
   ClipboardList,
   FileText,
@@ -13,6 +12,7 @@ import {
   ReceiptText,
   UserRound
 } from "lucide-react";
+import { DashboardNotifications } from "@/components/dashboard-notifications";
 import { MobileDrawerMenu } from "@/components/mobile-drawer-menu";
 import { markRequestFulfilledAction } from "@/lib/actions/requests";
 import { getPlanBadge, planForAgent } from "@/lib/agent-plans";
@@ -63,6 +63,13 @@ export default async function SeekerDashboardPage() {
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
   const payments = paymentsData ?? [];
+  const { data: notificationsData } = await supabase
+    .from("notifications")
+    .select("notification_id, type, message, read, created_at")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(6);
+  const notifications = notificationsData ?? [];
   const activeMatches = requests.filter((item) => item.status === "matched" || item.status === "accepted").length;
   const responseCount = requests.reduce((total, request) => total + (request.request_responses?.length || 0), 0);
   const firstName = (profile?.full_name || "Home Seeker").split(" ")[0] || "Home Seeker";
@@ -78,10 +85,7 @@ export default async function SeekerDashboardPage() {
             <em>Request a Home. Get Matched Fast.</em>
           </span>
         </Link>
-        <button className="dashboard-bell" aria-label="Notifications" type="button">
-          <Bell size={28} />
-          <span />
-        </button>
+        <DashboardNotifications notifications={notifications} returnTo="/dashboard/seeker" />
         <MobileDrawerMenu items={seekerNav} showLogout subtitle="Home seeker dashboard" title={profile?.full_name || "Home Seeker"} variant="dashboard" />
       </header>
 
@@ -92,7 +96,7 @@ export default async function SeekerDashboardPage() {
           <span>Let&apos;s help you find the perfect home.</span>
         </div>
         <div className="seeker-house-art" aria-hidden="true">
-          <span />
+          <Image alt="" fill priority sizes="(max-width: 640px) 58vw, 48vw" src="/images/seeker-hero-house.png" />
         </div>
       </section>
 
@@ -248,10 +252,10 @@ export default async function SeekerDashboardPage() {
             <h2>Transaction History</h2>
             <h3>Payments and receipts</h3>
           </div>
-          <a href="#transactions">
+          <Link href="#transactions">
             <FileText size={20} />
             View all
-          </a>
+          </Link>
         </div>
         {payments.length ? (
           <div className="seeker-transaction-list">
@@ -275,27 +279,50 @@ export default async function SeekerDashboardPage() {
         )}
       </section>
 
+      <section className="reference-section seeker-messages-section" id="messages">
+        <div className="mobile-section-row">
+          <h2>Messages</h2>
+          <Link href="#requests">View responses</Link>
+        </div>
+        <p className="seeker-muted-line">Messages will appear after an agent responds to your request.</p>
+      </section>
+
+      <section className="reference-section seeker-profile-section" id="profile">
+        <div className="mobile-section-row">
+          <h2>Profile</h2>
+          <Link href="/dashboard/seeker/requests/new">New request</Link>
+        </div>
+        <div className="agent-profile-grid">
+          <span>Name</span>
+          <strong>{profile?.full_name || "Home Seeker"}</strong>
+          <span>Requests</span>
+          <strong>{requests.length}</strong>
+          <span>Agent responses</span>
+          <strong>{responseCount}</strong>
+        </div>
+      </section>
+
       <nav className="mobile-bottom-nav" aria-label="Home seeker navigation">
         <Link className="active" href="/dashboard/seeker">
           <Home size={28} />
           Home
         </Link>
-        <Link href="/dashboard/seeker/requests/new">
+        <Link href="#requests">
           <Grid2X2 size={28} />
           Requests
         </Link>
-        <a href="#messages">
+        <Link href="#messages">
           <MessageCircle size={28} />
           Messages
-        </a>
-        <a href="#transactions">
+        </Link>
+        <Link href="#transactions">
           <ReceiptText size={28} />
           Transactions
-        </a>
-        <a href="#profile">
+        </Link>
+        <Link href="#profile">
           <UserRound size={28} />
           Profile
-        </a>
+        </Link>
       </nav>
     </main>
   );
