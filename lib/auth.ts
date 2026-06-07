@@ -68,19 +68,19 @@ export async function ensureProfile(user: User) {
     .single();
 
   if (accountType === "agent") {
-    await admin
+    const { data: existingAgent } = await admin
       .from("agent_profiles")
-      .upsert(
-        {
-          user_id: user.id,
-          full_name: fullName,
-          agency_name: user.user_metadata?.agency_name || fullName,
-          kyc_status: "pending",
-          operating_locations: [],
-          property_specialties: []
-        },
-        { onConflict: "user_id" }
-      );
+      .select("agent_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (!existingAgent) {
+      await admin.from("agent_profiles").insert({
+        user_id: user.id,
+        full_name: fullName,
+        agency_name: user.user_metadata?.agency_name || fullName
+      });
+    }
   } else {
     await admin
       .from("home_seeker_profiles")

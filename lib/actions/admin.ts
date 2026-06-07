@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { adminPasswordMatches, clearAdminSession, createAdminSession, isAdminEmail, requireAdminUser } from "@/lib/admin-auth";
+import { matchOpenRequestsForAgent } from "@/lib/agents";
 import { DEFAULT_HERO_SLIDES } from "@/lib/hero-slides";
 import { uploadHeroSlideImage, uploadTestimonialPhoto } from "@/lib/storage";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -69,6 +70,17 @@ export async function updateAgentKycStatusAction(formData: FormData) {
     redirect(`/admin?error=${encodeURIComponent(updateError.message)}`);
   }
 
+  let matchedCount = 0;
+  if (status === "approved") {
+    try {
+      const result = await matchOpenRequestsForAgent(agentId);
+      matchedCount = result.matchedCount;
+    } catch (syncError) {
+      const message = syncError instanceof Error ? syncError.message : "Unable to sync matching apartment requests.";
+      redirect(`/admin?error=${encodeURIComponent(`KYC updated, but request sync failed: ${message}`)}`);
+    }
+  }
+
   if (agent?.user_id) {
     await supabase.from("notifications").insert({
       user_id: agent.user_id,
@@ -84,7 +96,11 @@ export async function updateAgentKycStatusAction(formData: FormData) {
   revalidatePath("/dashboard/agent");
   revalidatePath("/dashboard/agent/kyc");
   revalidatePath("/dashboard/agent/requests");
-  redirect(`/admin?message=${encodeURIComponent(`${agent.agency_name || "Agent"} KYC ${status} by ${user.email}.`)}`);
+  const matchMessage =
+    status === "approved" && matchedCount > 0
+      ? ` ${matchedCount} matching apartment request${matchedCount === 1 ? "" : "s"} sent to the agent.`
+      : "";
+  redirect(`/admin?message=${encodeURIComponent(`${agent.agency_name || "Agent"} KYC ${status} by ${user.email}.${matchMessage}`)}`);
 }
 
 export async function saveHeroSlideAction(formData: FormData) {

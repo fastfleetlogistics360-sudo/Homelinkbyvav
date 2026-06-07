@@ -176,10 +176,7 @@ export async function signUpAction(formData: FormData) {
           user_id: data.user.id,
           full_name: parsed.full_name,
           agency_name: parsed.agency_name || parsed.full_name,
-          phone: parsed.phone,
-          kyc_status: "pending",
-          operating_locations: [],
-          property_specialties: []
+          phone: parsed.phone
         },
         { onConflict: "user_id" }
       );

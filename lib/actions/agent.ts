@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { matchOpenRequestsForAgent } from "@/lib/agents";
 import { uploadAgentKycDocuments, uploadAgentProfilePhoto } from "@/lib/storage";
 import { isAgentKycApproved } from "@/lib/kyc";
 import { createClient } from "@/lib/supabase/server";
@@ -57,10 +58,11 @@ export async function saveAgentKycAction(formData: FormData) {
   const profilePhoto = uploadedPhoto || String(formData.get("existing_profile_photo") || "");
   const { data: existingAgent } = await supabase
     .from("agent_profiles")
-    .select("kyc_status")
+    .select("agent_id, kyc_status, suspended, terms_accepted_at")
     .eq("user_id", user.id)
     .single();
   const nextKycStatus = isAgentKycApproved(existingAgent) ? "approved" : "pending";
+  const termsAcceptedAt = existingAgent?.terms_accepted_at || new Date().toISOString();
 
   const { error } = await supabase
     .from("agent_profiles")
@@ -72,6 +74,7 @@ export async function saveAgentKycAction(formData: FormData) {
       verification_documents: [...existingDocuments, ...uploadedDocuments],
       operating_locations: uniqueOperatingLocations,
       property_specialties: uniquePropertySpecialties,
+      terms_accepted_at: termsAcceptedAt,
       kyc_status: nextKycStatus
     })
     .eq("user_id", user.id);
@@ -80,8 +83,18 @@ export async function saveAgentKycAction(formData: FormData) {
     redirect(`/dashboard/agent/kyc?error=${encodeURIComponent(error.message)}`);
   }
 
+  if (nextKycStatus === "approved" && existingAgent?.agent_id) {
+    try {
+      await matchOpenRequestsForAgent(existingAgent.agent_id);
+    } catch (syncError) {
+      const message = syncError instanceof Error ? syncError.message : "Unable to sync matching requests.";
+      redirect(`/dashboard/agent/kyc?error=${encodeURIComponent(`KYC saved, but request sync failed: ${message}`)}`);
+    }
+  }
+
   revalidatePath("/dashboard/agent");
   revalidatePath("/dashboard/agent/kyc");
+  revalidatePath("/dashboard/agent/requests");
   redirect(nextKycStatus === "approved" ? "/dashboard/agent" : "/dashboard/agent/kyc?submitted=1");
 }
 
