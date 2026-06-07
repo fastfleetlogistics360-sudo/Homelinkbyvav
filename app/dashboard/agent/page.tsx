@@ -16,6 +16,7 @@ import {
   Settings,
   UserRound
 } from "lucide-react";
+import { AgentMatchesBoard, type AgentMatchConversation, type AgentMatchResponse } from "@/components/agent-matches-board";
 import { DashboardNotifications } from "@/components/dashboard-notifications";
 import { MobileDrawerMenu } from "@/components/mobile-drawer-menu";
 import { getOpenMatchingRequestsForAgent, getRefreshedAgentProfile } from "@/lib/agents";
@@ -35,7 +36,24 @@ export default async function AgentDashboardPage() {
     .select("*, housing_requests(*)")
     .eq("agent_id", agent?.agent_id)
     .order("created_at", { ascending: false });
-  const responses = responsesData ?? [];
+  const responses = (responsesData ?? []) as AgentMatchResponse[];
+  const requestIds = Array.from(new Set(responses.map((response) => response.request_id).filter(Boolean)));
+  let conversationsData: AgentMatchConversation[] = [];
+  if (requestIds.length) {
+    const { data } = await supabase
+      .from("conversations")
+      .select(
+        "conversation_id, request_id, home_seeker_user_id, agent_user_id, created_at, messages(message_id, sender_id, receiver_id, request_id, message, read_status, created_at)"
+      )
+      .in("request_id", requestIds)
+      .eq("agent_user_id", user.id);
+    conversationsData = (data ?? []) as AgentMatchConversation[];
+  }
+  const conversationsByRequestId = new Map(conversationsData.map((conversation) => [conversation.request_id, conversation]));
+  const matchResponses = responses.map((response) => ({
+    ...response,
+    conversation: conversationsByRequestId.get(response.request_id) ?? null
+  }));
   const canCountRequests =
     approved && Boolean(agent?.operating_locations?.length) && Boolean(agent?.property_specialties?.length);
   const openRequests = canCountRequests ? await getOpenMatchingRequestsForAgent(agent).catch(() => []) : [];
@@ -195,26 +213,13 @@ export default async function AgentDashboardPage() {
         </div>
       </section>
 
-      <section className="agent-dashboard-section" id="accepted">
-        <div className="mobile-section-row">
+      <section className="agent-matches-section" id="accepted">
+        <div className="agent-matches-heading">
+          <p>Agent Dashboard</p>
           <h2>Matches</h2>
-          <Link href="/dashboard/agent/requests">View requests</Link>
+          <span>Requests you have responded to and matched.</span>
         </div>
-        {responses.length ? (
-          <div className="agent-mini-list">
-            {responses.slice(0, 3).map((response) => (
-              <article key={response.response_id}>
-                <span className={`badge ${response.status}`}>{response.status}</span>
-                <strong>{response.property_title}</strong>
-                <small>
-                  {response.housing_requests?.property_type} in {response.housing_requests?.area || response.housing_requests?.preferred_location}
-                </small>
-              </article>
-            ))}
-          </div>
-        ) : (
-          <p className="dashboard-muted-copy">No matches or responses yet.</p>
-        )}
+        <AgentMatchesBoard agentUserId={user.id} responses={matchResponses} />
       </section>
 
       <section className="agent-dashboard-section" id="properties">

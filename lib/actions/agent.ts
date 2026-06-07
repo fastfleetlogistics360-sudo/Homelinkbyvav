@@ -145,3 +145,82 @@ export async function createRequestResponseAction(formData: FormData) {
   revalidatePath("/dashboard/agent");
   redirect("/dashboard/agent");
 }
+
+export async function sendAgentMessageAction(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/auth/login");
+
+  const message = String(formData.get("message") || "").trim();
+  const requestId = String(formData.get("request_id") || "");
+  const conversationId = String(formData.get("conversation_id") || "");
+
+  if (!message || !requestId) {
+    redirect("/dashboard/agent#accepted");
+  }
+
+  const { data: agent } = await supabase
+    .from("agent_profiles")
+    .select("agent_id, kyc_status, suspended")
+    .eq("user_id", user.id)
+    .single();
+
+  if (!agent || !isAgentKycApproved(agent)) {
+    redirect("/dashboard/agent/kyc");
+  }
+
+  const { data: response } = await supabase
+    .from("request_responses")
+    .select("response_id")
+    .eq("request_id", requestId)
+    .eq("agent_id", agent.agent_id)
+    .maybeSingle();
+
+  if (!response) {
+    redirect("/dashboard/agent#accepted");
+  }
+
+  let conversationQuery = supabase
+    .from("conversations")
+    .select("conversation_id, request_id, home_seeker_user_id, agent_user_id")
+    .eq("request_id", requestId)
+    .eq("agent_user_id", user.id);
+
+  if (conversationId) {
+    conversationQuery = conversationQuery.eq("conversation_id", conversationId);
+  }
+
+  let { data: conversation } = await conversationQuery.maybeSingle();
+
+  if (!conversation) {
+    await supabase.rpc("create_conversation_for_response", { target_request_id: requestId, target_agent_id: agent.agent_id });
+    const { data: createdConversation } = await supabase
+      .from("conversations")
+      .select("conversation_id, request_id, home_seeker_user_id, agent_user_id")
+      .eq("request_id", requestId)
+      .eq("agent_user_id", user.id)
+      .maybeSingle();
+    conversation = createdConversation;
+  }
+
+  if (!conversation) {
+    redirect("/dashboard/agent#accepted");
+  }
+
+  const { error } = await supabase.from("messages").insert({
+    conversation_id: conversation.conversation_id,
+    sender_id: user.id,
+    receiver_id: conversation.home_seeker_user_id,
+    request_id: requestId,
+    message
+  });
+
+  if (error) {
+    redirect(`/dashboard/agent?chat_error=${encodeURIComponent(error.message)}#accepted`);
+  }
+
+  revalidatePath("/dashboard/agent");
+  redirect("/dashboard/agent#accepted");
+}
