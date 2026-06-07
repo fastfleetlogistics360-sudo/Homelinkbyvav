@@ -87,8 +87,7 @@ export async function saveAgentKycAction(formData: FormData) {
     try {
       await matchOpenRequestsForAgent(existingAgent.agent_id);
     } catch (syncError) {
-      const message = syncError instanceof Error ? syncError.message : "Unable to sync matching requests.";
-      redirect(`/dashboard/agent/kyc?error=${encodeURIComponent(`KYC saved, but request sync failed: ${message}`)}`);
+      console.error("KYC saved, but matching request sync failed.", syncError);
     }
   }
 

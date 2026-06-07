@@ -16,6 +16,7 @@ import {
   Upload
 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useFormStatus } from "react-dom";
 import { saveAgentKycAction } from "@/lib/actions/agent";
 import { NIGERIA_STATE_CITIES } from "@/lib/constants";
 import { type AgentProfile } from "@/lib/types";
@@ -88,6 +89,23 @@ function FilePicker({ label, hint }: { label: string; hint?: string }) {
       {hint ? <small>{hint}</small> : null}
       <input accept="image/png,image/jpeg,image/webp,application/pdf" name="verification_documents" type="file" />
     </label>
+  );
+}
+
+function SubmitKycButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button className="signup-submit" disabled={pending} type="submit">
+      {pending ? (
+        "Submitting KYC..."
+      ) : (
+        <>
+          <IdCard size={18} />
+          Submit KYC Details
+        </>
+      )}
+    </button>
   );
 }
 
@@ -436,10 +454,7 @@ export function AgentKycForm({ agent, error }: { agent?: Partial<AgentProfile> |
             </span>
           </label>
 
-          <button className="signup-submit" type="submit">
-            <IdCard size={18} />
-            Submit KYC Details
-          </button>
+          <SubmitKycButton />
         </section>
       ) : null}
     </form>

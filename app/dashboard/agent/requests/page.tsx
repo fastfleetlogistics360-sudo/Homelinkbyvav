@@ -1,7 +1,7 @@
 import { AgentSubscriptionCard } from "@/components/agent-subscription-card";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { createRequestResponseAction } from "@/lib/actions/agent";
-import { getRefreshedAgentProfile } from "@/lib/agents";
+import { getOpenMatchingRequestsForAgent, getRefreshedAgentProfile } from "@/lib/agents";
 import { requireAccountType } from "@/lib/auth";
 import { AGENT_DASHBOARD_NAV } from "@/lib/dashboard-nav";
 import { isAgentKycApproved } from "@/lib/kyc";
@@ -13,16 +13,15 @@ export default async function AvailableRequestsPage() {
   const agent = await getRefreshedAgentProfile(supabase, user.id);
   const approved = isAgentKycApproved(agent);
 
-  const requestsQuery = approved
-    ? await supabase
-        .from("housing_requests")
-        .select("*")
-        .in("preferred_location", agent.operating_locations)
-        .in("property_type", agent.property_specialties)
-        .in("status", ["pending", "matched"])
-        .order("created_at", { ascending: false })
-    : { data: [] };
-  const requests = requestsQuery.data ?? [];
+  let requests = [];
+  let requestsError = "";
+  if (approved) {
+    try {
+      requests = await getOpenMatchingRequestsForAgent(agent);
+    } catch (error) {
+      requestsError = error instanceof Error ? error.message : "Unable to load matching requests.";
+    }
+  }
 
   return (
     <DashboardShell
@@ -36,6 +35,12 @@ export default async function AvailableRequestsPage() {
         <section className="panel">
           <span className="badge pending">KYC required</span>
           <h2>Only approved agents can view live requests.</h2>
+        </section>
+      ) : requestsError ? (
+        <section className="panel">
+          <span className="badge rejected">Request sync issue</span>
+          <h2>Unable to load matching requests.</h2>
+          <p>{requestsError}</p>
         </section>
       ) : requests.length ? (
         requests.map((request) => (

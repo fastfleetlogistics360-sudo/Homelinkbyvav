@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { DashboardNotifications } from "@/components/dashboard-notifications";
 import { MobileDrawerMenu } from "@/components/mobile-drawer-menu";
-import { getRefreshedAgentProfile } from "@/lib/agents";
+import { getOpenMatchingRequestsForAgent, getRefreshedAgentProfile } from "@/lib/agents";
 import { requireAccountType } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { AGENT_DASHBOARD_NAV } from "@/lib/dashboard-nav";
@@ -38,15 +38,8 @@ export default async function AgentDashboardPage() {
   const responses = responsesData ?? [];
   const canCountRequests =
     approved && Boolean(agent?.operating_locations?.length) && Boolean(agent?.property_specialties?.length);
-  const requestsQuery = canCountRequests
-    ? await supabase
-        .from("housing_requests")
-        .select("request_id", { count: "exact", head: true })
-        .in("preferred_location", agent?.operating_locations)
-        .in("property_type", agent?.property_specialties)
-        .in("status", ["pending", "matched"])
-    : { count: 0 };
-  const newRequestCount = requestsQuery.count || 0;
+  const openRequests = canCountRequests ? await getOpenMatchingRequestsForAgent(agent).catch(() => []) : [];
+  const newRequestCount = openRequests.length;
   const activeMatches = responses.filter((response) => response.status === "pending" || response.status === "accepted").length;
   const acceptedResponses = responses.filter((response) => response.status === "accepted");
   const kycStatus = normalizeKycStatus(agent?.kyc_status);

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { matchAgentsForRequest } from "@/lib/agents";
 import { createClient } from "@/lib/supabase/server";
 
 export async function createHousingRequestAction(formData: FormData) {
@@ -40,7 +41,7 @@ export async function createHousingRequestAction(formData: FormData) {
 
   if (error) redirect(`/dashboard/seeker/requests/new?error=${encodeURIComponent(error.message)}`);
 
-  await supabase.rpc("match_agents_for_request", { target_request_id: request.request_id });
+  await matchAgentsForRequest(request.request_id);
 
   revalidatePath("/dashboard/seeker");
   redirect(`/api/paystack/initialize?request_id=${request.request_id}`);

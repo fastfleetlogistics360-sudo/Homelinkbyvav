@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { type AgentPlanId } from "@/lib/constants";
+import { matchAgentsForRequest } from "@/lib/agents";
 import { verifyPaystackTransaction } from "@/lib/paystack";
 import { createClient } from "@/lib/supabase/server";
 
@@ -68,8 +69,7 @@ export async function GET(request: Request) {
   }
 
   if (paid && payment?.request_id) {
-    await supabase.from("housing_requests").update({ status: "matched" }).eq("request_id", payment.request_id);
-    await supabase.rpc("notify_matched_agents", { target_request_id: payment.request_id });
+    await matchAgentsForRequest(payment.request_id, { notify: true });
   }
 
   return NextResponse.redirect(new URL("/dashboard/seeker?payment=verified", request.url));
