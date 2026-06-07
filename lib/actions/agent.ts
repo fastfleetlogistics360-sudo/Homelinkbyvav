@@ -158,7 +158,7 @@ export async function sendAgentMessageAction(formData: FormData) {
   const conversationId = String(formData.get("conversation_id") || "");
 
   if (!message || !requestId) {
-    redirect("/dashboard/agent#accepted");
+    redirect("/dashboard/agent/matches");
   }
 
   const { data: agent } = await supabase
@@ -179,7 +179,7 @@ export async function sendAgentMessageAction(formData: FormData) {
     .maybeSingle();
 
   if (!response) {
-    redirect("/dashboard/agent#accepted");
+    redirect("/dashboard/agent/matches");
   }
 
   let conversationQuery = supabase
@@ -206,7 +206,7 @@ export async function sendAgentMessageAction(formData: FormData) {
   }
 
   if (!conversation) {
-    redirect("/dashboard/agent#accepted");
+    redirect("/dashboard/agent/matches");
   }
 
   const { error } = await supabase.from("messages").insert({
@@ -218,9 +218,10 @@ export async function sendAgentMessageAction(formData: FormData) {
   });
 
   if (error) {
-    redirect(`/dashboard/agent?chat_error=${encodeURIComponent(error.message)}#accepted`);
+    redirect(`/dashboard/agent/matches?chat_error=${encodeURIComponent(error.message)}`);
   }
 
   revalidatePath("/dashboard/agent");
-  redirect("/dashboard/agent#accepted");
+  revalidatePath("/dashboard/agent/matches");
+  redirect("/dashboard/agent/matches");
 }

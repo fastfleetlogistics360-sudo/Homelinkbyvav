@@ -206,6 +206,28 @@ export async function logoutAction() {
   redirect("/");
 }
 
+export async function sendPasswordResetAction(formData: FormData) {
+  const returnTo = String(formData.get("return_to") || "/dashboard/agent/profile");
+  const safeReturnTo = returnTo.startsWith("/dashboard/agent/profile") || returnTo.startsWith("/dashboard/seeker")
+    ? returnTo
+    : "/dashboard/agent/profile";
+  const supabase = await createClient();
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+
+  if (!user) redirect("/auth/login");
+  if (!user.email) redirect(`${safeReturnTo}?password_error=${encodeURIComponent("No email address is attached to this account.")}`);
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://homelinkbyvav.vercel.app";
+  const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
+    redirectTo: `${appUrl}/auth/callback?next=${encodeURIComponent(safeReturnTo)}`
+  });
+
+  if (error) redirect(`${safeReturnTo}?password_error=${encodeURIComponent(error.message)}`);
+  redirect(`${safeReturnTo}?password=sent`);
+}
+
 export async function deleteAccountAction() {
   const supabase = await createClient();
   const {

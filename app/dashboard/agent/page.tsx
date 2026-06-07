@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import type { CSSProperties } from "react";
 import {
-  Building2,
   Check,
   ChevronRight,
   ClipboardList,
@@ -16,7 +15,6 @@ import {
   Settings,
   UserRound
 } from "lucide-react";
-import { AgentMatchesBoard, type AgentMatchConversation, type AgentMatchResponse } from "@/components/agent-matches-board";
 import { DashboardNotifications } from "@/components/dashboard-notifications";
 import { MobileDrawerMenu } from "@/components/mobile-drawer-menu";
 import { getOpenMatchingRequestsForAgent, getRefreshedAgentProfile } from "@/lib/agents";
@@ -36,24 +34,7 @@ export default async function AgentDashboardPage() {
     .select("*, housing_requests(*)")
     .eq("agent_id", agent?.agent_id)
     .order("created_at", { ascending: false });
-  const responses = (responsesData ?? []) as AgentMatchResponse[];
-  const requestIds = Array.from(new Set(responses.map((response) => response.request_id).filter(Boolean)));
-  let conversationsData: AgentMatchConversation[] = [];
-  if (requestIds.length) {
-    const { data } = await supabase
-      .from("conversations")
-      .select(
-        "conversation_id, request_id, home_seeker_user_id, agent_user_id, created_at, messages(message_id, sender_id, receiver_id, request_id, message, read_status, created_at)"
-      )
-      .in("request_id", requestIds)
-      .eq("agent_user_id", user.id);
-    conversationsData = (data ?? []) as AgentMatchConversation[];
-  }
-  const conversationsByRequestId = new Map(conversationsData.map((conversation) => [conversation.request_id, conversation]));
-  const matchResponses = responses.map((response) => ({
-    ...response,
-    conversation: conversationsByRequestId.get(response.request_id) ?? null
-  }));
+  const responses = responsesData ?? [];
   const canCountRequests =
     approved && Boolean(agent?.operating_locations?.length) && Boolean(agent?.property_specialties?.length);
   const openRequests = canCountRequests ? await getOpenMatchingRequestsForAgent(agent).catch(() => []) : [];
@@ -99,9 +80,9 @@ export default async function AgentDashboardPage() {
           };
   const agentStats = [
     { label: "New Requests", value: newRequestCount, Icon: ClipboardList, tone: "blue", href: "/dashboard/agent/requests" },
-    { label: "Agent Responses", value: responses.length, Icon: MessageSquare, tone: "green", href: "#accepted" },
-    { label: "Active Matches", value: activeMatches, Icon: Handshake, tone: "gold", href: "#accepted" },
-    { label: "Total Responses", value: responses.length, Icon: LayoutDashboard, tone: "purple", href: "#accepted" }
+    { label: "Agent Responses", value: responses.length, Icon: MessageSquare, tone: "green", href: "/dashboard/agent/matches" },
+    { label: "Active Matches", value: activeMatches, Icon: Handshake, tone: "gold", href: "/dashboard/agent/matches" },
+    { label: "Total Responses", value: responses.length, Icon: LayoutDashboard, tone: "purple", href: "/dashboard/agent/matches" }
   ];
 
   return (
@@ -178,7 +159,7 @@ export default async function AgentDashboardPage() {
       <section className="agent-quick-actions">
         <h2>Quick Actions</h2>
         <div>
-          <Link href="#properties">
+          <Link href="/dashboard/agent/requests">
             <span className="blue">
               <Plus size={30} />
             </span>
@@ -202,7 +183,7 @@ export default async function AgentDashboardPage() {
             <small>Manage your documents</small>
             <ChevronRight size={26} />
           </Link>
-          <Link href="#profile">
+          <Link href="/dashboard/agent/profile">
             <span className="gold">
               <Settings size={30} />
             </span>
@@ -211,15 +192,6 @@ export default async function AgentDashboardPage() {
             <ChevronRight size={26} />
           </Link>
         </div>
-      </section>
-
-      <section className="agent-matches-section" id="accepted">
-        <div className="agent-matches-heading">
-          <p>Agent Dashboard</p>
-          <h2>Matches</h2>
-          <span>Requests you have responded to and matched.</span>
-        </div>
-        <AgentMatchesBoard agentUserId={user.id} responses={matchResponses} />
       </section>
 
       <section className="agent-dashboard-section" id="properties">
@@ -252,16 +224,6 @@ export default async function AgentDashboardPage() {
         </div>
       </section>
 
-      <section className="agent-dashboard-section" id="messages">
-        <div className="mobile-section-row">
-          <h2>Messages</h2>
-          <Link href="/dashboard/agent/requests">Find seekers</Link>
-        </div>
-        <p className="dashboard-muted-copy">
-          Conversations are created after you respond to a home seeker request.
-        </p>
-      </section>
-
       <section className="agent-dashboard-section" id="transactions">
         <div className="mobile-section-row">
           <h2>Transactions</h2>
@@ -275,23 +237,6 @@ export default async function AgentDashboardPage() {
         <p className="dashboard-muted-copy">Client reviews will appear here after completed matches.</p>
       </section>
 
-      <section className="agent-dashboard-section" id="profile">
-        <div className="mobile-section-row">
-          <h2>Profile</h2>
-          <Link href="/dashboard/agent/kyc">Update KYC</Link>
-        </div>
-        <div className="agent-profile-grid">
-          <span>Agency</span>
-          <strong>{agent?.agency_name || "Not set"}</strong>
-          <span>Phone</span>
-          <strong>{agent?.phone || "Not set"}</strong>
-          <span>Locations</span>
-          <strong>{agent?.operating_locations?.join(", ") || "Not set"}</strong>
-          <span>Specialties</span>
-          <strong>{agent?.property_specialties?.join(", ") || "Not set"}</strong>
-        </div>
-      </section>
-
       <nav className="mobile-bottom-nav agent" aria-label="Agent navigation">
         <Link className="active" href="/dashboard/agent">
           <Home size={28} />
@@ -301,15 +246,15 @@ export default async function AgentDashboardPage() {
           <FileText size={28} />
           Requests
         </Link>
-        <Link href="#accepted">
+        <Link href="/dashboard/agent/matches">
           <Handshake size={28} />
           Matches
         </Link>
-        <Link href="#properties">
-          <Building2 size={28} />
-          Properties
+        <Link href="/dashboard/agent/messages">
+          <MessageSquare size={28} />
+          Messages
         </Link>
-        <Link href="#profile">
+        <Link href="/dashboard/agent/profile">
           <UserRound size={28} />
           Profile
         </Link>

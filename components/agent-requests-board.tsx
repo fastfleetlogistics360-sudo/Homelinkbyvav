@@ -55,6 +55,11 @@ function bedroomLabel(value: string) {
   return `${value} ${value === "1" ? "Bedroom" : "Bedrooms"}`;
 }
 
+function countFromBedroom(value: string) {
+  const match = value.match(/\d+/);
+  return match ? Number(match[0]) : null;
+}
+
 function sortRequests(requests: AgentRequest[], sort: RequestSort) {
   return [...requests].sort((first, second) => {
     if (sort === "oldest") return new Date(first.created_at).getTime() - new Date(second.created_at).getTime();
@@ -108,11 +113,12 @@ export function AgentRequestsBoard({ requests }: AgentRequestsBoardProps) {
           const location = request.area || request.preferred_location;
           const detailsOpen = detailsRequestId === request.request_id;
           const responseOpen = responseRequestId === request.request_id;
+          const roomCount = countFromBedroom(request.bedrooms);
 
           return (
             <article className="agent-request-card" key={request.request_id}>
               <div className="agent-request-card-top">
-                <span className={`agent-request-status ${request.status}`}>{request.status}</span>
+                <span className="agent-request-status matched">Matched</span>
                 <span className="agent-request-time">
                   {formatTimeAgo(request.created_at)}
                   <Clock3 size={18} />
@@ -138,8 +144,8 @@ export function AgentRequestsBoard({ requests }: AgentRequestsBoardProps) {
                   <span>
                     <Bath size={22} />
                   </span>
-                  <strong>Any</strong>
-                  <small>Bathroom</small>
+                  <strong>{roomCount ?? "Any"}</strong>
+                  <small>{roomCount === 1 ? "Bathroom" : "Bathrooms"}</small>
                 </div>
                 <div>
                   <span>

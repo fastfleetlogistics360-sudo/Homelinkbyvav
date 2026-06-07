@@ -13,7 +13,7 @@ export default async function NewRequestPage() {
         ["Overview", "/dashboard/seeker"],
         ["Create Apartment Request", "/dashboard/seeker/requests/new"],
         ["Transaction History", "/dashboard/seeker#transactions"],
-        ["Messages", "/dashboard/seeker#messages"],
+        ["Messages", "/dashboard/seeker/messages"],
         ["Profile Settings", "/dashboard/seeker#profile"]
       ]}
       title="Create Apartment Request"

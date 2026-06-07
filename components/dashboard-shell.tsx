@@ -7,15 +7,17 @@ export function DashboardShell({
   title,
   kicker,
   nav,
-  children
+  children,
+  className
 }: {
   title: string;
   kicker: string;
   nav: Array<[string, string]>;
   children: React.ReactNode;
+  className?: string;
 }) {
   return (
-    <main className="dashboard">
+    <main className={["dashboard", className].filter(Boolean).join(" ")}>
       <header className="dashboard-topbar">
         <Link className="brand" href="/">
           <Image src="/images/homelink-logo.png" alt="" width={48} height={48} />

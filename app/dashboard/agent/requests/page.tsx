@@ -24,7 +24,7 @@ export default async function AvailableRequestsPage() {
   }
 
   return (
-    <DashboardShell kicker="Agent dashboard" nav={AGENT_DASHBOARD_NAV} title="Available Requests">
+    <DashboardShell className="agent-requests-shell" kicker="Agent dashboard" nav={AGENT_DASHBOARD_NAV} title="Available Requests">
       <div className="agent-requests-page">
         {approved ? <AgentSubscriptionCard agent={agent} compact /> : null}
 

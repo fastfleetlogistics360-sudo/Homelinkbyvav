@@ -23,7 +23,7 @@ const seekerNav = [
   ["Overview", "/dashboard/seeker"],
   ["Create Apartment Request", "/dashboard/seeker/requests/new"],
   ["Transaction History", "/dashboard/seeker#transactions"],
-  ["Messages", "/dashboard/seeker#messages"],
+  ["Messages", "/dashboard/seeker/messages"],
   ["Profile Settings", "/dashboard/seeker#profile"]
 ] satisfies Array<[string, string]>;
 
@@ -311,7 +311,7 @@ export default async function SeekerDashboardPage() {
           <Grid2X2 size={28} />
           Requests
         </Link>
-        <Link href="#messages">
+        <Link href="/dashboard/seeker/messages">
           <MessageCircle size={28} />
           Messages
         </Link>
