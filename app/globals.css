@@ -1720,39 +1720,42 @@ textarea:focus {
   width: 100%;
   min-height: 100vh;
   overflow-x: hidden;
-  padding: clamp(22px, 3vw, 40px);
-  background: linear-gradient(180deg, #f7f9fc 0%, #ffffff 100%);
+  padding: 18px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.94) 0%, rgba(247, 250, 253, 0.92) 44%, rgba(255, 250, 242, 0.72) 100%),
+    #f7f9fc;
 }
 
 .agent-requests-shell .dashboard-topbar {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   width: 100%;
-  max-width: 1180px;
+  max-width: 1080px;
   align-items: start;
-  gap: 18px;
-  margin: 0 auto 24px;
-  border: 1px solid #dfe6f0;
+  gap: 12px;
+  margin: 0 auto 18px;
+  border: 1px solid rgba(216, 225, 237, 0.88);
   border-radius: 22px;
-  padding: clamp(22px, 3vw, 34px);
-  background: #fff;
-  box-shadow: 0 24px 80px rgba(4, 19, 45, 0.08);
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 18px 50px rgba(4, 19, 45, 0.065);
+  backdrop-filter: blur(16px);
 }
 
 .agent-requests-shell .dashboard-topbar .brand {
   min-width: 0;
-  gap: 16px;
+  gap: 12px;
 }
 
 .agent-requests-shell .dashboard-topbar .brand img {
-  width: clamp(62px, 8vw, 78px);
-  height: clamp(62px, 8vw, 78px);
+  width: 58px;
+  height: 58px;
 }
 
 .agent-requests-shell .dashboard-topbar .brand span {
   overflow: hidden;
   color: var(--navy);
-  font-size: 1.85rem;
+  font-size: 1.48rem;
   line-height: 1.05;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1760,7 +1763,7 @@ textarea:focus {
 
 .agent-requests-shell .dashboard-topbar .brand small {
   color: #5d687f;
-  font-size: 1.08rem;
+  font-size: 0.9rem;
   font-weight: 900;
 }
 
@@ -1768,13 +1771,13 @@ textarea:focus {
   grid-column: 1 / -1;
   order: 3;
   min-width: 0;
-  margin-top: 12px;
+  margin-top: 6px;
 }
 
 .agent-requests-shell .dashboard-title .kicker {
-  margin: 0 0 14px;
+  margin: 0 0 8px;
   color: var(--gold-dark);
-  font-size: 1.08rem;
+  font-size: 0.92rem;
   font-weight: 950;
   text-transform: uppercase;
 }
@@ -1782,8 +1785,8 @@ textarea:focus {
 .agent-requests-shell .dashboard-title h1 {
   margin: 0;
   color: var(--navy);
-  font-size: 3rem;
-  line-height: 1.02;
+  font-size: 2.2rem;
+  line-height: 1.04;
 }
 
 .agent-requests-shell .dashboard-topbar > form {
@@ -1794,17 +1797,17 @@ textarea:focus {
   display: grid;
   grid-column: 2;
   grid-row: 1;
-  width: clamp(58px, 7vw, 72px);
-  height: clamp(58px, 7vw, 72px);
-  border-radius: 16px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
   color: var(--navy);
-  box-shadow: 0 12px 28px rgba(4, 19, 45, 0.06);
+  box-shadow: 0 10px 24px rgba(4, 19, 45, 0.055);
 }
 
 .agent-requests-shell .dashboard-grid {
   display: grid;
   width: 100%;
-  max-width: 1180px;
+  max-width: 1080px;
   grid-template-columns: minmax(0, 1fr);
   gap: 0;
   margin: 0 auto;
@@ -1825,63 +1828,66 @@ textarea:focus {
 .agent-requests-shell .agent-requests-page {
   display: grid;
   max-width: none;
-  gap: 24px;
+  gap: 16px;
   overflow-x: hidden;
 }
 
 .agent-requests-shell .subscription-card {
   width: 100%;
   max-width: none;
-  gap: 22px;
-  border: 1px solid #dfe6f0;
-  border-radius: 24px;
+  gap: 14px;
+  border: 1px solid rgba(216, 225, 237, 0.92);
+  border-radius: 20px;
   margin: 0;
-  padding: clamp(22px, 3vw, 34px);
-  background: #fff;
-  box-shadow: 0 22px 62px rgba(4, 19, 45, 0.07);
+  padding: 20px;
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.96), rgba(248, 251, 255, 0.92));
+  box-shadow: 0 16px 42px rgba(4, 19, 45, 0.055);
 }
 
 .agent-requests-shell .subscription-card-head {
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .agent-requests-shell .subscription-card-head h2 {
   margin: 0;
   color: var(--navy);
-  font-size: 2.25rem;
-  line-height: 1.08;
+  font-size: 1.58rem;
+  line-height: 1.1;
 }
 
 .agent-requests-shell .subscription-card-head .badge {
-  margin-top: 14px;
+  margin-top: 9px;
   border-radius: 999px;
-  padding: 9px 18px;
+  padding: 7px 13px;
   background: #f0f4f8;
   color: var(--navy);
-  font-size: 1rem;
+  font-size: 0.86rem;
 }
 
 .agent-requests-shell .subscription-card-action {
-  min-width: clamp(136px, 18vw, 184px);
-  min-height: clamp(52px, 6vw, 64px);
+  min-width: 132px;
+  min-height: 48px;
   border-radius: 10px;
-  padding: 14px 18px;
-  font-size: 1.08rem;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #d69a32, #b87916);
+  font-size: 0.94rem;
   white-space: nowrap;
+  box-shadow: 0 12px 24px rgba(201, 133, 24, 0.18);
 }
 
 .agent-requests-shell .quota-row {
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  gap: 10px;
 }
 
 .agent-requests-shell .quota-row > article {
   min-width: 0;
-  border-radius: 16px;
-  padding: 16px;
-  background: #fff;
-  box-shadow: 0 12px 28px rgba(4, 19, 45, 0.035);
+  min-height: 90px;
+  border-radius: 14px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 10px 22px rgba(4, 19, 45, 0.03);
 }
 
 .agent-requests-shell .quota-row > article div {
@@ -1889,13 +1895,18 @@ textarea:focus {
 }
 
 .agent-requests-shell .quota-icon {
-  width: 52px;
-  height: 52px;
+  width: 42px;
+  height: 42px;
+}
+
+.agent-requests-shell .quota-icon svg {
+  width: 19px;
+  height: 19px;
 }
 
 .agent-requests-shell .quota-row > article div span {
   overflow: hidden;
-  font-size: 0.92rem;
+  font-size: 0.78rem;
   line-height: 1.15;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1904,7 +1915,7 @@ textarea:focus {
 .agent-requests-shell .quota-row > article div strong {
   overflow: hidden;
   color: var(--navy);
-  font-size: 1.38rem;
+  font-size: 1.06rem;
   line-height: 1.1;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1915,7 +1926,11 @@ textarea:focus {
 }
 
 .agent-requests-shell .agent-requests-board {
-  gap: 20px;
+  gap: 14px;
+}
+
+.agent-requests-shell .agent-request-stack {
+  gap: 14px;
 }
 
 .agent-requests-shell .agent-requests-toolbar {
@@ -1925,23 +1940,24 @@ textarea:focus {
 
 .agent-requests-shell .agent-requests-toolbar h2 {
   color: var(--navy);
-  font-size: 1.85rem;
+  font-size: 1.55rem;
   font-weight: 950;
 }
 
 .agent-requests-shell .agent-request-sort {
   width: auto;
-  min-width: clamp(150px, 22vw, 210px);
+  min-width: 152px;
   flex: 0 0 auto;
 }
 
 .agent-requests-shell .agent-request-sort select {
-  min-height: 58px;
+  min-height: 48px;
   border-color: #d8e1ed;
-  border-radius: 14px;
-  padding: 14px 48px 14px 18px;
-  background: #fff;
+  border-radius: 12px;
+  padding: 11px 42px 11px 14px;
+  background: rgba(255, 255, 255, 0.92);
   color: var(--navy);
+  font-size: 0.9rem;
   font-weight: 850;
 }
 
@@ -1949,15 +1965,15 @@ textarea:focus {
 .agent-requests-shell .agent-requests-empty {
   width: 100%;
   max-width: none;
-  border-color: #e1e7ef;
-  border-radius: 22px;
-  padding: clamp(20px, 3vw, 34px);
-  background: #fff;
-  box-shadow: 0 22px 58px rgba(4, 19, 45, 0.075);
+  border-color: rgba(225, 231, 239, 0.98);
+  border-radius: 20px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 16px 44px rgba(4, 19, 45, 0.06);
 }
 
 .agent-requests-shell .agent-request-card {
-  gap: 18px;
+  gap: 13px;
 }
 
 .agent-requests-shell .agent-request-card-top {
@@ -1965,50 +1981,60 @@ textarea:focus {
 }
 
 .agent-requests-shell .agent-request-status {
-  padding: 9px 22px;
+  padding: 7px 15px;
   background: var(--green-soft);
   color: var(--green);
-  font-size: 1rem;
+  font-size: 0.84rem;
 }
 
 .agent-requests-shell .agent-request-time {
   flex: 0 0 auto;
   color: #66728a;
-  font-size: 1rem;
+  font-size: 0.86rem;
+}
+
+.agent-requests-shell .agent-request-time svg {
+  width: 16px;
+  height: 16px;
 }
 
 .agent-requests-shell .agent-request-card h3 {
   overflow-wrap: anywhere;
   color: var(--navy);
-  font-size: 2.25rem;
+  font-size: 1.65rem;
   font-weight: 950;
-  line-height: 1.08;
+  line-height: 1.12;
 }
 
 .agent-requests-shell .agent-request-price {
-  margin: -2px 0 2px;
-  padding-bottom: 16px;
+  margin: -2px 0 0;
+  padding-bottom: 12px;
   color: #66728a;
-  font-size: 1.24rem;
+  font-size: 1rem;
   font-weight: 750;
 }
 
 .agent-requests-shell .agent-request-facts {
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(10px, 2.5vw, 26px);
+  gap: 12px;
 }
 
 .agent-requests-shell .agent-request-facts > div {
   min-width: 0;
-  grid-template-columns: clamp(42px, 5.5vw, 58px) minmax(0, 1fr);
-  gap: 3px 12px;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 2px 8px;
 }
 
 .agent-requests-shell .agent-request-facts span {
-  width: clamp(42px, 5.5vw, 58px);
-  height: clamp(42px, 5.5vw, 58px);
+  width: 40px;
+  height: 40px;
   background: #f1f4f8;
   color: #1735bc;
+}
+
+.agent-requests-shell .agent-request-facts span svg {
+  width: 19px;
+  height: 19px;
 }
 
 .agent-requests-shell .agent-request-facts strong,
@@ -2016,10 +2042,18 @@ textarea:focus {
   min-width: 0;
 }
 
+.agent-requests-shell .agent-request-facts strong {
+  font-size: 0.96rem;
+}
+
+.agent-requests-shell .agent-request-facts small {
+  font-size: 0.78rem;
+}
+
 .agent-requests-shell .agent-request-actions {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(12px, 2.5vw, 22px);
+  gap: 12px;
 }
 
 .agent-requests-shell .agent-request-actions > button {
@@ -2029,16 +2063,29 @@ textarea:focus {
 
 .agent-requests-shell .agent-request-secondary,
 .agent-requests-shell .agent-request-primary {
-  min-height: clamp(56px, 6vw, 66px);
+  min-height: 50px;
   border-radius: 12px;
-  font-size: 1.04rem;
+  padding: 11px 12px;
+  font-size: 0.92rem;
   white-space: nowrap;
+}
+
+.agent-requests-shell .agent-request-primary {
+  background: linear-gradient(135deg, #d99a2d, #af7414);
+  box-shadow: 0 12px 24px rgba(201, 133, 24, 0.18);
 }
 
 .agent-requests-shell .agent-request-response-form {
   width: 100%;
   min-width: 0;
-  border-radius: 18px;
+  gap: 12px;
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.agent-requests-shell .agent-request-details {
+  border-radius: 13px;
+  padding: 13px;
 }
 
 @media (max-width: 900px) {
@@ -2054,13 +2101,26 @@ textarea:focus {
   }
 
   .agent-requests-shell .dashboard-topbar {
-    gap: 20px 14px;
+    gap: 14px 12px;
     border-radius: 22px;
-    padding: 22px;
+    padding: 18px;
   }
 
   .agent-requests-shell .dashboard-topbar .brand {
-    gap: 14px;
+    gap: 10px;
+  }
+
+  .agent-requests-shell .dashboard-topbar .brand img {
+    width: 54px;
+    height: 54px;
+  }
+
+  .agent-requests-shell .dashboard-topbar .brand span {
+    font-size: 1.38rem;
+  }
+
+  .agent-requests-shell .dashboard-topbar .brand small {
+    font-size: 0.86rem;
   }
 
   .agent-requests-shell .dashboard-title {
@@ -2068,17 +2128,24 @@ textarea:focus {
   }
 
   .agent-requests-shell .dashboard-title .kicker {
-    margin-bottom: 12px;
+    margin-bottom: 7px;
+    font-size: 0.86rem;
   }
 
   .agent-requests-shell .dashboard-title h1 {
-    font-size: 2.3rem;
+    font-size: 2rem;
+  }
+
+  .agent-requests-shell .dashboard-topbar > .mobile-menu-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 13px;
   }
 
   .agent-requests-shell .subscription-card {
-    gap: 20px;
-    border-radius: 22px;
-    padding: 22px;
+    gap: 14px;
+    border-radius: 20px;
+    padding: 18px;
   }
 
   .agent-requests-shell .subscription-card-head {
@@ -2087,14 +2154,14 @@ textarea:focus {
   }
 
   .agent-requests-shell .subscription-card-head h2 {
-    font-size: 1.68rem;
+    font-size: 1.42rem;
   }
 
   .agent-requests-shell .subscription-card-action {
-    min-width: 128px;
-    min-height: 52px;
-    padding-inline: 14px;
-    font-size: 0.96rem;
+    min-width: 118px;
+    min-height: 46px;
+    padding-inline: 12px;
+    font-size: 0.86rem;
   }
 
   .agent-requests-shell .quota-row {
@@ -2103,13 +2170,19 @@ textarea:focus {
 
   .agent-requests-shell .quota-row > article {
     display: grid;
-    gap: 8px;
-    padding: 12px 10px;
+    min-height: 88px;
+    gap: 7px;
+    padding: 11px 9px;
   }
 
   .agent-requests-shell .quota-icon {
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .agent-requests-shell .quota-icon svg {
+    width: 18px;
+    height: 18px;
   }
 
   .agent-requests-shell .quota-row > article div span {
@@ -2117,11 +2190,11 @@ textarea:focus {
   }
 
   .agent-requests-shell .quota-row > article div strong {
-    font-size: 1.08rem;
+    font-size: 0.98rem;
   }
 
   .agent-requests-shell .agent-requests-toolbar h2 {
-    font-size: 1.42rem;
+    font-size: 1.32rem;
   }
 
   .agent-requests-shell .agent-request-sort {
@@ -2129,32 +2202,33 @@ textarea:focus {
   }
 
   .agent-requests-shell .agent-request-sort select {
-    min-height: 54px;
+    min-height: 48px;
     padding-left: 14px;
-    font-size: 0.94rem;
+    font-size: 0.88rem;
   }
 
   .agent-requests-shell .agent-request-card {
-    gap: 16px;
-    border-radius: 22px;
-    padding: 20px;
+    gap: 12px;
+    border-radius: 20px;
+    padding: 18px;
   }
 
   .agent-requests-shell .agent-request-status {
-    padding: 9px 18px;
-    font-size: 0.92rem;
+    padding: 7px 14px;
+    font-size: 0.82rem;
   }
 
   .agent-requests-shell .agent-request-time {
-    font-size: 0.9rem;
+    font-size: 0.82rem;
   }
 
   .agent-requests-shell .agent-request-card h3 {
-    font-size: 1.76rem;
+    font-size: 1.55rem;
   }
 
   .agent-requests-shell .agent-request-price {
-    font-size: 1.08rem;
+    padding-bottom: 11px;
+    font-size: 0.96rem;
   }
 
   .agent-requests-shell .agent-request-facts {
@@ -2162,13 +2236,18 @@ textarea:focus {
   }
 
   .agent-requests-shell .agent-request-facts > div {
-    grid-template-columns: 42px minmax(0, 1fr);
-    gap: 2px 8px;
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 2px 7px;
   }
 
   .agent-requests-shell .agent-request-facts span {
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .agent-requests-shell .agent-request-facts span svg {
+    width: 18px;
+    height: 18px;
   }
 
   .agent-requests-shell .agent-request-actions {
@@ -2177,9 +2256,9 @@ textarea:focus {
 
   .agent-requests-shell .agent-request-secondary,
   .agent-requests-shell .agent-request-primary {
-    min-height: 56px;
-    padding: 12px 10px;
-    font-size: 0.95rem;
+    min-height: 50px;
+    padding: 11px 9px;
+    font-size: 0.86rem;
   }
 }
 
@@ -2190,7 +2269,7 @@ textarea:focus {
   }
 
   .agent-requests-shell .dashboard-topbar {
-    padding: 20px;
+    padding: 16px;
   }
 
   .agent-requests-shell .dashboard-topbar .brand {
@@ -2198,26 +2277,26 @@ textarea:focus {
   }
 
   .agent-requests-shell .dashboard-topbar .brand img {
-    width: 58px;
-    height: 58px;
+    width: 48px;
+    height: 48px;
   }
 
   .agent-requests-shell .dashboard-topbar .brand span {
-    font-size: 1.42rem;
+    font-size: 1.24rem;
   }
 
   .agent-requests-shell .dashboard-topbar .brand small {
-    font-size: 0.9rem;
+    font-size: 0.78rem;
   }
 
   .agent-requests-shell .dashboard-topbar > .mobile-menu-button {
-    width: 58px;
-    height: 58px;
+    width: 48px;
+    height: 48px;
   }
 
   .agent-requests-shell .subscription-card,
   .agent-requests-shell .agent-request-card {
-    padding: 18px;
+    padding: 16px;
   }
 
   .agent-requests-shell .subscription-card-head {
@@ -2225,13 +2304,14 @@ textarea:focus {
   }
 
   .agent-requests-shell .subscription-card-action {
-    min-width: 112px;
+    min-width: 108px;
+    min-height: 44px;
     padding-inline: 10px;
-    font-size: 0.86rem;
+    font-size: 0.8rem;
   }
 
   .agent-requests-shell .subscription-card-head h2 {
-    font-size: 1.34rem;
+    font-size: 1.24rem;
   }
 
   .agent-requests-shell .subscription-card-head .badge {
@@ -2244,17 +2324,18 @@ textarea:focus {
   }
 
   .agent-requests-shell .quota-row > article {
-    padding: 10px 8px;
+    min-height: 84px;
+    padding: 9px 7px;
   }
 
   .agent-requests-shell .quota-icon {
-    width: 38px;
-    height: 38px;
+    width: 34px;
+    height: 34px;
   }
 
   .agent-requests-shell .quota-icon svg {
-    width: 19px;
-    height: 19px;
+    width: 17px;
+    height: 17px;
   }
 
   .agent-requests-shell .quota-row > article div span {
@@ -2270,7 +2351,7 @@ textarea:focus {
   }
 
   .agent-requests-shell .agent-request-sort {
-    min-width: 134px;
+    min-width: 128px;
   }
 
   .agent-requests-shell .agent-request-sort select {
@@ -2283,27 +2364,27 @@ textarea:focus {
   }
 
   .agent-requests-shell .agent-request-status {
-    padding: 8px 15px;
-    font-size: 0.84rem;
+    padding: 7px 13px;
+    font-size: 0.8rem;
   }
 
   .agent-requests-shell .agent-request-card h3 {
-    font-size: 1.46rem;
+    font-size: 1.38rem;
   }
 
   .agent-requests-shell .agent-request-facts > div {
-    grid-template-columns: 38px minmax(0, 1fr);
+    grid-template-columns: 36px minmax(0, 1fr);
     gap: 2px 7px;
   }
 
   .agent-requests-shell .agent-request-facts span {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
   }
 
   .agent-requests-shell .agent-request-facts span svg {
-    width: 19px;
-    height: 19px;
+    width: 17px;
+    height: 17px;
   }
 
   .agent-requests-shell .agent-request-facts strong {
@@ -2320,9 +2401,9 @@ textarea:focus {
 
   .agent-requests-shell .agent-request-secondary,
   .agent-requests-shell .agent-request-primary {
-    min-height: 52px;
+    min-height: 48px;
     border-radius: 11px;
-    font-size: 0.82rem;
+    font-size: 0.78rem;
   }
 }
 
@@ -6556,6 +6637,77 @@ textarea:focus {
     grid-template-columns: 1fr;
   }
 
+  .dashboard.agent-requests-shell {
+    padding: 16px 16px 104px;
+  }
+
+  .dashboard.agent-requests-shell .agent-requests-page {
+    gap: 16px;
+  }
+
+  .dashboard.agent-requests-shell .subscription-card {
+    border-radius: 20px;
+    padding: 18px;
+  }
+
+  .dashboard.agent-requests-shell .subscription-card-head h2 {
+    font-size: 1.42rem;
+  }
+
+  .dashboard.agent-requests-shell .subscription-card-head .badge {
+    margin-top: 9px;
+    padding: 7px 13px;
+    font-size: 0.86rem;
+  }
+
+  .dashboard.agent-requests-shell .subscription-card-action {
+    min-width: 118px;
+    min-height: 46px;
+    padding-inline: 12px;
+    font-size: 0.86rem;
+  }
+
+  .dashboard.agent-requests-shell .quota-row > article {
+    min-height: 88px;
+    gap: 7px;
+    padding: 11px 9px;
+  }
+
+  .dashboard.agent-requests-shell .quota-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .dashboard.agent-requests-shell .quota-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .dashboard.agent-requests-shell .quota-row > article div strong {
+    font-size: 0.98rem;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-stack {
+    gap: 14px;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-card {
+    gap: 12px;
+    border-radius: 20px;
+    padding: 18px;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-card h3 {
+    font-size: 1.55rem;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-secondary,
+  .dashboard.agent-requests-shell .agent-request-primary {
+    min-height: 50px;
+    padding: 11px 9px;
+    font-size: 0.86rem;
+  }
+
   .agent-matches-section {
     gap: 20px;
     scroll-margin-top: 18px;
@@ -7085,5 +7237,89 @@ textarea:focus {
 
   .mobile-bottom-nav a {
     font-size: 0.72rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .dashboard.agent-requests-shell {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .dashboard.agent-requests-shell .dashboard-topbar {
+    padding: 16px;
+  }
+
+  .dashboard.agent-requests-shell .dashboard-topbar .brand img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .dashboard.agent-requests-shell .dashboard-topbar .brand span {
+    font-size: 1.24rem;
+  }
+
+  .dashboard.agent-requests-shell .dashboard-topbar .brand small {
+    font-size: 0.78rem;
+  }
+
+  .dashboard.agent-requests-shell .dashboard-topbar > .mobile-menu-button {
+    width: 48px;
+    height: 48px;
+  }
+
+  .dashboard.agent-requests-shell .subscription-card,
+  .dashboard.agent-requests-shell .agent-request-card {
+    padding: 16px;
+  }
+
+  .dashboard.agent-requests-shell .subscription-card-head h2 {
+    font-size: 1.24rem;
+  }
+
+  .dashboard.agent-requests-shell .subscription-card-action {
+    min-width: 108px;
+    min-height: 44px;
+    padding-inline: 10px;
+    font-size: 0.8rem;
+  }
+
+  .dashboard.agent-requests-shell .quota-row > article {
+    min-height: 84px;
+    padding: 9px 7px;
+  }
+
+  .dashboard.agent-requests-shell .quota-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .dashboard.agent-requests-shell .quota-icon svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-card h3 {
+    font-size: 1.38rem;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-facts > div {
+    grid-template-columns: 36px minmax(0, 1fr);
+  }
+
+  .dashboard.agent-requests-shell .agent-request-facts span {
+    width: 36px;
+    height: 36px;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-facts span svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-secondary,
+  .dashboard.agent-requests-shell .agent-request-primary {
+    min-height: 48px;
+    font-size: 0.78rem;
   }
 }
