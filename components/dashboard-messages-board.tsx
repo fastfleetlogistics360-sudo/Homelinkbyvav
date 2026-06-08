@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Bath, BedDouble, ChevronDown, ImageIcon, MapPin, MoreVertical, PhoneCall, Plus, Search, Send, SlidersHorizontal } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowLeft, Bath, BedDouble, ChevronDown, ImageIcon, MapPin, MoreVertical, PhoneCall, Plus, Search, Send, SlidersHorizontal } from "lucide-react";
 import { sendConversationMessageAction } from "@/lib/actions/messages";
 import type { AccountType } from "@/lib/types";
 import type { DashboardConversation, DashboardMessage } from "@/lib/messages";
@@ -123,7 +123,7 @@ export function DashboardMessagesBoard({ accountType, conversations, currentUser
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [selectedId, setSelectedId] = useState(conversations[0]?.conversation_id || "");
+  const [selectedId, setSelectedId] = useState("");
   const [sort, setSort] = useState<MessageSort>("newest");
 
   const visibleConversations = useMemo(() => {
@@ -142,7 +142,7 @@ export function DashboardMessagesBoard({ accountType, conversations, currentUser
     );
   }, [activeTab, archivedIds, conversations, currentUserId, query, sort]);
 
-  const selectedConversation = visibleConversations.find((conversation) => conversation.conversation_id === selectedId) || visibleConversations[0] || null;
+  const selectedConversation = visibleConversations.find((conversation) => conversation.conversation_id === selectedId) || null;
   const totalUnread = conversations.reduce((total, conversation) => total + unreadCount(conversation, currentUserId), 0);
   const messages = selectedConversation ? displayMessages(selectedConversation) : [];
   const callLink = selectedConversation ? phoneHref(selectedConversation.counterpart_phone) : null;
@@ -150,6 +150,14 @@ export function DashboardMessagesBoard({ accountType, conversations, currentUser
     accountType === "agent"
       ? "Chats with home seekers who matched with your responses."
       : "Chats with agents who responded to your requests.";
+
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 721px)").matches;
+    const selectedStillVisible = visibleConversations.some((conversation) => conversation.conversation_id === selectedId);
+    if (desktop && visibleConversations[0] && (!selectedId || !selectedStillVisible)) {
+      setSelectedId(visibleConversations[0].conversation_id);
+    }
+  }, [selectedId, visibleConversations]);
 
   return (
     <section className="dashboard-messages-page" aria-label="Messages page">
@@ -198,7 +206,7 @@ export function DashboardMessagesBoard({ accountType, conversations, currentUser
         </label>
       </div>
 
-      <div className="dashboard-message-layout">
+      <div className={`dashboard-message-layout ${selectedConversation ? "has-selected-conversation" : ""}`}>
         <aside className="dashboard-conversation-panel" aria-label="Conversations">
           <div className="dashboard-conversation-head">
             <strong>Conversations</strong>
@@ -257,6 +265,18 @@ export function DashboardMessagesBoard({ accountType, conversations, currentUser
           {selectedConversation ? (
             <>
               <div className="dashboard-dm-head">
+                <button
+                  aria-label="Back to conversations"
+                  className="dashboard-dm-back-button"
+                  onClick={() => {
+                    setDetailsOpen(false);
+                    setMenuOpen(false);
+                    setSelectedId("");
+                  }}
+                  type="button"
+                >
+                  <ArrowLeft size={22} />
+                </button>
                 <div className="dashboard-dm-title">
                   <span className="dashboard-dm-property-photo">
                     <img alt="" src={normalizeImages(selectedConversation.property_images)[0] || "/images/seeker-hero-house.png"} />

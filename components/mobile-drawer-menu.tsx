@@ -1,12 +1,47 @@
 "use client";
 
-import { Activity, HelpCircle, LogOut, Menu, Tag, UserRound, Wallet, X } from "lucide-react";
+import {
+  BadgeCheck,
+  FileText,
+  Gift,
+  Handshake,
+  HelpCircle,
+  Home,
+  LogOut,
+  Menu,
+  MessageCircle,
+  ReceiptText,
+  Settings,
+  ShieldCheck,
+  Star,
+  Tag,
+  UserRound,
+  Wallet,
+  X
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { deleteAccountAction, logoutAction } from "@/lib/actions/auth";
 
 type DrawerItem = [string, string];
+
+function iconForItem(label: string) {
+  const normalized = label.toLowerCase();
+  if (normalized.includes("overview") || normalized.includes("dashboard")) return Home;
+  if (normalized.includes("create")) return Wallet;
+  if (normalized.includes("kyc") || normalized.includes("verification")) return ShieldCheck;
+  if (normalized.includes("request")) return FileText;
+  if (normalized.includes("match")) return Handshake;
+  if (normalized.includes("subscription")) return BadgeCheck;
+  if (normalized.includes("refer")) return Gift;
+  if (normalized.includes("transaction")) return ReceiptText;
+  if (normalized.includes("message")) return MessageCircle;
+  if (normalized.includes("profile") || normalized.includes("setting")) return UserRound;
+  if (normalized.includes("review")) return Star;
+  if (normalized.includes("help")) return HelpCircle;
+  return Tag;
+}
 
 export function MobileDrawerMenu({
   title,
@@ -28,7 +63,6 @@ export function MobileDrawerMenu({
   const [open, setOpen] = useState(false);
   const quickItems = variant === "dashboard" ? items.slice(0, 3) : [];
   const listItems = variant === "dashboard" ? items.slice(3) : items;
-  const quickIcons = [HelpCircle, Wallet, Activity];
 
   return (
     <>
@@ -52,8 +86,8 @@ export function MobileDrawerMenu({
 
         {quickItems.length ? (
           <div className="mobile-quick-grid">
-            {quickItems.map(([label, href], index) => {
-              const Icon = quickIcons[index] || Activity;
+            {quickItems.map(([label, href]) => {
+              const Icon = iconForItem(label);
               return (
                 <Link href={href} key={href} onClick={() => setOpen(false)}>
                   <Icon size={24} />
@@ -67,16 +101,19 @@ export function MobileDrawerMenu({
         <nav className="mobile-drawer-list" aria-label="Mobile navigation">
           {dashboardHref ? (
             <Link href={dashboardHref} onClick={() => setOpen(false)}>
-              <UserRound size={19} />
+              <Settings size={19} />
               <span>Dashboard</span>
             </Link>
           ) : null}
-          {listItems.map(([label, href]) => (
-            <Link href={href} key={href} onClick={() => setOpen(false)}>
-              <Tag size={19} />
-              <span>{label}</span>
-            </Link>
-          ))}
+          {listItems.map(([label, href]) => {
+            const Icon = iconForItem(label);
+            return (
+              <Link href={href} key={href} onClick={() => setOpen(false)}>
+                <Icon size={19} />
+                <span>{label}</span>
+              </Link>
+            );
+          })}
         </nav>
 
         {showAuthLinks ? (
