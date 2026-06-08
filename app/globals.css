@@ -12369,3 +12369,36 @@ textarea:focus {
     font-size: 0.56rem;
   }
 }
+
+.referrals-page-ui > :not(.mobile-bottom-nav) {
+  width: 200%;
+  max-width: 2360px;
+  margin-right: auto;
+  margin-left: auto;
+  zoom: 0.5;
+}
+
+.referrals-page-ui {
+  padding-bottom: 132px;
+}
+
+.seeker-dashboard-ui > :not(.mobile-bottom-nav) {
+  width: calc(100% / 0.7);
+  max-width: calc(960px / 0.7);
+  margin-right: auto;
+  margin-left: auto;
+  zoom: 0.7;
+}
+
+.dashboard.seeker-compact-shell .dashboard-topbar,
+.dashboard.seeker-compact-shell .dashboard-grid > section > :not(.mobile-bottom-nav) {
+  width: calc(100% / 0.7);
+  max-width: calc(1120px / 0.7);
+  margin-right: auto;
+  margin-left: auto;
+  zoom: 0.7;
+}
+
+.dashboard.seeker-compact-shell {
+  padding-bottom: 132px;
+}

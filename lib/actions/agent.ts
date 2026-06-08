@@ -5,7 +5,50 @@ import { redirect } from "next/navigation";
 import { matchOpenRequestsForAgent } from "@/lib/agents";
 import { uploadAgentKycDocuments, uploadAgentProfilePhoto } from "@/lib/storage";
 import { isAgentKycApproved } from "@/lib/kyc";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+
+type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
+
+async function ensureAgentWeeklyUsageIncrement({
+  agentId,
+  planBefore,
+  supabase,
+  usedBefore
+}: {
+  agentId: string;
+  planBefore?: string | null;
+  supabase: SupabaseServerClient;
+  usedBefore: number;
+}) {
+  const { error: incrementError } = await supabase.rpc("increment_agent_weekly_usage", { target_agent_id: agentId });
+
+  const { data: quotaAfter } = await supabase
+    .from("agent_profiles")
+    .select("agent_plan, weekly_request_used")
+    .eq("agent_id", agentId)
+    .single();
+  const activePlan = quotaAfter?.agent_plan || planBefore || "free";
+
+  if (activePlan === "platinum") return;
+
+  const usedAfter = Number(quotaAfter?.weekly_request_used || 0);
+  if (!incrementError && usedAfter > usedBefore) return;
+
+  if (incrementError) {
+    console.error("Agent weekly usage RPC failed; applying fallback update.", incrementError);
+  }
+
+  const admin = createAdminClient();
+  const { error: fallbackError } = await admin
+    .from("agent_profiles")
+    .update({ weekly_request_used: usedBefore + 1 })
+    .eq("agent_id", agentId);
+
+  if (fallbackError) {
+    throw fallbackError;
+  }
+}
 
 export async function saveAgentKycAction(formData: FormData) {
   const supabase = await createClient();
@@ -116,6 +159,13 @@ export async function createRequestResponseAction(formData: FormData) {
   const agentId = agent.agent_id;
 
   await supabase.rpc("reset_agent_weekly_quota", { target_agent_id: agentId });
+  const { data: quotaBefore } = await supabase
+    .from("agent_profiles")
+    .select("agent_plan, weekly_request_used")
+    .eq("agent_id", agentId)
+    .single();
+  const usedBefore = Number(quotaBefore?.weekly_request_used ?? agent.weekly_request_used ?? 0);
+  const planBefore = quotaBefore?.agent_plan || agent.agent_plan;
   const { data: canAccept } = await supabase.rpc("agent_can_accept_request", { target_agent_id: agentId });
   if (!canAccept) {
     redirect("/dashboard/agent/subscription?quota=exhausted");
@@ -138,11 +188,19 @@ export async function createRequestResponseAction(formData: FormData) {
 
   if (error) redirect(`/dashboard/agent/requests?error=${encodeURIComponent(error.message)}`);
 
-  await supabase.rpc("increment_agent_weekly_usage", { target_agent_id: agentId });
+  try {
+    await ensureAgentWeeklyUsageIncrement({ agentId, planBefore, supabase, usedBefore });
+  } catch (usageError) {
+    const message = usageError instanceof Error ? usageError.message : "Unable to update subscription usage.";
+    redirect(`/dashboard/agent/requests?error=${encodeURIComponent(message)}`);
+  }
   await supabase.from("housing_requests").update({ status: "accepted" }).eq("request_id", requestId);
   await supabase.rpc("create_conversation_for_response", { target_request_id: requestId, target_agent_id: agentId });
 
   revalidatePath("/dashboard/agent");
+  revalidatePath("/dashboard/agent/requests");
+  revalidatePath("/dashboard/agent/subscription");
+  revalidatePath("/dashboard/agent/profile");
   redirect("/dashboard/agent");
 }
 

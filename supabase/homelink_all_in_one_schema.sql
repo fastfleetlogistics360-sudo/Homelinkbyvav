@@ -576,9 +576,9 @@ begin
   perform public.reset_agent_weekly_quota(target_agent_id);
 
   update public.agent_profiles
-  set weekly_request_used = weekly_request_used + 1
+  set weekly_request_used = coalesce(weekly_request_used, 0) + 1
   where agent_id = target_agent_id
-    and agent_plan <> 'platinum';
+    and coalesce(agent_plan, 'free') <> 'platinum';
 end;
 $$;
 
