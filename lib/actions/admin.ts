@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { adminPasswordMatches, clearAdminSession, createAdminSession, isAdminEmail, requireAdminUser } from "@/lib/admin-auth";
 import { matchOpenRequestsForAgent } from "@/lib/agents";
 import { DEFAULT_HERO_SLIDES } from "@/lib/hero-slides";
+import { qualifyAgentReferral } from "@/lib/referrals";
 import { uploadHeroSlideImage, uploadTestimonialPhoto } from "@/lib/storage";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -82,6 +83,10 @@ export async function updateAgentKycStatusAction(formData: FormData) {
   }
 
   if (agent?.user_id) {
+    if (status === "approved") {
+      await qualifyAgentReferral(agent.user_id);
+    }
+
     await supabase.from("notifications").insert({
       user_id: agent.user_id,
       type: status === "approved" ? "agent_kyc_approved" : "agent_kyc_rejected",
@@ -101,6 +106,24 @@ export async function updateAgentKycStatusAction(formData: FormData) {
       ? ` ${matchedCount} matching apartment request${matchedCount === 1 ? "" : "s"} sent to the agent.`
       : "";
   redirect(`/admin?message=${encodeURIComponent(`${agent.agency_name || "Agent"} KYC ${status} by ${user.email}.${matchMessage}`)}`);
+}
+
+export async function approveReferralWithdrawalAction(formData: FormData) {
+  await requireAdminUser();
+  const withdrawalId = String(formData.get("withdrawal_id") || "");
+  if (!withdrawalId) redirect("/admin?error=Invalid withdrawal request.");
+
+  const supabase = createAdminClient();
+  const { data: approved, error } = await supabase.rpc("approve_referral_withdrawal", {
+    target_withdrawal_id: withdrawalId
+  });
+
+  if (error) {
+    redirect(`/admin?error=${encodeURIComponent(error.message)}`);
+  }
+
+  revalidatePath("/admin");
+  redirect(approved ? "/admin?message=Referral withdrawal approved." : "/admin?error=Withdrawal request is no longer pending.");
 }
 
 export async function saveHeroSlideAction(formData: FormData) {

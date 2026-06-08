@@ -3,6 +3,8 @@ export type KycStatus = "pending" | "approved" | "rejected";
 export type RequestStatus = "pending" | "matched" | "accepted" | "fulfilled" | "cancelled";
 export type ResponseStatus = "pending" | "accepted" | "rejected";
 export type AgentPlan = "free" | "premium" | "platinum";
+export type ReferralStatus = "pending" | "qualified" | "paid" | "cancelled";
+export type WithdrawalStatus = "pending" | "approved" | "rejected";
 
 export type Profile = {
   id: string;
@@ -49,4 +51,57 @@ export type AgentProfile = {
   rating: number;
   total_completed_matches: number;
   suspended: boolean;
+};
+
+export type ReferralCode = {
+  id: string;
+  user_id: string;
+  referral_code: string;
+  created_at: string;
+};
+
+export type Referral = {
+  id: string;
+  referrer_id: string;
+  referred_user_id: string;
+  referred_user_type: AccountType;
+  reward_amount: number;
+  status: ReferralStatus;
+  qualification_reason: string | null;
+  created_at: string;
+  qualified_at: string | null;
+};
+
+export type ReferralWallet = {
+  id: string;
+  user_id: string;
+  available_balance: number;
+  total_earned: number;
+  total_paid: number;
+  qualified_referrals: number;
+  agent_referrals: number;
+  seeker_referrals: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type CreditReward = {
+  id: string;
+  user_id: string;
+  credits: number;
+  source: string;
+  source_referral_id: string | null;
+  created_at: string;
+};
+
+export type WithdrawalRequest = {
+  id: string;
+  user_id: string;
+  bank_name: string;
+  account_number: string;
+  account_name: string;
+  amount: number;
+  status: WithdrawalStatus;
+  created_at: string;
+  approved_at: string | null;
 };

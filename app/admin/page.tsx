@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
+  approveReferralWithdrawalAction,
   adminLoginAction,
   adminLogoutAction,
   deleteTestimonialAction,
@@ -12,6 +13,7 @@ import {
 import { DEFAULT_ADMIN_EMAIL } from "@/lib/constants";
 import { getHeroSlides } from "@/lib/hero-slides";
 import { getAdminSession } from "@/lib/admin-auth";
+import { getReferralAdminData } from "@/lib/referrals";
 import { resolvePrivateStorageUrl } from "@/lib/storage";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getTestimonials } from "@/lib/testimonials";
@@ -22,6 +24,14 @@ type AdminPageProps = {
     message?: string;
   }>;
 };
+
+function formatNaira(value: number) {
+  return new Intl.NumberFormat("en-NG", {
+    currency: "NGN",
+    maximumFractionDigits: 0,
+    style: "currency"
+  }).format(value);
+}
 
 export default async function AdminPage({ searchParams }: AdminPageProps) {
   const params = await searchParams;
@@ -58,13 +68,14 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   }
 
   const supabase = createAdminClient();
-  const [{ count: users }, { count: requests }, { count: agents }, { data: agentRows }, heroSlides, testimonials] = await Promise.all([
+  const [{ count: users }, { count: requests }, { count: agents }, { data: agentRows }, heroSlides, testimonials, referralAdmin] = await Promise.all([
     supabase.from("profiles").select("*", { count: "exact", head: true }),
     supabase.from("housing_requests").select("*", { count: "exact", head: true }),
     supabase.from("agent_profiles").select("*", { count: "exact", head: true }),
     supabase.from("agent_profiles").select("*").order("created_at", { ascending: false }),
     getHeroSlides({ includeInactive: true }),
-    getTestimonials({ includeAdmin: true })
+    getTestimonials({ includeAdmin: true }),
+    getReferralAdminData()
   ]);
 
   const agentCards = await Promise.all(
@@ -121,6 +132,110 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           <h2>Live testimonials</h2>
         </article>
       </div>
+
+      <section className="panel">
+        <div className="section-title-row">
+          <div>
+            <p className="kicker">Referral Management</p>
+            <h2>Monitor referral rewards, liability, and payout requests.</h2>
+          </div>
+        </div>
+
+        <div className="admin-referral-metrics">
+          <article>
+            <span>{referralAdmin.metrics.totalReferrals}</span>
+            <strong>Total Referrals</strong>
+          </article>
+          <article>
+            <span>{referralAdmin.metrics.pendingReferrals}</span>
+            <strong>Pending Referrals</strong>
+          </article>
+          <article>
+            <span>{referralAdmin.metrics.qualifiedReferrals}</span>
+            <strong>Qualified Referrals</strong>
+          </article>
+          <article>
+            <span>{referralAdmin.metrics.paidReferrals}</span>
+            <strong>Paid Referrals</strong>
+          </article>
+          <article>
+            <span>{formatNaira(referralAdmin.metrics.totalReferralLiability)}</span>
+            <strong>Total Referral Liability</strong>
+          </article>
+        </div>
+
+        <div className="admin-referral-layout">
+          <div className="admin-referral-table">
+            <div className="admin-referral-row heading">
+              <span>Referrer</span>
+              <span>Referred User</span>
+              <span>Referral Code</span>
+              <span>User Type</span>
+              <span>Reward</span>
+              <span>Status</span>
+              <span>Qualification Date</span>
+            </div>
+            {referralAdmin.rows.length ? (
+              referralAdmin.rows.map((row) => (
+                <div className="admin-referral-row" key={row.id}>
+                  <span>{row.referrer}</span>
+                  <span>{row.referredUser}</span>
+                  <span>{row.referralCode}</span>
+                  <span>{row.userType}</span>
+                  <span>{formatNaira(row.rewardAmount)}</span>
+                  <em className={`badge ${row.status === "qualified" || row.status === "paid" ? "approved" : row.status}`}>{row.status}</em>
+                  <span>{row.qualificationDate ? new Date(row.qualificationDate).toLocaleDateString("en-NG", { dateStyle: "medium" }) : "Not qualified"}</span>
+                </div>
+              ))
+            ) : (
+              <p className="empty-copy">No referrals yet.</p>
+            )}
+          </div>
+
+          <aside className="admin-referral-side">
+            <div>
+              <h3>Top Referrers</h3>
+              {referralAdmin.topReferrers.length ? (
+                referralAdmin.topReferrers.map((item) => (
+                  <article key={`${item.rank}-${item.name}`}>
+                    <span>{item.rank}</span>
+                    <strong>{item.name}</strong>
+                    <small>{item.referrals} referrals</small>
+                  </article>
+                ))
+              ) : (
+                <p className="empty-copy">No qualified referrers yet.</p>
+              )}
+            </div>
+
+            <div>
+              <h3>Withdrawal Requests</h3>
+              {referralAdmin.withdrawals.length ? (
+                referralAdmin.withdrawals.map((withdrawal) => (
+                  <article className="admin-withdrawal-card" key={withdrawal.id}>
+                    <span className={`badge ${withdrawal.status === "approved" ? "approved" : "pending"}`}>{withdrawal.status}</span>
+                    <strong>{withdrawal.userName}</strong>
+                    <small>
+                      {withdrawal.bankName} | {withdrawal.accountNumber} | {withdrawal.accountName}
+                    </small>
+                    <em>{formatNaira(withdrawal.amount)}</em>
+                    {withdrawal.status === "pending" ? (
+                      <form action={approveReferralWithdrawalAction}>
+                        <input name="withdrawal_id" type="hidden" value={withdrawal.id} />
+                        <button className="button primary" type="submit">
+                          Approve
+                        </button>
+                      </form>
+                    ) : null}
+                  </article>
+                ))
+              ) : (
+                <p className="empty-copy">No withdrawal requests yet.</p>
+              )}
+            </div>
+          </aside>
+        </div>
+      </section>
 
       <section className="panel">
         <div className="section-title-row">

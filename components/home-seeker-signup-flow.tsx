@@ -25,6 +25,7 @@ import type { AccountType } from "@/lib/types";
 type SignupFlowProps = {
   defaultType: AccountType;
   error?: string;
+  referralCode?: string;
 };
 
 type SignupFormState = {
@@ -141,7 +142,7 @@ function SubmitAccountButton({ label = "Create Account", showIcon = true }: { la
   );
 }
 
-export function HomeSeekerSignupFlow({ defaultType, error }: SignupFlowProps) {
+export function HomeSeekerSignupFlow({ defaultType, error, referralCode }: SignupFlowProps) {
   const [step, setStep] = useState(1);
   const [accountType, setAccountType] = useState<AccountType>(defaultType);
   const [form, setForm] = useState<SignupFormState>(initialFormState);
@@ -274,6 +275,7 @@ export function HomeSeekerSignupFlow({ defaultType, error }: SignupFlowProps) {
         <input name="phone" type="hidden" value={phoneValue} />
         <input name="password" type="hidden" value={form.password} />
         <input name="confirm_password" type="hidden" value={form.confirmPassword} />
+        <input name="referral_code" type="hidden" value={referralCode || ""} />
         <input name="agency_name" type="hidden" value={form.agencyName.trim()} />
         <input name="preferred_locations" type="hidden" value={form.preferredLocations.trim()} />
         <input name="budget_min" type="hidden" value={form.budgetMin} />

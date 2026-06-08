@@ -6,6 +6,7 @@ import {
   ChevronRight,
   ClipboardList,
   FileText,
+  Gift,
   Handshake,
   Home,
   LayoutDashboard,
@@ -17,11 +18,13 @@ import {
 } from "lucide-react";
 import { DashboardNotifications } from "@/components/dashboard-notifications";
 import { MobileDrawerMenu } from "@/components/mobile-drawer-menu";
+import { ReferralDashboardCard } from "@/components/referral-dashboard-card";
 import { getOpenMatchingRequestsForAgent, getRefreshedAgentProfile } from "@/lib/agents";
 import { requireAccountType } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { AGENT_DASHBOARD_NAV } from "@/lib/dashboard-nav";
 import { getAgentKycProgress, isAgentKycApproved, normalizeKycStatus } from "@/lib/kyc";
+import { getReferralOverview } from "@/lib/referrals";
 
 export default async function AgentDashboardPage() {
   const user = await requireAccountType("agent");
@@ -51,6 +54,7 @@ export default async function AgentDashboardPage() {
     .order("created_at", { ascending: false })
     .limit(6);
   const notifications = notificationsData ?? [];
+  const referralOverview = await getReferralOverview(user.id);
   const kycCard =
     kycStatus === "approved"
       ? {
@@ -138,6 +142,8 @@ export default async function AgentDashboardPage() {
           </article>
         ))}
       </section>
+
+      <ReferralDashboardCard overview={referralOverview} />
 
       <section className={`agent-kyc-status-card ${kycCard.className}`}>
         <span className="agent-kyc-icon">{approved ? <Check size={34} /> : <FileText size={34} />}</span>
@@ -249,6 +255,10 @@ export default async function AgentDashboardPage() {
         <Link href="/dashboard/agent/matches">
           <Handshake size={28} />
           Matches
+        </Link>
+        <Link href="/dashboard/referrals">
+          <Gift size={28} />
+          Refer
         </Link>
         <Link href="/dashboard/agent/messages">
           <MessageSquare size={28} />

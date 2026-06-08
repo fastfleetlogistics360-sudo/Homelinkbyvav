@@ -27,9 +27,28 @@ export async function proxy(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
   const protectedPath = pathname.startsWith("/dashboard");
+  const referralCode = request.nextUrl.searchParams.get("ref");
 
   if (protectedPath && !user) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
+  }
+
+  if (referralCode) {
+    response.cookies.set(
+      "homelink_referral_code",
+      referralCode
+        .trim()
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "")
+        .slice(0, 16),
+      {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 30,
+        path: "/",
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production"
+      }
+    );
   }
 
   return response;

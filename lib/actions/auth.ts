@@ -1,9 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { ensureProfile } from "@/lib/auth";
+import { ensureReferralCode, ensureReferralWallet, recordReferralSignup } from "@/lib/referrals";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -115,6 +117,8 @@ export async function signUpAction(formData: FormData) {
   const budgetMax = parseBudget(parsed.budget_max);
 
   const supabase = await createClient();
+  const cookieStore = await cookies();
+  const referralCode = String(formData.get("referral_code") || cookieStore.get("homelink_referral_code")?.value || "");
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://homelinkbyvav.vercel.app";
   const nextPath = signupRedirectTargets[parsed.account_type];
   const { data, error } = await supabase.auth.signUp({
@@ -180,6 +184,20 @@ export async function signUpAction(formData: FormData) {
         },
         { onConflict: "user_id" }
       );
+  }
+
+  try {
+    await Promise.all([ensureReferralCode(data.user.id), ensureReferralWallet(data.user.id)]);
+    await recordReferralSignup({
+      referralCode,
+      referredUserId: data.user.id,
+      referredUserType: parsed.account_type,
+      email: parsed.email,
+      phone: parsed.phone
+    });
+    cookieStore.delete("homelink_referral_code");
+  } catch (referralError) {
+    console.error("Account created, but referral setup failed.", referralError);
   }
 
   revalidatePath("/", "layout");

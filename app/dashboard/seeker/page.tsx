@@ -4,6 +4,7 @@ import {
   ChevronRight,
   ClipboardList,
   FileText,
+  Gift,
   Grid2X2,
   Home,
   House,
@@ -14,18 +15,13 @@ import {
 } from "lucide-react";
 import { DashboardNotifications } from "@/components/dashboard-notifications";
 import { MobileDrawerMenu } from "@/components/mobile-drawer-menu";
+import { ReferralDashboardCard } from "@/components/referral-dashboard-card";
 import { markRequestFulfilledAction } from "@/lib/actions/requests";
 import { getPlanBadge, planForAgent } from "@/lib/agent-plans";
 import { requireAccountType } from "@/lib/auth";
+import { SEEKER_DASHBOARD_NAV } from "@/lib/dashboard-nav";
+import { getReferralOverview } from "@/lib/referrals";
 import { createClient } from "@/lib/supabase/server";
-
-const seekerNav = [
-  ["Overview", "/dashboard/seeker"],
-  ["Create Apartment Request", "/dashboard/seeker/requests/new"],
-  ["Transaction History", "/dashboard/seeker#transactions"],
-  ["Messages", "/dashboard/seeker/messages"],
-  ["Profile Settings", "/dashboard/seeker#profile"]
-] satisfies Array<[string, string]>;
 
 function formatNaira(value: number | string) {
   return new Intl.NumberFormat("en-NG", {
@@ -70,6 +66,7 @@ export default async function SeekerDashboardPage() {
     .order("created_at", { ascending: false })
     .limit(6);
   const notifications = notificationsData ?? [];
+  const referralOverview = await getReferralOverview(user.id);
   const activeMatches = requests.filter((item) => item.status === "matched" || item.status === "accepted").length;
   const responseCount = requests.reduce((total, request) => total + (request.request_responses?.length || 0), 0);
   const firstName = (profile?.full_name || "Home Seeker").split(" ")[0] || "Home Seeker";
@@ -86,7 +83,7 @@ export default async function SeekerDashboardPage() {
           </span>
         </Link>
         <DashboardNotifications notifications={notifications} returnTo="/dashboard/seeker" />
-        <MobileDrawerMenu items={seekerNav} showLogout subtitle="Home seeker dashboard" title={profile?.full_name || "Home Seeker"} variant="dashboard" />
+        <MobileDrawerMenu items={SEEKER_DASHBOARD_NAV} showLogout subtitle="Home seeker dashboard" title={profile?.full_name || "Home Seeker"} variant="dashboard" />
       </header>
 
       <section className="seeker-hero-reference">
@@ -129,6 +126,8 @@ export default async function SeekerDashboardPage() {
           </article>
         </div>
       </section>
+
+      <ReferralDashboardCard overview={referralOverview} />
 
       <section className="seeker-action-list" aria-label="Quick actions">
         <Link href="/dashboard/seeker/requests/new">
@@ -314,6 +313,10 @@ export default async function SeekerDashboardPage() {
         <Link href="/dashboard/seeker/messages">
           <MessageCircle size={28} />
           Messages
+        </Link>
+        <Link href="/dashboard/referrals">
+          <Gift size={28} />
+          Refer
         </Link>
         <Link href="#transactions">
           <ReceiptText size={28} />

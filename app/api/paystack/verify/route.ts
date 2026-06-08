@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { type AgentPlanId } from "@/lib/constants";
 import { matchAgentsForRequest } from "@/lib/agents";
 import { verifyPaystackTransaction } from "@/lib/paystack";
+import { grantAgentPremiumReferralBonus, qualifyHomeSeekerReferral } from "@/lib/referrals";
 import { createClient } from "@/lib/supabase/server";
 
 type PaymentMetadata = {
@@ -31,7 +32,7 @@ export async function GET(request: Request) {
 
   const { data: existingPayment } = await supabase
     .from("payments")
-    .select("request_id, provider_payload")
+    .select("request_id, user_id, provider_payload")
     .eq("reference", reference)
     .single();
   const storedMetadata = toPaymentMetadata(existingPayment?.provider_payload);
@@ -51,7 +52,7 @@ export async function GET(request: Request) {
       }
     })
     .eq("reference", reference)
-    .select("request_id, provider_payload")
+    .select("request_id, user_id, provider_payload")
     .single();
 
   if (metadata.product === "agent_subscription") {
@@ -62,6 +63,9 @@ export async function GET(request: Request) {
         target_plan: metadata.plan,
         target_expiry: expiry
       });
+      if (typeof metadata.user_id === "string") {
+        await grantAgentPremiumReferralBonus(metadata.user_id);
+      }
       return NextResponse.redirect(new URL("/dashboard/agent/subscription?payment=verified", request.url));
     }
 
@@ -70,6 +74,9 @@ export async function GET(request: Request) {
 
   if (paid && payment?.request_id) {
     await matchAgentsForRequest(payment.request_id, { notify: true });
+    if (payment.user_id) {
+      await qualifyHomeSeekerReferral(payment.user_id);
+    }
   }
 
   return NextResponse.redirect(new URL("/dashboard/seeker?payment=verified", request.url));
