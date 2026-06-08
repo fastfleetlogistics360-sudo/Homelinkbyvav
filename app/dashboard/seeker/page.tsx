@@ -47,7 +47,7 @@ export default async function SeekerDashboardPage() {
   const firstName = (profile?.full_name || "Home Seeker").split(" ")[0] || "Home Seeker";
 
   return (
-    <main className="seeker-dashboard-ui">
+    <main className="agent-dashboard-ui seeker-dashboard-ui">
       <header className="mobile-dashboard-header">
         <Link className="mobile-dashboard-brand" href="/">
           <Image alt="HomeLink by V-A.V" height={86} src="/images/homelink-logo.png" width={86} />
@@ -61,7 +61,7 @@ export default async function SeekerDashboardPage() {
         <MobileDrawerMenu items={SEEKER_DASHBOARD_NAV} showLogout subtitle="Home seeker dashboard" title={profile?.full_name || "Home Seeker"} variant="dashboard" />
       </header>
 
-      <section className="seeker-hero-reference">
+      <section className="agent-hero-reference seeker-hero-reference">
         <div>
           <p>Home Seeker Dashboard</p>
           <h1>Welcome, {profile?.full_name || firstName}</h1>
@@ -72,63 +72,72 @@ export default async function SeekerDashboardPage() {
         </div>
       </section>
 
-      <section className="reference-section">
-        <h2>Overview</h2>
-        <div className="seeker-overview-grid">
-          <article>
-            <span className="gold">
-              <ClipboardList size={30} />
-            </span>
-            <strong>{requests.length}</strong>
-            <h3>Requests created</h3>
-            <p>Total requests you&apos;ve made</p>
-          </article>
-          <article>
-            <span className="green">
-              <House size={30} />
-            </span>
-            <strong>{activeMatches}</strong>
-            <h3>Active matches</h3>
-            <p>Agents actively responding</p>
-          </article>
-          <article>
-            <span className="blue">
-              <MessageCircle size={30} />
-            </span>
-            <strong>{responseCount}</strong>
-            <h3>Agent responses</h3>
-            <p>Responses from agents</p>
-          </article>
-        </div>
+      <section className="agent-stat-grid seeker-overview-grid" aria-label="Overview">
+        <article className="agent-stat-card">
+          <span className="gold">
+            <ClipboardList size={30} />
+          </span>
+          <strong>{requests.length}</strong>
+          <p>Requests created</p>
+          <Link href="/dashboard/seeker/requests">
+            View all
+            <ChevronRight size={18} />
+          </Link>
+        </article>
+        <article className="agent-stat-card">
+          <span className="green">
+            <House size={30} />
+          </span>
+          <strong>{activeMatches}</strong>
+          <p>Active matches</p>
+          <Link href="/dashboard/seeker/requests">
+            View all
+            <ChevronRight size={18} />
+          </Link>
+        </article>
+        <article className="agent-stat-card">
+          <span className="blue">
+            <MessageCircle size={30} />
+          </span>
+          <strong>{responseCount}</strong>
+          <p>Agent responses</p>
+          <Link href="/dashboard/seeker/messages">
+            View all
+            <ChevronRight size={18} />
+          </Link>
+        </article>
       </section>
 
       <ReferralDashboardCard overview={referralOverview} />
 
-      <section className="seeker-action-list" aria-label="Quick actions">
-        <Link href="/dashboard/seeker/requests/new">
-          <span className="navy">
-            <Plus size={34} />
-          </span>
-          <strong>Submit a new apartment request</strong>
-          <em>Tell verified agents exactly what you need.</em>
-          <ChevronRight size={30} />
-        </Link>
-        <Link href="/dashboard/seeker/requests">
-          <span className="gold">
-            <Home size={32} />
-          </span>
-          <strong>Review request progress</strong>
-          <em>See status, responses, and next actions.</em>
-          <ChevronRight size={30} />
-        </Link>
-        <Link href="/dashboard/seeker/transactions">
-          <span className="green">
-            <ReceiptText size={32} />
-          </span>
-          <strong>Check transaction history</strong>
-          <em>Follow routing fees and payment statuses.</em>
-          <ChevronRight size={30} />
-        </Link>
+      <section className="agent-quick-actions" aria-label="Quick actions">
+        <h2>Quick Actions</h2>
+        <div>
+          <Link href="/dashboard/seeker/requests/new">
+            <span className="blue">
+              <Plus size={34} />
+            </span>
+            <strong>Submit a new apartment request</strong>
+            <small>Tell verified agents exactly what you need.</small>
+            <ChevronRight size={30} />
+          </Link>
+          <Link href="/dashboard/seeker/requests">
+            <span className="gold">
+              <Home size={32} />
+            </span>
+            <strong>Review request progress</strong>
+            <small>See status, responses, and next actions.</small>
+            <ChevronRight size={30} />
+          </Link>
+          <Link href="/dashboard/seeker/transactions">
+            <span className="green">
+              <ReceiptText size={32} />
+            </span>
+            <strong>Check transaction history</strong>
+            <small>Follow routing fees and payment statuses.</small>
+            <ChevronRight size={30} />
+          </Link>
+        </div>
       </section>
 
       <SeekerBottomNav active="dashboard" />

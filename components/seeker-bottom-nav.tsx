@@ -19,7 +19,7 @@ const SEEKER_BOTTOM_NAV = [
 
 export function SeekerBottomNav({ active }: { active: SeekerBottomNavItem }) {
   return (
-    <nav className="mobile-bottom-nav" aria-label="Home seeker navigation">
+    <nav className="mobile-bottom-nav agent" aria-label="Home seeker navigation">
       {SEEKER_BOTTOM_NAV.map(({ id, label, href, Icon }) => (
         <Link className={active === id ? "active" : ""} href={href} key={id}>
           <Icon size={28} />
