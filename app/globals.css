@@ -7461,3 +7461,1985 @@ textarea:focus {
     font-size: 0.6rem;
   }
 }
+
+.dashboard.agent-compact-shell {
+  width: 100%;
+  max-width: none;
+  overflow-x: hidden;
+  padding: clamp(18px, 3vw, 34px) clamp(16px, 4vw, 42px) 108px;
+  background:
+    radial-gradient(circle at 14% 0%, rgba(201, 133, 24, 0.08), transparent 28%),
+    radial-gradient(circle at 92% 10%, rgba(4, 19, 45, 0.07), transparent 30%),
+    linear-gradient(135deg, #f8fafc 0%, #fff 46%, #f3f6fa 100%);
+  color: var(--navy);
+}
+
+.dashboard.agent-compact-shell .dashboard-topbar,
+.dashboard.agent-compact-shell .dashboard-grid {
+  width: min(100%, 1120px);
+  max-width: 1120px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.dashboard.agent-compact-shell .dashboard-topbar {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px 18px;
+  align-items: start;
+  border-color: rgba(217, 226, 238, 0.9);
+  border-radius: 22px;
+  margin-bottom: 16px;
+  padding: 18px 20px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 18px 52px rgba(8, 20, 39, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+.dashboard.agent-compact-shell .dashboard-topbar .brand {
+  min-width: 0;
+  gap: 10px;
+}
+
+.dashboard.agent-compact-shell .dashboard-topbar .brand img {
+  width: 48px;
+  height: 48px;
+}
+
+.dashboard.agent-compact-shell .dashboard-topbar .brand span {
+  overflow: hidden;
+  color: var(--navy);
+  font-size: 1.32rem;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard.agent-compact-shell .dashboard-topbar .brand small {
+  color: #5b667b;
+  font-size: 0.78rem;
+}
+
+.dashboard.agent-compact-shell .dashboard-title {
+  grid-column: 1 / -1;
+  order: 3;
+  min-width: 0;
+  margin-top: 4px;
+}
+
+.dashboard.agent-compact-shell .dashboard-title .kicker {
+  margin: 4px 0 7px;
+  color: var(--gold-dark);
+  font-size: 0.82rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.dashboard.agent-compact-shell .dashboard-title h1 {
+  overflow-wrap: anywhere;
+  color: var(--navy);
+  font-size: clamp(1.85rem, 4vw, 2.45rem);
+  line-height: 1.04;
+}
+
+.dashboard.agent-compact-shell .dashboard-topbar > form {
+  display: none;
+}
+
+.dashboard.agent-compact-shell .dashboard-topbar > .mobile-menu-button {
+  display: grid;
+  grid-column: 2;
+  grid-row: 1;
+  width: 48px;
+  height: 48px;
+  border-color: #d9e2ee;
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(8, 20, 39, 0.08);
+}
+
+.dashboard.agent-compact-shell .dashboard-grid {
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.dashboard.agent-compact-shell .dashboard-grid > section {
+  min-width: 0;
+}
+
+.dashboard.agent-compact-shell .sidebar {
+  display: none;
+}
+
+.dashboard.agent-compact-shell .panel,
+.dashboard.agent-compact-shell .subscription-card,
+.dashboard.agent-compact-shell .pricing-card,
+.dashboard.agent-compact-shell .agent-match-card,
+.dashboard.agent-compact-shell .agent-matches-empty,
+.dashboard.agent-compact-shell .agent-profile-hero-card,
+.dashboard.agent-compact-shell .agent-profile-info-card,
+.dashboard.agent-compact-shell .agent-profile-actions-card,
+.dashboard.agent-compact-shell .dashboard-conversation-panel,
+.dashboard.agent-compact-shell .dashboard-dm-panel,
+.dashboard.agent-compact-shell .kyc-submitted {
+  border-color: rgba(217, 226, 238, 0.92);
+  border-radius: 18px;
+  box-shadow: 0 16px 44px rgba(8, 20, 39, 0.07);
+}
+
+.dashboard.agent-compact-shell .panel {
+  padding: 18px;
+}
+
+.dashboard.agent-compact-shell .panel h2,
+.dashboard.agent-compact-shell .subscription-card-head h2 {
+  margin-bottom: 0;
+  font-size: clamp(1.2rem, 2.4vw, 1.55rem);
+  line-height: 1.12;
+}
+
+.dashboard.agent-compact-shell .panel p {
+  margin: 7px 0 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.dashboard.agent-compact-shell .button,
+.dashboard.agent-compact-shell .subscription-card-action {
+  min-height: 44px;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.86rem;
+}
+
+.dashboard.agent-compact-shell .button.primary,
+.dashboard.agent-compact-shell .subscription-card-action,
+.dashboard.agent-compact-shell .agent-match-primary,
+.dashboard.agent-compact-shell .agent-match-chat-submit,
+.dashboard.agent-compact-shell .dashboard-dm-compose button:last-child {
+  background: linear-gradient(135deg, #d99a2b, var(--gold-dark));
+  color: #fff;
+}
+
+.dashboard.agent-compact-shell .agent-matches-heading,
+.dashboard.agent-compact-shell .dashboard-messages-heading,
+.dashboard.agent-compact-shell .agent-profile-heading {
+  display: none;
+}
+
+.dashboard.agent-compact-shell .agent-matches-page,
+.dashboard.agent-compact-shell .agent-profile-page,
+.dashboard.agent-compact-shell .dashboard-messages-page {
+  display: grid;
+  gap: 14px;
+}
+
+.dashboard.agent-compact-shell .subscription-card {
+  gap: 14px;
+  margin-bottom: 14px;
+  padding: 18px;
+}
+
+.dashboard.agent-compact-shell .subscription-card-head {
+  align-items: center;
+}
+
+.dashboard.agent-compact-shell .subscription-card-head .badge {
+  margin-top: 8px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+}
+
+.dashboard.agent-compact-shell .subscription-card-action {
+  min-width: 118px;
+  box-shadow: 0 12px 24px rgba(201, 133, 24, 0.2);
+}
+
+.dashboard.agent-compact-shell .quota-row {
+  gap: 10px;
+}
+
+.dashboard.agent-compact-shell .quota-row > article {
+  min-height: 78px;
+  gap: 8px;
+  border-radius: 13px;
+  padding: 10px;
+}
+
+.dashboard.agent-compact-shell .quota-icon {
+  width: 36px;
+  height: 36px;
+}
+
+.dashboard.agent-compact-shell .quota-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.dashboard.agent-compact-shell .quota-row > article div span {
+  font-size: 0.7rem;
+}
+
+.dashboard.agent-compact-shell .quota-row > article div strong {
+  font-size: 0.92rem;
+}
+
+.dashboard.agent-compact-shell .agent-matches-board,
+.dashboard.agent-compact-shell .agent-match-stack {
+  gap: 14px;
+}
+
+.dashboard.agent-compact-shell .agent-matches-controls,
+.dashboard.agent-compact-shell .dashboard-messages-controls {
+  gap: 12px;
+}
+
+.dashboard.agent-compact-shell .agent-match-tabs,
+.dashboard.agent-compact-shell .dashboard-message-tabs {
+  width: min(100%, 360px);
+  border-radius: 12px;
+}
+
+.dashboard.agent-compact-shell .agent-match-tabs button,
+.dashboard.agent-compact-shell .dashboard-message-tabs button {
+  min-height: 42px;
+  gap: 7px;
+  border-radius: 9px;
+  padding: 8px 10px;
+  font-size: 0.86rem;
+}
+
+.dashboard.agent-compact-shell .agent-match-tabs span,
+.dashboard.agent-compact-shell .dashboard-message-tabs span,
+.dashboard.agent-compact-shell .dashboard-conversation-head span {
+  min-width: 24px;
+  height: 24px;
+  font-size: 0.72rem;
+}
+
+.dashboard.agent-compact-shell .agent-match-filter,
+.dashboard.agent-compact-shell .dashboard-message-search,
+.dashboard.agent-compact-shell .dashboard-message-filter {
+  min-height: 44px;
+  border-radius: 11px;
+}
+
+.dashboard.agent-compact-shell .agent-match-filter {
+  min-width: 150px;
+  padding: 0 36px 0 13px;
+}
+
+.dashboard.agent-compact-shell .agent-match-filter select,
+.dashboard.agent-compact-shell .dashboard-message-filter select {
+  min-height: 42px;
+  font-size: 0.86rem;
+}
+
+.dashboard.agent-compact-shell .agent-match-total {
+  font-size: 0.94rem;
+}
+
+.dashboard.agent-compact-shell .agent-match-card {
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 18px;
+  padding: 16px;
+}
+
+.dashboard.agent-compact-shell .agent-match-photo {
+  border-radius: 13px;
+}
+
+.dashboard.agent-compact-shell .agent-match-photo span {
+  left: 10px;
+  bottom: 10px;
+  min-height: 28px;
+  padding: 5px 9px;
+  font-size: 0.78rem;
+}
+
+.dashboard.agent-compact-shell .agent-match-content {
+  gap: 11px;
+}
+
+.dashboard.agent-compact-shell .agent-match-status {
+  min-height: 30px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+}
+
+.dashboard.agent-compact-shell .agent-match-unread,
+.dashboard.agent-compact-shell .agent-match-time {
+  font-size: 0.78rem;
+}
+
+.dashboard.agent-compact-shell .agent-match-content h3 {
+  font-size: clamp(1.18rem, 2.6vw, 1.55rem);
+  line-height: 1.12;
+}
+
+.dashboard.agent-compact-shell .agent-match-price {
+  padding-bottom: 9px;
+  font-size: 0.88rem;
+}
+
+.dashboard.agent-compact-shell .agent-match-facts {
+  gap: 9px;
+}
+
+.dashboard.agent-compact-shell .agent-match-facts > div {
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 1px 7px;
+}
+
+.dashboard.agent-compact-shell .agent-match-facts span {
+  width: 34px;
+  height: 34px;
+}
+
+.dashboard.agent-compact-shell .agent-match-facts span svg {
+  width: 17px;
+  height: 17px;
+}
+
+.dashboard.agent-compact-shell .agent-match-facts strong {
+  font-size: 0.82rem;
+}
+
+.dashboard.agent-compact-shell .agent-match-facts small {
+  font-size: 0.68rem;
+}
+
+.dashboard.agent-compact-shell .agent-match-actions {
+  grid-template-columns: minmax(120px, 1fr) minmax(140px, 1.1fr) 46px;
+  gap: 9px;
+}
+
+.dashboard.agent-compact-shell .agent-match-secondary,
+.dashboard.agent-compact-shell .agent-match-primary,
+.dashboard.agent-compact-shell .agent-match-menu-button,
+.dashboard.agent-compact-shell .agent-match-chat-submit {
+  min-height: 42px;
+  border-radius: 10px;
+  padding: 9px 10px;
+  font-size: 0.82rem;
+}
+
+.dashboard.agent-compact-shell .agent-match-menu-button {
+  width: 46px;
+}
+
+.dashboard.agent-compact-shell .agent-match-details,
+.dashboard.agent-compact-shell .agent-match-chat {
+  gap: 10px;
+  border-radius: 13px;
+  padding: 12px;
+}
+
+.dashboard.agent-compact-shell .agent-match-chat-log {
+  max-height: 230px;
+}
+
+.dashboard.agent-compact-shell .agent-matches-empty {
+  padding: 18px;
+}
+
+.dashboard.agent-compact-shell .agent-profile-hero-card {
+  grid-template-columns: 84px minmax(0, 1fr) auto;
+  gap: 16px;
+  padding: 18px;
+}
+
+.dashboard.agent-compact-shell .agent-profile-photo {
+  width: 84px;
+}
+
+.dashboard.agent-compact-shell .agent-profile-identity {
+  gap: 8px;
+}
+
+.dashboard.agent-compact-shell .agent-profile-identity h2 {
+  font-size: clamp(1.35rem, 3vw, 1.85rem);
+}
+
+.dashboard.agent-compact-shell .agent-profile-identity span {
+  min-height: 32px;
+  padding: 6px 11px;
+  font-size: 0.86rem;
+}
+
+.dashboard.agent-compact-shell .agent-profile-kyc-button {
+  min-height: 46px;
+  gap: 8px;
+  border-radius: 11px;
+  padding: 10px 14px;
+  font-size: 0.84rem;
+}
+
+.dashboard.agent-compact-shell .agent-profile-info-card {
+  padding: 14px 18px;
+}
+
+.dashboard.agent-compact-shell .agent-profile-info-card > div {
+  grid-template-columns: 44px minmax(110px, 0.34fr) minmax(0, 1fr);
+  gap: 12px;
+  min-height: 70px;
+}
+
+.dashboard.agent-compact-shell .agent-profile-info-card span {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+
+.dashboard.agent-compact-shell .agent-profile-info-card span svg {
+  width: 20px;
+  height: 20px;
+}
+
+.dashboard.agent-compact-shell .agent-profile-info-card strong,
+.dashboard.agent-compact-shell .agent-profile-info-card p {
+  font-size: 0.92rem;
+}
+
+.dashboard.agent-compact-shell .agent-profile-actions-card {
+  gap: 16px;
+  padding: 18px;
+}
+
+.dashboard.agent-compact-shell .agent-profile-actions-card h3 {
+  font-size: 1.15rem;
+}
+
+.dashboard.agent-compact-shell .agent-profile-actions-grid {
+  gap: 10px;
+}
+
+.dashboard.agent-compact-shell .agent-profile-actions-grid a,
+.dashboard.agent-compact-shell .agent-profile-actions-grid button {
+  min-height: 82px;
+  border-radius: 12px;
+  padding: 11px 8px;
+  font-size: 0.78rem;
+}
+
+.dashboard.agent-compact-shell .agent-profile-actions-grid span {
+  width: 38px;
+  height: 38px;
+}
+
+.dashboard.agent-compact-shell .agent-profile-actions-grid span svg {
+  width: 19px;
+  height: 19px;
+}
+
+.dashboard.agent-compact-shell .dashboard-messages-controls {
+  grid-template-columns: minmax(230px, 0.9fr) minmax(230px, 1fr) auto;
+}
+
+.dashboard.agent-compact-shell .dashboard-message-search {
+  padding: 0 13px;
+}
+
+.dashboard.agent-compact-shell .dashboard-message-filter {
+  min-width: 132px;
+  padding: 0 36px 0 13px;
+}
+
+.dashboard.agent-compact-shell .dashboard-message-layout {
+  grid-template-columns: minmax(280px, 0.82fr) minmax(0, 1.35fr);
+  gap: 12px;
+}
+
+.dashboard.agent-compact-shell .dashboard-conversation-head {
+  padding: 16px 16px 10px;
+}
+
+.dashboard.agent-compact-shell .dashboard-conversation-head strong {
+  font-size: 0.82rem;
+}
+
+.dashboard.agent-compact-shell .dashboard-conversation-list {
+  max-height: 630px;
+}
+
+.dashboard.agent-compact-shell .dashboard-conversation-item {
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  gap: 10px;
+  padding: 12px;
+}
+
+.dashboard.agent-compact-shell .dashboard-conversation-photo {
+  width: 64px;
+  height: 64px;
+}
+
+.dashboard.agent-compact-shell .dashboard-conversation-copy {
+  gap: 5px;
+}
+
+.dashboard.agent-compact-shell .dashboard-conversation-copy strong {
+  font-size: 0.88rem;
+}
+
+.dashboard.agent-compact-shell .dashboard-conversation-copy em,
+.dashboard.agent-compact-shell .dashboard-conversation-copy small,
+.dashboard.agent-compact-shell .dashboard-conversation-meta small {
+  font-size: 0.72rem;
+}
+
+.dashboard.agent-compact-shell .dashboard-conversation-meta b {
+  min-width: 24px;
+  height: 24px;
+  font-size: 0.7rem;
+}
+
+.dashboard.agent-compact-shell .dashboard-message-archive {
+  min-height: 42px;
+  margin: 12px;
+  border-radius: 10px;
+  font-size: 0.84rem;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-panel {
+  min-height: 630px;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-head {
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-property-photo {
+  width: 54px;
+  height: 54px;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-title h3 {
+  font-size: 1rem;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-title p {
+  margin-top: 5px;
+  font-size: 0.76rem;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-actions {
+  gap: 8px;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-icon-button {
+  width: 42px;
+  height: 42px;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-icon-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  gap: 10px;
+  margin: 0 14px 14px;
+  padding: 12px;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-summary > div {
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 1px 6px;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-summary > div span {
+  width: 34px;
+  height: 34px;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-summary > div span svg {
+  width: 17px;
+  height: 17px;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-summary strong {
+  font-size: 0.78rem;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-summary small {
+  font-size: 0.64rem;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-summary p {
+  font-size: 0.84rem;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-summary button {
+  min-width: 108px;
+  min-height: 38px;
+  border-radius: 9px;
+  font-size: 0.78rem;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-details {
+  margin: 0 14px 14px;
+  padding: 12px;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-thread {
+  min-height: 330px;
+  max-height: 560px;
+  gap: 10px;
+  padding: 16px;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-avatar {
+  width: 32px;
+  height: 32px;
+  font-size: 0.68rem;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-bubble {
+  max-width: min(78%, 370px);
+  padding: 10px 12px;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-bubble p {
+  font-size: 0.86rem;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-compose {
+  grid-template-columns: 40px minmax(0, 1fr) 46px;
+  gap: 8px;
+  padding: 12px;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-compose button {
+  width: 40px;
+  height: 40px;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-compose button:last-child {
+  width: 46px;
+  height: 46px;
+}
+
+.dashboard.agent-compact-shell .dashboard-dm-compose textarea {
+  min-height: 42px;
+  padding: 12px 14px;
+  font-size: 0.86rem;
+}
+
+.dashboard.agent-compact-shell .pricing-grid {
+  gap: 12px;
+}
+
+.dashboard.agent-compact-shell .pricing-card {
+  gap: 11px;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.dashboard.agent-compact-shell .pricing-card h3 {
+  font-size: 1rem;
+}
+
+.dashboard.agent-compact-shell .price {
+  font-size: 1.75rem;
+}
+
+.dashboard.agent-compact-shell .pricing-card ul {
+  gap: 6px;
+  padding-left: 16px;
+  font-size: 0.84rem;
+}
+
+.dashboard.agent-compact-shell .comparison-table {
+  min-width: 620px;
+}
+
+.dashboard.agent-compact-shell .comparison-table th,
+.dashboard.agent-compact-shell .comparison-table td {
+  padding: 10px;
+  font-size: 0.82rem;
+}
+
+.dashboard.agent-compact-shell .kyc-flow {
+  width: min(720px, 100%);
+  gap: 16px;
+  border-radius: 18px;
+  padding: 20px;
+}
+
+.dashboard.agent-compact-shell .kyc-step {
+  gap: 12px;
+}
+
+.dashboard.agent-compact-shell .kyc-title h1 {
+  font-size: 1.38rem;
+}
+
+.dashboard.agent-compact-shell .kyc-title span {
+  width: 36px;
+  height: 36px;
+}
+
+.dashboard.agent-compact-shell .kyc-check-grid label {
+  border-radius: 10px;
+  padding: 9px 10px;
+  font-size: 0.8rem;
+}
+
+.dashboard.agent-compact-shell .kyc-add-location,
+.dashboard.agent-compact-shell .kyc-file-field strong {
+  min-height: 42px;
+}
+
+.dashboard.agent-compact-shell .kyc-submitted {
+  padding: 26px;
+}
+
+.dashboard.agent-compact-shell .kyc-success-illustration {
+  width: 150px;
+  height: 150px;
+}
+
+.agent-dashboard-ui {
+  overflow-x: hidden;
+}
+
+@media (max-width: 860px) {
+  .dashboard.agent-compact-shell .dashboard-messages-controls,
+  .dashboard.agent-compact-shell .dashboard-message-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard.agent-compact-shell .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-card {
+    grid-template-columns: 120px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard.agent-compact-shell {
+    padding: 12px 12px 96px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-topbar {
+    gap: 8px;
+    border-radius: 16px;
+    margin-bottom: 12px;
+    padding: 12px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-topbar .brand {
+    gap: 8px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-topbar .brand img {
+    width: 38px;
+    height: 38px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-topbar .brand span {
+    font-size: 1rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-topbar .brand small {
+    font-size: 0.66rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-title {
+    margin-top: 2px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-title .kicker {
+    margin-bottom: 5px;
+    font-size: 0.66rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-title h1 {
+    font-size: 1.42rem;
+    line-height: 1.08;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-topbar > .mobile-menu-button {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-topbar > .mobile-menu-button svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-grid,
+  .dashboard.agent-compact-shell .agent-matches-page,
+  .dashboard.agent-compact-shell .agent-profile-page,
+  .dashboard.agent-compact-shell .dashboard-messages-page {
+    gap: 11px;
+  }
+
+  .dashboard.agent-compact-shell .panel,
+  .dashboard.agent-compact-shell .subscription-card,
+  .dashboard.agent-compact-shell .pricing-card,
+  .dashboard.agent-compact-shell .agent-match-card,
+  .dashboard.agent-compact-shell .agent-matches-empty,
+  .dashboard.agent-compact-shell .agent-profile-hero-card,
+  .dashboard.agent-compact-shell .agent-profile-info-card,
+  .dashboard.agent-compact-shell .agent-profile-actions-card,
+  .dashboard.agent-compact-shell .dashboard-conversation-panel,
+  .dashboard.agent-compact-shell .dashboard-dm-panel,
+  .dashboard.agent-compact-shell .kyc-flow,
+  .dashboard.agent-compact-shell .kyc-submitted {
+    border-radius: 16px;
+  }
+
+  .dashboard.agent-compact-shell .panel {
+    padding: 12px;
+  }
+
+  .dashboard.agent-compact-shell .panel h2,
+  .dashboard.agent-compact-shell .subscription-card-head h2 {
+    font-size: 1rem;
+  }
+
+  .dashboard.agent-compact-shell .panel p {
+    font-size: 0.72rem;
+    line-height: 1.42;
+  }
+
+  .dashboard.agent-compact-shell .button,
+  .dashboard.agent-compact-shell .subscription-card-action {
+    min-height: 36px;
+    padding: 8px 10px;
+    font-size: 0.68rem;
+  }
+
+  .dashboard.agent-compact-shell .subscription-card {
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .dashboard.agent-compact-shell .subscription-card-head {
+    gap: 8px;
+  }
+
+  .dashboard.agent-compact-shell .subscription-card-head .badge {
+    margin-top: 6px;
+    padding: 5px 9px;
+    font-size: 0.66rem;
+  }
+
+  .dashboard.agent-compact-shell .subscription-card-action {
+    min-width: 90px;
+  }
+
+  .dashboard.agent-compact-shell .quota-row {
+    gap: 7px;
+  }
+
+  .dashboard.agent-compact-shell .quota-row > article {
+    min-height: 60px;
+    gap: 5px;
+    padding: 7px 6px;
+  }
+
+  .dashboard.agent-compact-shell .quota-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .dashboard.agent-compact-shell .quota-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .dashboard.agent-compact-shell .quota-row > article div span {
+    font-size: 0.58rem;
+  }
+
+  .dashboard.agent-compact-shell .quota-row > article div strong {
+    font-size: 0.72rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-matches-board,
+  .dashboard.agent-compact-shell .agent-match-stack {
+    gap: 10px;
+  }
+
+  .dashboard.agent-compact-shell .agent-matches-controls,
+  .dashboard.agent-compact-shell .dashboard-messages-controls {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-tabs,
+  .dashboard.agent-compact-shell .dashboard-message-tabs {
+    width: 100%;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-tabs button,
+  .dashboard.agent-compact-shell .dashboard-message-tabs button {
+    min-height: 36px;
+    gap: 5px;
+    padding: 7px 6px;
+    font-size: 0.68rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-tabs span,
+  .dashboard.agent-compact-shell .dashboard-message-tabs span,
+  .dashboard.agent-compact-shell .dashboard-conversation-head span {
+    min-width: 20px;
+    height: 20px;
+    font-size: 0.62rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-filter,
+  .dashboard.agent-compact-shell .dashboard-message-filter {
+    min-width: 104px;
+    min-height: 36px;
+    gap: 5px;
+    padding: 0 28px 0 9px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-filter select,
+  .dashboard.agent-compact-shell .dashboard-message-filter select {
+    min-height: 34px;
+    font-size: 0.66rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-filter svg,
+  .dashboard.agent-compact-shell .dashboard-message-filter svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-filter svg:last-child,
+  .dashboard.agent-compact-shell .dashboard-message-filter svg:last-child {
+    right: 9px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-total {
+    font-size: 0.72rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-card {
+    grid-template-columns: 78px minmax(0, 1fr);
+    gap: 9px;
+    padding: 10px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-photo {
+    margin-top: 4px;
+    border-radius: 10px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-photo span {
+    left: 6px;
+    bottom: 6px;
+    min-height: 22px;
+    gap: 4px;
+    padding: 3px 6px;
+    font-size: 0.58rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-photo span svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-content {
+    gap: 7px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-card-top {
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-badges {
+    gap: 5px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-status {
+    min-height: 24px;
+    padding: 4px 8px;
+    font-size: 0.58rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-unread,
+  .dashboard.agent-compact-shell .agent-match-time {
+    gap: 4px;
+    font-size: 0.58rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-time svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-content h3 {
+    font-size: 1rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-price {
+    margin: -2px 0 0;
+    padding-bottom: 7px;
+    font-size: 0.66rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-facts {
+    gap: 5px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-facts > div {
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 1px 4px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-facts span {
+    width: 24px;
+    height: 24px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-facts span svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-facts strong {
+    font-size: 0.58rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-facts small {
+    font-size: 0.5rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-actions {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 34px;
+    gap: 6px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-secondary,
+  .dashboard.agent-compact-shell .agent-match-primary,
+  .dashboard.agent-compact-shell .agent-match-menu-button,
+  .dashboard.agent-compact-shell .agent-match-chat-submit {
+    min-height: 34px;
+    border-radius: 8px;
+    padding: 7px 5px;
+    font-size: 0.58rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-primary {
+    gap: 4px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-primary svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-menu-button {
+    width: 34px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-menu-button svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-details,
+  .dashboard.agent-compact-shell .agent-match-chat {
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-details dl {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-details dt,
+  .dashboard.agent-compact-shell .agent-match-message span {
+    font-size: 0.6rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-details dd,
+  .dashboard.agent-compact-shell .agent-match-message p {
+    font-size: 0.72rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-message {
+    width: min(92%, 280px);
+    padding: 8px 10px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-chat-form textarea {
+    min-height: 72px;
+    padding: 10px;
+    font-size: 0.72rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-matches-empty {
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .dashboard.agent-compact-shell .agent-matches-empty h3 {
+    font-size: 1rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-matches-empty p,
+  .dashboard.agent-compact-shell .agent-matches-empty a,
+  .dashboard.agent-compact-shell .agent-matches-empty button {
+    font-size: 0.72rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-hero-card {
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-photo {
+    width: 48px;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-identity {
+    gap: 5px;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-identity h2 {
+    font-size: 1rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-identity span {
+    min-height: 24px;
+    gap: 4px;
+    padding: 4px 7px;
+    font-size: 0.62rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-identity span svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-kyc-button {
+    min-height: 34px;
+    gap: 5px;
+    border-radius: 8px;
+    padding: 8px 9px;
+    font-size: 0.62rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-kyc-button svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-info-card {
+    padding: 10px 12px;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-info-card > div {
+    grid-template-columns: 30px minmax(72px, 0.34fr) minmax(0, 1fr);
+    gap: 7px;
+    min-height: 48px;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-info-card span {
+    width: 28px;
+    height: 28px;
+    border-radius: 9px;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-info-card span svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-info-card strong,
+  .dashboard.agent-compact-shell .agent-profile-info-card p {
+    font-size: 0.66rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-actions-card {
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-actions-card h3 {
+    font-size: 0.9rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-actions-grid {
+    gap: 7px;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-actions-grid a,
+  .dashboard.agent-compact-shell .agent-profile-actions-grid button {
+    min-height: 58px;
+    border-radius: 10px;
+    padding: 7px 4px;
+    font-size: 0.56rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-actions-grid span {
+    width: 28px;
+    height: 28px;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-actions-grid span svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-activity-panel {
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-activity-panel li {
+    padding: 8px;
+    font-size: 0.66rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-messages-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-message-search {
+    min-height: 36px;
+    padding: 0 10px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-message-search svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-message-search input {
+    font-size: 0.68rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-message-layout {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-conversation-head {
+    padding: 12px 12px 7px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-conversation-head strong {
+    font-size: 0.66rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-conversation-list {
+    max-height: 280px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-conversation-item {
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    gap: 7px;
+    padding: 9px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-conversation-photo {
+    width: 48px;
+    height: 48px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-conversation-copy {
+    gap: 3px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-conversation-copy strong {
+    font-size: 0.7rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-conversation-copy em,
+  .dashboard.agent-compact-shell .dashboard-conversation-copy small,
+  .dashboard.agent-compact-shell .dashboard-conversation-meta small {
+    font-size: 0.58rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-conversation-meta b {
+    min-width: 20px;
+    height: 20px;
+    font-size: 0.58rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-message-archive {
+    min-height: 36px;
+    margin: 10px;
+    font-size: 0.68rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-panel {
+    min-height: 0;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-head {
+    gap: 8px;
+    padding: 11px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-title {
+    gap: 8px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-property-photo {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-title h3 {
+    font-size: 0.76rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-title p {
+    margin-top: 3px;
+    font-size: 0.58rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-actions {
+    gap: 6px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-icon-button {
+    width: 34px;
+    height: 34px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-icon-button svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    margin: 0 10px 10px;
+    padding: 9px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-summary > div {
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 1px 4px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-summary > div span {
+    width: 24px;
+    height: 24px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-summary > div span svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-summary strong {
+    font-size: 0.58rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-summary small {
+    font-size: 0.48rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-summary p {
+    grid-column: 1 / -1;
+    font-size: 0.62rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-summary button {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    min-height: 34px;
+    font-size: 0.62rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-details {
+    margin: 0 10px 10px;
+    padding: 9px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-details dl {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-details dt,
+  .dashboard.agent-compact-shell .dashboard-dm-details dd {
+    font-size: 0.62rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-thread {
+    min-height: 250px;
+    max-height: 420px;
+    gap: 8px;
+    padding: 11px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-date {
+    font-size: 0.58rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-avatar {
+    width: 26px;
+    height: 26px;
+    font-size: 0.58rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-bubble {
+    max-width: min(84%, 260px);
+    border-radius: 10px;
+    padding: 8px 10px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-bubble p {
+    font-size: 0.68rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-bubble small {
+    font-size: 0.56rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-compose {
+    grid-template-columns: 34px minmax(0, 1fr) 38px;
+    gap: 6px;
+    padding: 10px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-compose button {
+    width: 34px;
+    height: 34px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-compose button:last-child {
+    width: 38px;
+    height: 38px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-compose button svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-compose textarea {
+    min-height: 36px;
+    padding: 10px 12px;
+    font-size: 0.68rem;
+  }
+
+  .dashboard.agent-compact-shell .pricing-card {
+    gap: 9px;
+    padding: 12px;
+  }
+
+  .dashboard.agent-compact-shell .pricing-card h3 {
+    font-size: 0.86rem;
+  }
+
+  .dashboard.agent-compact-shell .price {
+    font-size: 1.25rem;
+  }
+
+  .dashboard.agent-compact-shell .price span,
+  .dashboard.agent-compact-shell .pricing-card ul,
+  .dashboard.agent-compact-shell .restriction-copy {
+    font-size: 0.68rem;
+  }
+
+  .dashboard.agent-compact-shell .comparison-table th,
+  .dashboard.agent-compact-shell .comparison-table td {
+    padding: 8px;
+    font-size: 0.68rem;
+  }
+
+  .dashboard.agent-compact-shell .kyc-flow {
+    gap: 11px;
+    padding: 12px;
+  }
+
+  .dashboard.agent-compact-shell .kyc-flow-header {
+    grid-template-columns: 34px minmax(0, 1fr) 34px;
+  }
+
+  .dashboard.agent-compact-shell .kyc-back {
+    width: 34px;
+    height: 34px;
+  }
+
+  .dashboard.agent-compact-shell .kyc-brand {
+    gap: 6px;
+    font-size: 0.96rem;
+  }
+
+  .dashboard.agent-compact-shell .kyc-brand img {
+    width: 34px;
+    height: 34px;
+  }
+
+  .dashboard.agent-compact-shell .kyc-progress li {
+    gap: 5px;
+  }
+
+  .dashboard.agent-compact-shell .kyc-progress li > span {
+    width: 24px;
+    height: 24px;
+    font-size: 0.66rem;
+  }
+
+  .dashboard.agent-compact-shell .kyc-progress li:not(:last-child)::after {
+    top: 11px;
+    left: calc(50% + 13px);
+    right: calc(-50% + 13px);
+  }
+
+  .dashboard.agent-compact-shell .kyc-progress li small {
+    font-size: 0.48rem;
+  }
+
+  .dashboard.agent-compact-shell .kyc-title {
+    gap: 8px;
+  }
+
+  .dashboard.agent-compact-shell .kyc-title span {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+  }
+
+  .dashboard.agent-compact-shell .kyc-title h1 {
+    font-size: 1rem;
+  }
+
+  .dashboard.agent-compact-shell .kyc-two-col,
+  .dashboard.agent-compact-shell .kyc-doc-grid,
+  .dashboard.agent-compact-shell .kyc-check-grid,
+  .dashboard.agent-compact-shell .kyc-check-grid.compact,
+  .dashboard.agent-compact-shell .kyc-location-builder {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .dashboard.agent-compact-shell .kyc-check-grid label {
+    gap: 7px;
+    padding: 7px 8px;
+    font-size: 0.66rem;
+  }
+
+  .dashboard.agent-compact-shell .kyc-add-location,
+  .dashboard.agent-compact-shell .kyc-file-field strong {
+    min-height: 36px;
+    padding: 9px 10px;
+    font-size: 0.68rem;
+  }
+
+  .dashboard.agent-compact-shell .kyc-location-tags button {
+    min-height: 28px;
+    padding: 5px 8px;
+    font-size: 0.62rem;
+  }
+
+  .dashboard.agent-compact-shell .kyc-submitted {
+    padding: 18px 12px;
+  }
+
+  .dashboard.agent-compact-shell .kyc-success-illustration {
+    width: 112px;
+    height: 112px;
+  }
+
+  .dashboard.agent-compact-shell .kyc-clock {
+    width: 30px;
+    height: 30px;
+  }
+
+  .dashboard.agent-compact-shell .kyc-check {
+    width: 34px;
+    height: 34px;
+  }
+
+  .dashboard.agent-compact-shell .kyc-status-badge {
+    padding: 6px 10px;
+    font-size: 0.62rem;
+  }
+
+  .dashboard.agent-compact-shell .kyc-submitted h1 {
+    margin-top: 12px;
+    font-size: 1.1rem;
+  }
+
+  .dashboard.agent-compact-shell .kyc-submitted p,
+  .dashboard.agent-compact-shell .kyc-status-card,
+  .dashboard.agent-compact-shell .kyc-action-list a {
+    font-size: 0.68rem;
+  }
+
+  .agent-dashboard-ui {
+    width: 100%;
+    max-width: none;
+    padding: 12px 12px 96px;
+    background:
+      radial-gradient(circle at 14% 0%, rgba(201, 133, 24, 0.08), transparent 28%),
+      radial-gradient(circle at 92% 10%, rgba(4, 19, 45, 0.07), transparent 30%),
+      linear-gradient(135deg, #f8fafc 0%, #fff 46%, #f3f6fa 100%);
+  }
+
+  .agent-dashboard-ui .mobile-dashboard-header {
+    grid-template-columns: minmax(0, 1fr) 36px 38px;
+    gap: 8px;
+    border: 1px solid rgba(217, 226, 238, 0.9);
+    border-radius: 16px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 18px 52px rgba(8, 20, 39, 0.08);
+    backdrop-filter: blur(16px);
+  }
+
+  .agent-dashboard-ui .mobile-dashboard-brand {
+    gap: 8px;
+  }
+
+  .agent-dashboard-ui .mobile-dashboard-brand img {
+    width: 38px;
+    height: 38px;
+  }
+
+  .agent-dashboard-ui .mobile-dashboard-brand > span {
+    font-size: 1rem;
+  }
+
+  .agent-dashboard-ui .mobile-dashboard-brand small {
+    font-size: 0.66rem;
+  }
+
+  .agent-dashboard-ui .dashboard-bell {
+    width: 34px;
+    height: 34px;
+  }
+
+  .agent-dashboard-ui .mobile-dashboard-header .mobile-menu-button {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+
+  .agent-dashboard-ui .agent-hero-reference {
+    min-height: 160px;
+    grid-template-columns: minmax(0, 1fr) 42%;
+    border-radius: 16px;
+    margin: 12px 0;
+    padding: 14px;
+  }
+
+  .agent-dashboard-ui .agent-hero-reference p {
+    margin-bottom: 6px;
+    font-size: 0.66rem;
+  }
+
+  .agent-dashboard-ui .agent-hero-reference h1 {
+    max-width: 15ch;
+    font-size: 1.22rem;
+    line-height: 1.1;
+  }
+
+  .agent-dashboard-ui .agent-hero-reference > div > span {
+    max-width: 20ch;
+    margin-top: 7px;
+    font-size: 0.66rem;
+    line-height: 1.35;
+  }
+
+  .agent-dashboard-ui .agent-shield-art {
+    width: 46%;
+    opacity: 0.9;
+  }
+
+  .agent-dashboard-ui .agent-progress-lockup {
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .agent-dashboard-ui .agent-progress-ring {
+    width: 44px;
+    height: 44px;
+  }
+
+  .agent-dashboard-ui .agent-progress-ring strong {
+    font-size: 0.66rem;
+  }
+
+  .agent-dashboard-ui .agent-progress-lockup > div:last-child strong {
+    font-size: 0.64rem;
+  }
+
+  .agent-dashboard-ui .agent-progress-lockup small {
+    margin-top: 2px;
+    font-size: 0.58rem;
+  }
+
+  .agent-dashboard-ui .agent-stat-grid {
+    gap: 7px;
+    margin-bottom: 12px;
+  }
+
+  .agent-dashboard-ui .agent-stat-card {
+    min-height: 76px;
+    border-radius: 14px;
+    padding: 8px 6px;
+  }
+
+  .agent-dashboard-ui .agent-stat-card span {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 6px;
+    border-radius: 9px;
+  }
+
+  .agent-dashboard-ui .agent-stat-card span svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .agent-dashboard-ui .agent-stat-card strong {
+    font-size: 0.95rem;
+  }
+
+  .agent-dashboard-ui .agent-stat-card p,
+  .agent-dashboard-ui .agent-stat-card a {
+    margin-top: 4px;
+    font-size: 0.54rem;
+  }
+
+  .agent-dashboard-ui .agent-kyc-status-card {
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 8px;
+    border-radius: 16px;
+    margin-bottom: 12px;
+    padding: 10px;
+  }
+
+  .agent-dashboard-ui .agent-kyc-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .agent-dashboard-ui .agent-kyc-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .agent-dashboard-ui .agent-kyc-copy em {
+    padding: 4px 7px;
+    font-size: 0.54rem;
+  }
+
+  .agent-dashboard-ui .agent-kyc-copy h2 {
+    margin: 7px 0 4px;
+    font-size: 0.86rem;
+  }
+
+  .agent-dashboard-ui .agent-kyc-copy p,
+  .agent-dashboard-ui .agent-kyc-copy > strong {
+    font-size: 0.62rem;
+  }
+
+  .agent-dashboard-ui .agent-kyc-progress {
+    height: 5px;
+    margin: 9px 0 5px;
+  }
+
+  .agent-dashboard-ui .agent-kyc-status-card > a {
+    grid-column: 1 / -1;
+    justify-content: center;
+    min-height: 34px;
+    border-radius: 9px;
+    padding: 8px 10px;
+    font-size: 0.62rem;
+  }
+
+  .agent-dashboard-ui .agent-quick-actions {
+    margin-bottom: 12px;
+  }
+
+  .agent-dashboard-ui .agent-quick-actions h2,
+  .agent-dashboard-ui .mobile-section-row h2,
+  .agent-dashboard-ui .agent-dashboard-section h2 {
+    margin-bottom: 8px;
+    font-size: 0.82rem;
+  }
+
+  .agent-dashboard-ui .agent-quick-actions > div {
+    gap: 8px;
+  }
+
+  .agent-dashboard-ui .agent-quick-actions a {
+    grid-template-columns: 34px minmax(0, 1fr) 18px;
+    min-height: 58px;
+    gap: 2px 8px;
+    border-radius: 14px;
+    padding: 8px;
+  }
+
+  .agent-dashboard-ui .agent-quick-actions span {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+  }
+
+  .agent-dashboard-ui .agent-quick-actions span svg,
+  .agent-dashboard-ui .agent-quick-actions svg:last-child {
+    width: 15px;
+    height: 15px;
+  }
+
+  .agent-dashboard-ui .agent-quick-actions strong {
+    font-size: 0.66rem;
+  }
+
+  .agent-dashboard-ui .agent-quick-actions small {
+    font-size: 0.54rem;
+  }
+
+  .agent-dashboard-ui .agent-dashboard-section {
+    gap: 8px;
+    border-radius: 16px;
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+
+  .agent-dashboard-ui .mobile-section-row {
+    gap: 8px;
+    margin-bottom: 0;
+  }
+
+  .agent-dashboard-ui .mobile-section-row > a {
+    min-height: 32px;
+    border-radius: 8px;
+    padding: 7px 9px;
+    font-size: 0.6rem;
+  }
+
+  .agent-dashboard-ui .dashboard-muted-copy,
+  .agent-dashboard-ui .agent-mini-list strong,
+  .agent-dashboard-ui .agent-mini-list small {
+    font-size: 0.62rem;
+  }
+
+  .agent-dashboard-ui .agent-mini-list {
+    gap: 7px;
+  }
+
+  .agent-dashboard-ui .agent-mini-list article {
+    border-radius: 10px;
+    padding: 8px;
+  }
+
+  .agent-dashboard-ui .mobile-bottom-nav {
+    border-radius: 18px 18px 0 0;
+    padding: 8px 8px 10px;
+  }
+
+  .agent-dashboard-ui .mobile-bottom-nav a {
+    gap: 4px;
+    font-size: 0.56rem;
+  }
+
+  .agent-dashboard-ui .mobile-bottom-nav svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .agent-dashboard-ui .mobile-bottom-nav.agent a.active svg {
+    padding: 6px;
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 380px) {
+  .dashboard.agent-compact-shell {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-topbar,
+  .agent-dashboard-ui .mobile-dashboard-header {
+    padding: 10px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-topbar .brand img,
+  .agent-dashboard-ui .mobile-dashboard-brand img {
+    width: 34px;
+    height: 34px;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-topbar .brand span,
+  .agent-dashboard-ui .mobile-dashboard-brand > span {
+    font-size: 0.92rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-topbar .brand small,
+  .agent-dashboard-ui .mobile-dashboard-brand small {
+    font-size: 0.6rem;
+  }
+
+  .dashboard.agent-compact-shell .dashboard-topbar > .mobile-menu-button,
+  .agent-dashboard-ui .mobile-dashboard-header .mobile-menu-button {
+    width: 34px;
+    height: 34px;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-card {
+    grid-template-columns: 70px minmax(0, 1fr);
+  }
+
+  .dashboard.agent-compact-shell .agent-match-content h3 {
+    font-size: 0.92rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-match-secondary,
+  .dashboard.agent-compact-shell .agent-match-primary,
+  .dashboard.agent-compact-shell .agent-match-menu-button {
+    min-height: 32px;
+    font-size: 0.54rem;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-hero-card {
+    grid-template-columns: 42px minmax(0, 1fr);
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-kyc-button {
+    grid-column: 1 / -1;
+  }
+
+  .dashboard.agent-compact-shell .agent-profile-actions-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-summary > div {
+    grid-template-columns: 22px minmax(0, 1fr);
+  }
+
+  .dashboard.agent-compact-shell .dashboard-dm-summary > div span {
+    width: 22px;
+    height: 22px;
+  }
+
+  .agent-dashboard-ui {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .agent-dashboard-ui .agent-hero-reference {
+    min-height: 150px;
+    padding: 12px;
+  }
+
+  .agent-dashboard-ui .agent-hero-reference h1 {
+    font-size: 1.08rem;
+  }
+}

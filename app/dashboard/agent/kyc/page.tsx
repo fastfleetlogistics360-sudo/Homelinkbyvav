@@ -28,7 +28,7 @@ export default async function AgentKycPage({
 
   if (params?.submitted === "1") {
     return (
-      <DashboardShell kicker="Agent dashboard" nav={AGENT_DASHBOARD_NAV} title="KYC Submitted">
+      <DashboardShell className="agent-compact-shell" kicker="Agent dashboard" nav={AGENT_DASHBOARD_NAV} title="KYC Submitted">
         <section className="kyc-submitted">
           <div className="kyc-success-illustration" aria-hidden="true">
             <span className="kyc-clock">
@@ -81,6 +81,7 @@ export default async function AgentKycPage({
 
   return (
     <DashboardShell
+      className="agent-compact-shell"
       kicker="Agent dashboard"
       nav={AGENT_DASHBOARD_NAV}
       title="KYC Verification"

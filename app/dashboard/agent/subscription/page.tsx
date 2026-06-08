@@ -34,7 +34,7 @@ export default async function AgentSubscriptionPage({ searchParams }: Subscripti
   const currentPlan = planForAgent(agent);
 
   return (
-    <DashboardShell kicker="Agent dashboard" nav={AGENT_DASHBOARD_NAV} title="Subscription">
+    <DashboardShell className="agent-compact-shell" kicker="Agent dashboard" nav={AGENT_DASHBOARD_NAV} title="Subscription">
       {params?.quota === "exhausted" ? (
         <section className="panel upgrade-modal" role="status">
           <span className="badge pending">Quota exhausted</span>

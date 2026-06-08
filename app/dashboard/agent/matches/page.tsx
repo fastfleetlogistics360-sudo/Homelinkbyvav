@@ -34,7 +34,7 @@ export default async function AgentMatchesPage() {
   }));
 
   return (
-    <DashboardShell kicker="Agent dashboard" nav={AGENT_DASHBOARD_NAV} title="Matches">
+    <DashboardShell className="agent-compact-shell" kicker="Agent dashboard" nav={AGENT_DASHBOARD_NAV} title="Matches">
       <div className="agent-matches-page">
         <div className="agent-matches-heading">
           <p>Agent Dashboard</p>

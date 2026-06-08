@@ -9,7 +9,7 @@ export default async function AgentMessagesPage() {
   const conversations = await getDashboardConversations(user.id, "agent");
 
   return (
-    <DashboardShell kicker="Agent dashboard" nav={AGENT_DASHBOARD_NAV} title="Messages">
+    <DashboardShell className="agent-compact-shell" kicker="Agent dashboard" nav={AGENT_DASHBOARD_NAV} title="Messages">
       <DashboardMessagesBoard accountType="agent" conversations={conversations} currentUserId={user.id} returnTo="/dashboard/agent/messages" />
     </DashboardShell>
   );

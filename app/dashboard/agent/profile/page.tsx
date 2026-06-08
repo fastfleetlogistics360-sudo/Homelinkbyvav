@@ -42,7 +42,7 @@ export default async function AgentProfilePage({
   ];
 
   return (
-    <DashboardShell kicker="Agent dashboard" nav={AGENT_DASHBOARD_NAV} title="Profile">
+    <DashboardShell className="agent-compact-shell" kicker="Agent dashboard" nav={AGENT_DASHBOARD_NAV} title="Profile">
       <section className="agent-profile-page">
         <header className="agent-profile-heading">
           <p>Agent Dashboard</p>
