@@ -6638,74 +6638,212 @@ textarea:focus {
   }
 
   .dashboard.agent-requests-shell {
-    padding: 16px 16px 104px;
+    padding: 12px 12px 96px;
   }
 
-  .dashboard.agent-requests-shell .agent-requests-page {
-    gap: 16px;
+  .dashboard.agent-requests-shell .dashboard-topbar {
+    gap: 8px 8px;
+    border-radius: 16px;
+    margin-bottom: 12px;
+    padding: 12px;
   }
 
-  .dashboard.agent-requests-shell .subscription-card {
-    border-radius: 20px;
-    padding: 18px;
+  .dashboard.agent-requests-shell .dashboard-topbar .brand {
+    gap: 8px;
   }
 
-  .dashboard.agent-requests-shell .subscription-card-head h2 {
-    font-size: 1.42rem;
-  }
-
-  .dashboard.agent-requests-shell .subscription-card-head .badge {
-    margin-top: 9px;
-    padding: 7px 13px;
-    font-size: 0.86rem;
-  }
-
-  .dashboard.agent-requests-shell .subscription-card-action {
-    min-width: 118px;
-    min-height: 46px;
-    padding-inline: 12px;
-    font-size: 0.86rem;
-  }
-
-  .dashboard.agent-requests-shell .quota-row > article {
-    min-height: 88px;
-    gap: 7px;
-    padding: 11px 9px;
-  }
-
-  .dashboard.agent-requests-shell .quota-icon {
+  .dashboard.agent-requests-shell .dashboard-topbar .brand img {
     width: 38px;
     height: 38px;
   }
 
+  .dashboard.agent-requests-shell .dashboard-topbar .brand span {
+    font-size: 1rem;
+  }
+
+  .dashboard.agent-requests-shell .dashboard-topbar .brand small {
+    font-size: 0.66rem;
+  }
+
+  .dashboard.agent-requests-shell .dashboard-title {
+    margin-top: 2px;
+  }
+
+  .dashboard.agent-requests-shell .dashboard-title .kicker {
+    margin-bottom: 5px;
+    font-size: 0.66rem;
+  }
+
+  .dashboard.agent-requests-shell .dashboard-title h1 {
+    font-size: 1.42rem;
+    line-height: 1.08;
+  }
+
+  .dashboard.agent-requests-shell .dashboard-topbar > .mobile-menu-button {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+
+  .dashboard.agent-requests-shell .dashboard-topbar > .mobile-menu-button svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .dashboard.agent-requests-shell .agent-requests-page {
+    gap: 11px;
+  }
+
+  .dashboard.agent-requests-shell .subscription-card {
+    gap: 10px;
+    border-radius: 16px;
+    padding: 12px;
+  }
+
+  .dashboard.agent-requests-shell .subscription-card-head h2 {
+    font-size: 1rem;
+  }
+
+  .dashboard.agent-requests-shell .subscription-card-head .badge {
+    margin-top: 6px;
+    padding: 5px 9px;
+    font-size: 0.66rem;
+  }
+
+  .dashboard.agent-requests-shell .subscription-card-action {
+    min-width: 90px;
+    min-height: 34px;
+    border-radius: 8px;
+    padding-inline: 9px;
+    font-size: 0.68rem;
+  }
+
+  .dashboard.agent-requests-shell .quota-row {
+    gap: 7px;
+  }
+
+  .dashboard.agent-requests-shell .quota-row > article {
+    min-height: 60px;
+    gap: 5px;
+    border-radius: 10px;
+    padding: 7px 6px;
+  }
+
+  .dashboard.agent-requests-shell .quota-icon {
+    width: 28px;
+    height: 28px;
+  }
+
   .dashboard.agent-requests-shell .quota-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
+  }
+
+  .dashboard.agent-requests-shell .quota-row > article div span {
+    font-size: 0.58rem;
   }
 
   .dashboard.agent-requests-shell .quota-row > article div strong {
+    font-size: 0.72rem;
+  }
+
+  .dashboard.agent-requests-shell .agent-requests-toolbar {
+    gap: 8px;
+  }
+
+  .dashboard.agent-requests-shell .agent-requests-toolbar h2 {
     font-size: 0.98rem;
   }
 
+  .dashboard.agent-requests-shell .agent-request-sort {
+    min-width: 112px;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-sort select {
+    min-height: 36px;
+    border-radius: 9px;
+    padding: 8px 30px 8px 10px;
+    font-size: 0.68rem;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-sort svg {
+    right: 10px;
+    width: 14px;
+    height: 14px;
+  }
+
   .dashboard.agent-requests-shell .agent-request-stack {
-    gap: 14px;
+    gap: 10px;
   }
 
   .dashboard.agent-requests-shell .agent-request-card {
-    gap: 12px;
-    border-radius: 20px;
-    padding: 18px;
+    gap: 8px;
+    border-radius: 16px;
+    padding: 12px;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-status {
+    padding: 5px 10px;
+    font-size: 0.64rem;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-time {
+    gap: 4px;
+    font-size: 0.64rem;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-time svg {
+    width: 13px;
+    height: 13px;
   }
 
   .dashboard.agent-requests-shell .agent-request-card h3 {
-    font-size: 1.55rem;
+    font-size: 1.08rem;
+    line-height: 1.12;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-price {
+    padding-bottom: 8px;
+    font-size: 0.72rem;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-facts {
+    gap: 6px;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-facts > div {
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 1px 5px;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-facts span {
+    width: 28px;
+    height: 28px;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-facts span svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-facts strong {
+    font-size: 0.68rem;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-facts small {
+    font-size: 0.55rem;
+  }
+
+  .dashboard.agent-requests-shell .agent-request-actions {
+    gap: 7px;
   }
 
   .dashboard.agent-requests-shell .agent-request-secondary,
   .dashboard.agent-requests-shell .agent-request-primary {
-    min-height: 50px;
-    padding: 11px 9px;
-    font-size: 0.86rem;
+    min-height: 38px;
+    border-radius: 9px;
+    padding: 8px 7px;
+    font-size: 0.64rem;
   }
 
   .agent-matches-section {
@@ -7242,84 +7380,84 @@ textarea:focus {
 
 @media (max-width: 380px) {
   .dashboard.agent-requests-shell {
-    padding-right: 14px;
-    padding-left: 14px;
+    padding-right: 10px;
+    padding-left: 10px;
   }
 
   .dashboard.agent-requests-shell .dashboard-topbar {
-    padding: 16px;
+    padding: 10px;
   }
 
   .dashboard.agent-requests-shell .dashboard-topbar .brand img {
-    width: 48px;
-    height: 48px;
-  }
-
-  .dashboard.agent-requests-shell .dashboard-topbar .brand span {
-    font-size: 1.24rem;
-  }
-
-  .dashboard.agent-requests-shell .dashboard-topbar .brand small {
-    font-size: 0.78rem;
-  }
-
-  .dashboard.agent-requests-shell .dashboard-topbar > .mobile-menu-button {
-    width: 48px;
-    height: 48px;
-  }
-
-  .dashboard.agent-requests-shell .subscription-card,
-  .dashboard.agent-requests-shell .agent-request-card {
-    padding: 16px;
-  }
-
-  .dashboard.agent-requests-shell .subscription-card-head h2 {
-    font-size: 1.24rem;
-  }
-
-  .dashboard.agent-requests-shell .subscription-card-action {
-    min-width: 108px;
-    min-height: 44px;
-    padding-inline: 10px;
-    font-size: 0.8rem;
-  }
-
-  .dashboard.agent-requests-shell .quota-row > article {
-    min-height: 84px;
-    padding: 9px 7px;
-  }
-
-  .dashboard.agent-requests-shell .quota-icon {
     width: 34px;
     height: 34px;
   }
 
+  .dashboard.agent-requests-shell .dashboard-topbar .brand span {
+    font-size: 0.92rem;
+  }
+
+  .dashboard.agent-requests-shell .dashboard-topbar .brand small {
+    font-size: 0.6rem;
+  }
+
+  .dashboard.agent-requests-shell .dashboard-topbar > .mobile-menu-button {
+    width: 34px;
+    height: 34px;
+  }
+
+  .dashboard.agent-requests-shell .subscription-card,
+  .dashboard.agent-requests-shell .agent-request-card {
+    padding: 10px;
+  }
+
+  .dashboard.agent-requests-shell .subscription-card-head h2 {
+    font-size: 0.92rem;
+  }
+
+  .dashboard.agent-requests-shell .subscription-card-action {
+    min-width: 82px;
+    min-height: 32px;
+    padding-inline: 8px;
+    font-size: 0.62rem;
+  }
+
+  .dashboard.agent-requests-shell .quota-row > article {
+    min-height: 56px;
+    padding: 6px 5px;
+  }
+
+  .dashboard.agent-requests-shell .quota-icon {
+    width: 26px;
+    height: 26px;
+  }
+
   .dashboard.agent-requests-shell .quota-icon svg {
-    width: 17px;
-    height: 17px;
+    width: 13px;
+    height: 13px;
   }
 
   .dashboard.agent-requests-shell .agent-request-card h3 {
-    font-size: 1.38rem;
+    font-size: 1rem;
   }
 
   .dashboard.agent-requests-shell .agent-request-facts > div {
-    grid-template-columns: 36px minmax(0, 1fr);
+    grid-template-columns: 26px minmax(0, 1fr);
   }
 
   .dashboard.agent-requests-shell .agent-request-facts span {
-    width: 36px;
-    height: 36px;
+    width: 26px;
+    height: 26px;
   }
 
   .dashboard.agent-requests-shell .agent-request-facts span svg {
-    width: 17px;
-    height: 17px;
+    width: 13px;
+    height: 13px;
   }
 
   .dashboard.agent-requests-shell .agent-request-secondary,
   .dashboard.agent-requests-shell .agent-request-primary {
-    min-height: 48px;
-    font-size: 0.78rem;
+    min-height: 36px;
+    font-size: 0.6rem;
   }
 }
