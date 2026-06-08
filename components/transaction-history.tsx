@@ -1,3 +1,5 @@
+import { isSuccessfulPayment, paymentStatusLabel } from "@/lib/payment-status";
+
 type PaymentRow = {
   payment_id: string;
   reference: string;
@@ -52,7 +54,7 @@ export function TransactionHistory({ payments }: { payments: PaymentRow[] }) {
                 <strong>{formatAmount(payment)}</strong>
                 <span>{new Date(payment.created_at).toLocaleDateString("en-NG", { dateStyle: "medium" })}</span>
               </div>
-              <span className={`badge ${payment.status === "paid" ? "approved" : "pending"}`}>{payment.status}</span>
+              <span className={`badge ${isSuccessfulPayment(payment) ? "approved" : "pending"}`}>{paymentStatusLabel(payment)}</span>
             </article>
           ))}
         </div>

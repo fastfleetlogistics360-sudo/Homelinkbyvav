@@ -46,7 +46,7 @@ Create `.env.local` and provide the required secrets:
 
 ```env
 NEXT_PUBLIC_APP_URL=https://homelinkbyvav.vercel.app
-NEXT_PUBLIC_REFERRAL_BASE_URL=https://homelinkbyvav.com
+NEXT_PUBLIC_REFERRAL_BASE_URL=https://homelinkbyvav.com.ng
 
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
@@ -65,7 +65,7 @@ ADMIN_SESSION_SECRET=
 Notes:
 
 - `NEXT_PUBLIC_APP_URL` is used for auth callback and Paystack callback URLs.
-- `NEXT_PUBLIC_REFERRAL_BASE_URL` controls generated referral links. If missing, the referral service falls back to `https://homelinkbyvav.com`.
+- `NEXT_PUBLIC_REFERRAL_BASE_URL` controls generated referral links. If missing, the referral service falls back to `https://homelinkbyvav.com.ng`.
 - `REQUEST_ROUTING_FEE_NAIRA` defaults to `1000` if not set.
 - `SUPABASE_SERVICE_ROLE_KEY` must only be used server-side.
 
@@ -791,7 +791,7 @@ Referral URL:
 Fallback base URL:
 
 ```txt
-https://homelinkbyvav.com
+https://homelinkbyvav.com.ng
 ```
 
 Existing accounts:

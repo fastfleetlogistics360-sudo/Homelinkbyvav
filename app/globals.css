@@ -2597,7 +2597,8 @@ textarea:focus {
   inset: 0;
   z-index: 38;
   display: none;
-  background: rgba(4, 19, 45, 0.46);
+  background: rgba(4, 19, 45, 0.2);
+  backdrop-filter: blur(2px);
 }
 
 .mobile-drawer-backdrop.open {
@@ -2609,16 +2610,20 @@ textarea:focus {
   inset: 0 0 0 auto;
   z-index: 40;
   display: flex;
-  width: min(440px, 100%);
-  padding: 22px;
+  width: min(720px, 100%);
+  height: 100dvh;
+  min-height: 100vh;
+  padding: max(20px, env(safe-area-inset-top)) clamp(20px, 5vw, 40px) max(22px, env(safe-area-inset-bottom));
   background: #fff !important;
   color: var(--ink);
-  box-shadow: -30px 0 70px rgba(8, 20, 39, 0.18);
+  box-shadow: -10px 0 28px rgba(8, 20, 39, 0.08);
   isolation: isolate;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   transform: translateX(100%);
   transition: transform 220ms ease;
   flex-direction: column;
-  gap: 18px;
+  gap: 24px;
 }
 
 .mobile-drawer.open {
@@ -2628,78 +2633,128 @@ textarea:focus {
 .mobile-drawer-head,
 .mobile-drawer-brand,
 .mobile-drawer-list a,
-.mobile-drawer-signout button {
+.mobile-drawer-bottom-actions button,
+.mobile-drawer-bottom-actions a {
   display: flex;
   align-items: center;
 }
 
 .mobile-drawer-head {
   justify-content: space-between;
-  gap: 14px;
-  border-bottom: 1px solid #eef2f6;
-  padding-bottom: 16px;
+  gap: 16px;
+  border-bottom: 1px solid #edf1f5;
+  padding-bottom: 24px;
   background: #fff;
 }
 
 .mobile-drawer-brand {
   min-width: 0;
-  gap: 12px;
+  gap: clamp(12px, 3vw, 20px);
+}
+
+.mobile-drawer-brand img {
+  width: clamp(48px, 12vw, 64px);
+  height: clamp(48px, 12vw, 64px);
+  flex: 0 0 auto;
+  object-fit: contain;
 }
 
 .mobile-drawer-brand h2 {
   margin: 0;
-  max-width: 15ch;
+  max-width: min(13ch, 100%);
   overflow: hidden;
-  font-size: clamp(1.55rem, 7vw, 2.2rem);
-  line-height: 1.05;
+  color: var(--navy);
+  font-size: clamp(2rem, 8vw, 3.05rem);
+  font-weight: 950;
+  letter-spacing: 0;
+  line-height: 0.98;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .mobile-drawer-brand p {
-  margin: 4px 0 0;
-  color: var(--muted);
-  font-weight: 800;
+  margin: 8px 0 0;
+  color: #717b8d;
+  font-size: clamp(1.02rem, 4vw, 1.45rem);
+  font-weight: 900;
+  line-height: 1.05;
 }
 
 .mobile-menu-close {
   display: grid;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 auto;
   border: 0;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--navy);
 }
 
 .mobile-quick-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  gap: clamp(10px, 2.8vw, 18px);
 }
 
 .mobile-quick-grid a {
   display: grid;
-  min-height: 92px;
-  place-items: center;
-  border-radius: 8px;
-  border: 1px solid #e4eaf2;
-  padding: 12px;
-  background: #f8fafc;
+  min-height: clamp(112px, 26vw, 142px);
+  place-content: center;
+  justify-items: center;
+  gap: 12px;
+  border: 1px solid #e3e8f0;
+  border-radius: 16px;
+  padding: 14px 10px;
+  background: #fafbfc;
   color: var(--navy);
-  font-weight: 850;
+  font-size: clamp(0.98rem, 3.9vw, 1.42rem);
+  font-weight: 950;
+  line-height: 1.12;
   text-align: center;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    transform 160ms ease;
+}
+
+.mobile-quick-grid a:hover {
+  border-color: #d6dee9;
+  background: #f5f7fa;
+  transform: translateY(-1px);
+}
+
+.mobile-quick-grid svg {
+  width: clamp(24px, 7vw, 34px);
+  height: clamp(24px, 7vw, 34px);
 }
 
 .mobile-drawer-list {
   display: grid;
-  gap: 2px;
+  gap: 0;
+  border-top: 1px solid #f0f3f7;
 }
 
 .mobile-drawer-list a {
+  min-height: clamp(64px, 13vw, 78px);
   gap: 18px;
   border-bottom: 1px solid #eef2f6;
-  border-radius: 8px;
-  padding: 16px 12px;
+  border-radius: 0;
+  padding: 0 8px;
   background: #fff;
   color: var(--navy);
-  font-size: 1rem;
-  font-weight: 850;
+  font-size: clamp(1.12rem, 4.5vw, 1.58rem);
+  font-weight: 950;
+  line-height: 1.15;
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.mobile-drawer-list a svg {
+  width: clamp(22px, 5.5vw, 28px);
+  height: clamp(22px, 5.5vw, 28px);
+  flex: 0 0 auto;
 }
 
 .mobile-drawer-list a:hover {
@@ -2708,32 +2763,60 @@ textarea:focus {
 
 .mobile-drawer-actions {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   background: #fff;
 }
 
-.mobile-drawer-signout,
-.mobile-drawer-account-actions {
+.mobile-drawer-bottom-actions {
   margin-top: auto;
+  border-top: 1px solid #f0f3f7;
+  padding-top: clamp(18px, 4vw, 26px);
 }
 
 .mobile-drawer-account-actions {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
-.mobile-drawer-signout button,
-.mobile-drawer-account-actions button {
+.mobile-drawer-bottom-actions button,
+.mobile-drawer-bottom-actions a {
   justify-content: center;
-  gap: 8px;
-}
-
-.mobile-drawer-signout button {
-  color: var(--red);
+  gap: 10px;
+  width: 100%;
+  min-height: clamp(58px, 12vw, 72px);
+  border: 1px solid #dfe6ef;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--navy);
+  box-shadow: none;
+  font-size: clamp(1.04rem, 4.2vw, 1.42rem);
+  font-weight: 950;
 }
 
 .mobile-drawer-account-actions .button.danger {
+  border-color: #efcbc8;
+  background: #fff;
   color: var(--red);
+}
+
+.mobile-drawer-actions .button.navy {
+  background: var(--navy);
+  color: #fff;
+}
+
+@media (max-width: 520px) {
+  .mobile-drawer {
+    inset: 0;
+    width: 100%;
+  }
+
+  .mobile-drawer-head {
+    padding-top: 4px;
+  }
+
+  .mobile-drawer-brand h2 {
+    max-width: 11ch;
+  }
 }
 
 .badge {
@@ -12800,4 +12883,30 @@ textarea:focus {
 
 .dashboard.seeker-compact-shell {
   padding-bottom: 108px;
+}
+
+@media (max-width: 640px) {
+  .dashboard.seeker-mobile-compact {
+    overflow-x: clip;
+    padding-bottom: 132px;
+  }
+
+  .dashboard.seeker-mobile-compact .dashboard-topbar,
+  .dashboard.seeker-mobile-compact .dashboard-grid > section > .seeker-shell-page {
+    width: calc(100% / 0.6);
+    max-width: calc(1180px / 0.6);
+    margin-right: auto;
+    margin-left: auto;
+    zoom: 0.6;
+  }
+
+  .referrals-page-ui {
+    overflow-x: clip;
+  }
+
+  .referrals-page-ui > :not(.mobile-bottom-nav) {
+    width: calc(100% / 0.69);
+    max-width: calc(1180px / 0.69);
+    zoom: 0.69;
+  }
 }

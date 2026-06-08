@@ -11,8 +11,6 @@ import {
   Home,
   LayoutDashboard,
   MessageSquare,
-  Plus,
-  Search,
   Settings,
   UserRound
 } from "lucide-react";
@@ -43,7 +41,6 @@ export default async function AgentDashboardPage() {
   const openRequests = canCountRequests ? await getOpenMatchingRequestsForAgent(agent).catch(() => []) : [];
   const newRequestCount = openRequests.length;
   const activeMatches = responses.filter((response) => response.status === "pending" || response.status === "accepted").length;
-  const acceptedResponses = responses.filter((response) => response.status === "accepted");
   const kycStatus = normalizeKycStatus(agent?.kyc_status);
   const kycProgress = getAgentKycProgress(agent);
   const { percent: kycPercent, steps: kycSteps } = kycProgress;
@@ -165,22 +162,6 @@ export default async function AgentDashboardPage() {
       <section className="agent-quick-actions">
         <h2>Quick Actions</h2>
         <div>
-          <Link href="/dashboard/agent/requests">
-            <span className="blue">
-              <Plus size={30} />
-            </span>
-            <strong>Add Property</strong>
-            <small>List a new property</small>
-            <ChevronRight size={26} />
-          </Link>
-          <Link href="/dashboard/agent/requests">
-            <span className="green">
-              <Search size={30} />
-            </span>
-            <strong>Find Home Seekers</strong>
-            <small>Browse home seekers</small>
-            <ChevronRight size={26} />
-          </Link>
           <Link href="/dashboard/agent/kyc">
             <span className="purple">
               <FileText size={30} />
@@ -197,36 +178,6 @@ export default async function AgentDashboardPage() {
             <small>Manage your account</small>
             <ChevronRight size={26} />
           </Link>
-        </div>
-      </section>
-
-      <section className="agent-dashboard-section" id="properties">
-        <div className="mobile-section-row">
-          <h2>Properties</h2>
-          <Link href="/dashboard/agent/requests">Add property</Link>
-        </div>
-        <p className="dashboard-muted-copy">
-          Add property options by responding to matching home seeker requests. Approved agents can submit property title,
-          location, price, images, and inspection availability from Available Requests.
-        </p>
-        <div className="agent-mini-list">
-          {acceptedResponses.length ? (
-            acceptedResponses.slice(0, 3).map((response) => (
-              <article key={response.response_id}>
-                <span className="badge approved">Listed</span>
-                <strong>{response.property_title}</strong>
-                <small>
-                  {response.property_location} | {response.property_price}
-                </small>
-              </article>
-            ))
-          ) : (
-            <article>
-              <span className="badge pending">No listings</span>
-              <strong>No property options submitted yet.</strong>
-              <small>Open Available Requests to add your first property response.</small>
-            </article>
-          )}
         </div>
       </section>
 

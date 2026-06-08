@@ -22,7 +22,7 @@ export default async function SeekerRequestsPage() {
   const responseCount = requests.reduce((total, request) => total + (request.request_responses?.length || 0), 0);
 
   return (
-    <DashboardShell className="agent-compact-shell seeker-compact-shell" kicker="Home seeker dashboard" nav={SEEKER_DASHBOARD_NAV} title="Requests">
+    <DashboardShell className="agent-compact-shell seeker-compact-shell seeker-mobile-compact" kicker="Home seeker dashboard" nav={SEEKER_DASHBOARD_NAV} title="Requests">
       <div className="seeker-shell-page">
         <SeekerDashboardReferenceSections
           email={user.email || "No email attached"}

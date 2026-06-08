@@ -9,6 +9,8 @@ export function HeroSliderClient({ slides }: { slides: HeroSlide[] }) {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
+    if (slides.length <= 1) return;
+
     const timer = window.setInterval(() => {
       setActive((current) => (current + 1) % slides.length);
     }, 5500);

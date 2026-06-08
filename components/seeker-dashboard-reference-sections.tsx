@@ -34,6 +34,7 @@ import {
 import { logoutAction, sendPasswordResetAction } from "@/lib/actions/auth";
 import { markRequestFulfilledAction } from "@/lib/actions/requests";
 import { VAV_SOCIAL_LINKS } from "@/lib/constants";
+import { isSuccessfulPayment, paymentStatusLabel } from "@/lib/payment-status";
 
 type RequestResponse = {
   response_id: string;
@@ -75,6 +76,7 @@ type PaymentItem = {
   reference: string;
   amount: number | string;
   status: string;
+  provider_payload?: unknown;
   created_at: string;
 };
 
@@ -134,7 +136,7 @@ function formatTimeAgo(value: string) {
 function transactionLabel(payment: PaymentItem) {
   if (payment.reference?.startsWith("HL-SUB")) return "Agent subscription";
   if (payment.request_id) return "Agent connection fee";
-  return payment.status === "paid" ? "Welcome bonus" : "HomeLink payment";
+  return isSuccessfulPayment(payment) ? "Welcome bonus" : "HomeLink payment";
 }
 
 function initials(name: string) {
@@ -183,14 +185,16 @@ export function SeekerDashboardReferenceSections({
   const visibleTransactions = useMemo(() => {
     return payments.filter((payment) => {
       if (transactionFilter === "all") return true;
-      if (transactionFilter === "pending") return payment.status !== "paid";
-      if (transactionFilter === "receipts") return payment.status === "paid";
+      if (transactionFilter === "pending") return !isSuccessfulPayment(payment);
+      if (transactionFilter === "receipts") return isSuccessfulPayment(payment);
       return Boolean(payment.amount);
     });
   }, [payments, transactionFilter]);
-  const totalPaid = payments.filter((payment) => payment.status === "paid").reduce((total, payment) => total + Number(payment.amount || 0), 0);
-  const totalPending = payments.filter((payment) => payment.status !== "paid").reduce((total, payment) => total + Number(payment.amount || 0), 0);
-  const totalReceipts = payments.filter((payment) => payment.status === "paid").length;
+  const successfulPayments = payments.filter(isSuccessfulPayment);
+  const pendingPayments = payments.filter((payment) => !isSuccessfulPayment(payment));
+  const totalPaid = successfulPayments.reduce((total, payment) => total + Number(payment.amount || 0), 0);
+  const totalPending = pendingPayments.reduce((total, payment) => total + Number(payment.amount || 0), 0);
+  const totalReceipts = successfulPayments.length;
   const progressSteps = [
     { label: "Submitted", complete: Boolean(latestRequest), date: latestRequest ? formatShortDate(latestRequest.created_at) : "Pending" },
     { label: "Matched", complete: latestRequest ? ["matched", "accepted", "fulfilled"].includes(latestRequest.status) : false, date: latestRequest ? formatShortDate(latestRequest.created_at) : "Pending" },
@@ -426,7 +430,7 @@ export function SeekerDashboardReferenceSections({
             </span>
             <p>Pending</p>
             <strong>{formatNaira(totalPending)}</strong>
-            <small>{payments.filter((payment) => payment.status !== "paid").length} transactions</small>
+            <small>{pendingPayments.length} transactions</small>
           </article>
         </div>
 
@@ -445,7 +449,7 @@ export function SeekerDashboardReferenceSections({
               const day = Number.isNaN(date.getTime()) ? "--" : date.toLocaleDateString("en-NG", { day: "2-digit" });
               const month = Number.isNaN(date.getTime()) ? "---" : date.toLocaleDateString("en-NG", { month: "short" }).toUpperCase();
               const year = Number.isNaN(date.getTime()) ? "----" : date.getFullYear();
-              const completed = payment.status === "paid";
+              const completed = isSuccessfulPayment(payment);
               return (
                 <article key={payment.payment_id}>
                   <time className={completed ? "completed" : ""}>
@@ -461,7 +465,7 @@ export function SeekerDashboardReferenceSections({
                       {formatShortDate(payment.created_at)} • {formatTime(payment.created_at)}
                     </small>
                   </div>
-                  <em className={completed ? "completed" : "pending"}>{completed ? "Completed" : "Pending"}</em>
+                  <em className={completed ? "completed" : "pending"}>{paymentStatusLabel(payment)}</em>
                   <ChevronRight size={26} />
                 </article>
               );

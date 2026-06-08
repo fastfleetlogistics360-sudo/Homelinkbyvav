@@ -50,6 +50,7 @@ export function MobileDrawerMenu({
   dashboardHref,
   showAuthLinks = false,
   showLogout = false,
+  showDeleteAccount = showLogout,
   variant = "site"
 }: {
   title: string;
@@ -57,6 +58,7 @@ export function MobileDrawerMenu({
   items: DrawerItem[];
   dashboardHref?: string;
   showAuthLinks?: boolean;
+  showDeleteAccount?: boolean;
   showLogout?: boolean;
   variant?: "site" | "dashboard";
 }) {
@@ -70,7 +72,7 @@ export function MobileDrawerMenu({
         <Menu size={24} />
       </button>
       <div className={`mobile-drawer-backdrop ${open ? "open" : ""}`} onClick={() => setOpen(false)} />
-      <aside className={`mobile-drawer ${open ? "open" : ""}`} aria-hidden={!open}>
+      <aside className={`mobile-drawer ${variant} ${open ? "open" : ""}`} aria-hidden={!open}>
         <div className="mobile-drawer-head">
           <div className="mobile-drawer-brand">
             <Image src="/images/homelink-logo.png" alt="" width={48} height={48} />
@@ -117,7 +119,7 @@ export function MobileDrawerMenu({
         </nav>
 
         {showAuthLinks ? (
-          <div className="mobile-drawer-actions">
+          <div className="mobile-drawer-actions mobile-drawer-bottom-actions">
             <Link className="button secondary full" href="/auth/login" onClick={() => setOpen(false)}>
               Login
             </Link>
@@ -127,26 +129,30 @@ export function MobileDrawerMenu({
           </div>
         ) : null}
 
-        {showLogout ? (
-          <div className="mobile-drawer-account-actions">
-            <form action={logoutAction}>
-              <button className="button secondary full" type="submit">
-                <LogOut size={18} />
-                Sign out
-              </button>
-            </form>
-            <form
-              action={deleteAccountAction}
-              onSubmit={(event) => {
-                if (!window.confirm("Delete your HomeLink account permanently? This cannot be undone.")) {
-                  event.preventDefault();
-                }
-              }}
-            >
-              <button className="button secondary danger full" type="submit">
-                Delete account
-              </button>
-            </form>
+        {showLogout || showDeleteAccount ? (
+          <div className="mobile-drawer-account-actions mobile-drawer-bottom-actions">
+            {showLogout ? (
+              <form action={logoutAction}>
+                <button className="button secondary full" type="submit">
+                  <LogOut size={18} />
+                  Sign out
+                </button>
+              </form>
+            ) : null}
+            {showDeleteAccount ? (
+              <form
+                action={deleteAccountAction}
+                onSubmit={(event) => {
+                  if (!window.confirm("Delete your HomeLink account permanently? This cannot be undone.")) {
+                    event.preventDefault();
+                  }
+                }}
+              >
+                <button className="button secondary danger full" type="submit">
+                  Delete account
+                </button>
+              </form>
+            ) : null}
           </div>
         ) : null}
       </aside>

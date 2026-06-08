@@ -488,13 +488,9 @@ export function HomeSeekerSignupFlow({ defaultType, error, referralCode }: Signu
                 ))}
               </div>
             </div>
-            {accountType === "agent" ? (
-              <SubmitAccountButton label="Continue" showIcon={false} />
-            ) : (
-              <button className="signup-continue" onClick={continueToNextStep} type="button">
-                Continue
-              </button>
-            )}
+            <button className="signup-continue" onClick={continueToNextStep} type="button">
+              Continue
+            </button>
           </section>
         ) : null}
 

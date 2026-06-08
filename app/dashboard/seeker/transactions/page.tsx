@@ -20,7 +20,7 @@ export default async function SeekerTransactionsPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <DashboardShell className="agent-compact-shell seeker-compact-shell" kicker="Home seeker dashboard" nav={SEEKER_DASHBOARD_NAV} title="Transactions">
+    <DashboardShell className="agent-compact-shell seeker-compact-shell seeker-mobile-compact" kicker="Home seeker dashboard" nav={SEEKER_DASHBOARD_NAV} title="Transactions">
       <div className="seeker-shell-page">
         <SeekerDashboardReferenceSections
           email={user.email || "No email attached"}

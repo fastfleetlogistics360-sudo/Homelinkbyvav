@@ -33,7 +33,7 @@ export function AgentSubscriptionCard({ agent, compact = false }: SubscriptionCa
       {plan.id === "platinum" ? (
         <div className="quota-unlimited">
           <strong>Unlimited Access Enabled</strong>
-          <span>Priority ranking, early request access, and dedicated support are active.</span>
+          <span>{used} accepted this week. Priority ranking, early request access, and dedicated support are active.</span>
         </div>
       ) : (
         <>

@@ -26,7 +26,7 @@ export default async function SeekerProfilePage() {
     .eq("home_seeker_id", profile?.home_seeker_id || "");
 
   return (
-    <DashboardShell className="agent-compact-shell seeker-compact-shell" kicker="Home seeker dashboard" nav={SEEKER_DASHBOARD_NAV} title="Profile">
+    <DashboardShell className="agent-compact-shell seeker-compact-shell seeker-mobile-compact" kicker="Home seeker dashboard" nav={SEEKER_DASHBOARD_NAV} title="Profile">
       <div className="seeker-shell-page">
         <SeekerDashboardReferenceSections
           email={user.email || "No email attached"}

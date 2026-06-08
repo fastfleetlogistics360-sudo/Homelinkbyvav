@@ -12,12 +12,10 @@ type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
 
 async function ensureAgentWeeklyUsageIncrement({
   agentId,
-  planBefore,
   supabase,
   usedBefore
 }: {
   agentId: string;
-  planBefore?: string | null;
   supabase: SupabaseServerClient;
   usedBefore: number;
 }) {
@@ -28,10 +26,6 @@ async function ensureAgentWeeklyUsageIncrement({
     .select("agent_plan, weekly_request_used")
     .eq("agent_id", agentId)
     .single();
-  const activePlan = quotaAfter?.agent_plan || planBefore || "free";
-
-  if (activePlan === "platinum") return;
-
   const usedAfter = Number(quotaAfter?.weekly_request_used || 0);
   if (!incrementError && usedAfter > usedBefore) return;
 
@@ -98,21 +92,52 @@ export async function saveAgentKycAction(formData: FormData) {
     redirect(`/dashboard/agent/kyc?error=${encodeURIComponent(message)}`);
   }
 
+  const userMetadata = user.user_metadata as Record<string, unknown>;
+  const fallbackName = String(formData.get("full_name") || userMetadata.full_name || user.email?.split("@")[0] || "Agent").trim();
+  const fallbackPhone = String(formData.get("phone") || userMetadata.phone || "").trim();
+  const fallbackAgency = String(formData.get("agency_name") || fallbackName).trim();
   const profilePhoto = uploadedPhoto || String(formData.get("existing_profile_photo") || "");
-  const { data: existingAgent } = await supabase
+  let { data: existingAgent } = await supabase
     .from("agent_profiles")
-    .select("agent_id, kyc_status, suspended, terms_accepted_at")
+    .select("agent_id, kyc_status, suspended, terms_accepted_at, agency_name, phone, whatsapp")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
+
+  if (!existingAgent?.agent_id) {
+    const admin = createAdminClient();
+    const { data: ensuredAgent, error: ensureError } = await admin
+      .from("agent_profiles")
+      .upsert(
+        {
+          user_id: user.id,
+          full_name: fallbackName,
+          agency_name: fallbackAgency,
+          phone: fallbackPhone
+        },
+        { onConflict: "user_id" }
+      )
+      .select("agent_id, kyc_status, suspended, terms_accepted_at, agency_name, phone, whatsapp")
+      .single();
+
+    if (ensureError) {
+      redirect(`/dashboard/agent/kyc?error=${encodeURIComponent(ensureError.message)}`);
+    }
+
+    existingAgent = ensuredAgent;
+  }
+
   const nextKycStatus = isAgentKycApproved(existingAgent) ? "approved" : "pending";
   const termsAcceptedAt = existingAgent?.terms_accepted_at || new Date().toISOString();
+  const agencyName = String(formData.get("agency_name") || existingAgent?.agency_name || fallbackAgency).trim();
+  const phone = String(formData.get("phone") || existingAgent?.phone || fallbackPhone).trim();
+  const whatsapp = String(formData.get("whatsapp") || existingAgent?.whatsapp || phone).trim();
 
   const { error } = await supabase
     .from("agent_profiles")
     .update({
-      agency_name: String(formData.get("agency_name")),
-      phone: String(formData.get("phone")),
-      whatsapp: String(formData.get("whatsapp")),
+      agency_name: agencyName,
+      phone,
+      whatsapp,
       profile_photo: profilePhoto,
       verification_documents: [...existingDocuments, ...uploadedDocuments],
       operating_locations: uniqueOperatingLocations,
@@ -165,7 +190,6 @@ export async function createRequestResponseAction(formData: FormData) {
     .eq("agent_id", agentId)
     .single();
   const usedBefore = Number(quotaBefore?.weekly_request_used ?? agent.weekly_request_used ?? 0);
-  const planBefore = quotaBefore?.agent_plan || agent.agent_plan;
   const { data: canAccept } = await supabase.rpc("agent_can_accept_request", { target_agent_id: agentId });
   if (!canAccept) {
     redirect("/dashboard/agent/subscription?quota=exhausted");
@@ -189,7 +213,7 @@ export async function createRequestResponseAction(formData: FormData) {
   if (error) redirect(`/dashboard/agent/requests?error=${encodeURIComponent(error.message)}`);
 
   try {
-    await ensureAgentWeeklyUsageIncrement({ agentId, planBefore, supabase, usedBefore });
+    await ensureAgentWeeklyUsageIncrement({ agentId, supabase, usedBefore });
   } catch (usageError) {
     const message = usageError instanceof Error ? usageError.message : "Unable to update subscription usage.";
     redirect(`/dashboard/agent/requests?error=${encodeURIComponent(message)}`);

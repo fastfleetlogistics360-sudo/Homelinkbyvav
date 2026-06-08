@@ -159,7 +159,7 @@ export function accountNamesMatch(profileName: string, accountName: string) {
 }
 
 function referralBaseUrl() {
-  return (process.env.NEXT_PUBLIC_REFERRAL_BASE_URL || "https://homelinkbyvav.com").replace(/\/$/, "");
+  return (process.env.NEXT_PUBLIC_REFERRAL_BASE_URL || "https://homelinkbyvav.com.ng").replace(/\/$/, "");
 }
 
 export function buildReferralUrl(referralCode: string) {
