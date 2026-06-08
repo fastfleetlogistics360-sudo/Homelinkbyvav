@@ -11840,6 +11840,16 @@ textarea:focus {
   display: none;
 }
 
+.dashboard.seeker-compact-shell .seeker-shell-page {
+  display: grid;
+  gap: 22px;
+  padding-bottom: 96px;
+}
+
+.dashboard.seeker-compact-shell .seeker-reference-section {
+  margin-bottom: 0;
+}
+
 @media (max-width: 900px) {
   .seeker-request-card-main {
     grid-template-columns: 180px minmax(0, 1fr);
@@ -12210,10 +12220,10 @@ textarea:focus {
 
   .agent-dashboard-ui .referral-widget {
     display: grid;
-    gap: 16px;
-    border-radius: 18px;
-    margin: 18px 0 18px;
-    padding: 16px;
+    gap: 11px;
+    border-radius: 13px;
+    margin: 13px 0;
+    padding: 11px;
   }
 
   .agent-dashboard-ui .referral-widget-head {
@@ -12221,7 +12231,7 @@ textarea:focus {
     align-items: flex-start;
     flex-direction: row;
     justify-content: space-between;
-    gap: 10px;
+    gap: 7px;
   }
 
   .agent-dashboard-ui .referral-title-lockup {
@@ -12229,35 +12239,40 @@ textarea:focus {
   }
 
   .agent-dashboard-ui .referral-title-lockup > span {
-    width: 42px;
-    height: 42px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .agent-dashboard-ui .referral-title-lockup > span svg {
+    width: 21px;
+    height: 21px;
   }
 
   .agent-dashboard-ui .referral-title-lockup h2 {
-    font-size: 1.24rem;
+    font-size: 0.9rem;
   }
 
   .agent-dashboard-ui .referral-title-lockup p {
-    max-width: 28ch;
-    font-size: 0.72rem;
+    max-width: 24ch;
+    font-size: 0.54rem;
   }
 
   .agent-dashboard-ui .referral-how-link {
     align-self: flex-start;
     border-radius: 999px;
-    padding: 8px 10px;
-    font-size: 0.66rem;
+    padding: 6px 7px;
+    font-size: 0.5rem;
     white-space: nowrap;
   }
 
   .agent-dashboard-ui .referral-widget-grid {
     display: grid;
-    gap: 14px;
+    gap: 10px;
   }
 
   .agent-dashboard-ui .referral-stat-strip {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 9px;
+    gap: 6px;
   }
 
   .agent-dashboard-ui .referral-mini-stat:nth-child(3),
@@ -12268,27 +12283,27 @@ textarea:focus {
   }
 
   .agent-dashboard-ui .referral-mini-stat {
-    min-height: 74px;
-    gap: 6px;
-    border-radius: 12px;
-    padding: 10px;
+    min-height: 52px;
+    gap: 4px;
+    border-radius: 9px;
+    padding: 7px;
   }
 
   .agent-dashboard-ui .referral-mini-stat > div > span {
-    width: 30px;
-    height: 30px;
+    width: 21px;
+    height: 21px;
   }
 
   .agent-dashboard-ui .referral-mini-stat p {
-    font-size: 0.58rem;
+    font-size: 0.44rem;
   }
 
   .agent-dashboard-ui .referral-mini-stat strong {
-    font-size: 0.96rem;
+    font-size: 0.7rem;
   }
 
   .agent-dashboard-ui .referral-progress-block {
-    gap: 7px;
+    gap: 5px;
   }
 
   .agent-dashboard-ui .referral-progress-block > div {
@@ -12298,36 +12313,36 @@ textarea:focus {
   .agent-dashboard-ui .referral-progress-block p,
   .agent-dashboard-ui .referral-progress-block small,
   .agent-dashboard-ui .referral-link-panel label {
-    font-size: 0.66rem;
+    font-size: 0.5rem;
   }
 
   .agent-dashboard-ui .referral-progress-block strong {
-    font-size: 0.76rem;
+    font-size: 0.56rem;
   }
 
   .agent-dashboard-ui .referral-progress-track {
-    height: 8px;
+    height: 6px;
   }
 
   .agent-dashboard-ui .referral-link-panel > div {
-    border-radius: 10px;
-    padding: 9px;
+    border-radius: 8px;
+    padding: 6px;
   }
 
   .agent-dashboard-ui .referral-link-panel span {
-    font-size: 0.66rem;
+    font-size: 0.5rem;
   }
 
   .agent-dashboard-ui .referral-link-panel button {
-    width: 34px;
-    height: 34px;
+    width: 24px;
+    height: 24px;
   }
 
   .agent-dashboard-ui .referral-widget-side {
     width: 100%;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: end;
-    gap: 10px;
+    gap: 7px;
   }
 
   .agent-dashboard-ui .referral-share-stack {
@@ -12338,19 +12353,19 @@ textarea:focus {
   }
 
   .agent-dashboard-ui .referral-share-stack > span {
-    font-size: 0.66rem;
+    font-size: 0.5rem;
   }
 
   .agent-dashboard-ui .referral-share-stack a {
-    width: 30px;
-    height: 30px;
+    width: 21px;
+    height: 21px;
     border-radius: 50%;
   }
 
   .agent-dashboard-ui .referral-earnings-link {
-    min-height: 42px;
-    border-radius: 10px;
-    padding: 9px 13px;
-    font-size: 0.74rem;
+    min-height: 30px;
+    border-radius: 8px;
+    padding: 6px 9px;
+    font-size: 0.56rem;
   }
 }

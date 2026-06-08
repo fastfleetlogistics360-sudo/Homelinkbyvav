@@ -12,10 +12,10 @@ export const AGENT_DASHBOARD_NAV = [
 ] satisfies Array<[string, string]>;
 
 export const SEEKER_DASHBOARD_NAV = [
-  ["Overview", "/dashboard/seeker"],
-  ["Create Apartment Request", "/dashboard/seeker/requests/new"],
-  ["Refer & Earn", "/dashboard/referrals"],
-  ["Transaction History", "/dashboard/seeker#transactions"],
+  ["Dashboard", "/dashboard/seeker"],
+  ["Requests", "/dashboard/seeker/requests"],
   ["Messages", "/dashboard/seeker/messages"],
-  ["Profile Settings", "/dashboard/seeker#profile"]
+  ["Refer & Earn", "/dashboard/referrals"],
+  ["Transaction History", "/dashboard/seeker/transactions"],
+  ["Profile", "/dashboard/seeker/profile"]
 ] satisfies Array<[string, string]>;

@@ -3,19 +3,16 @@ import Image from "next/image";
 import {
   ChevronRight,
   ClipboardList,
-  Gift,
-  Grid2X2,
   Home,
   House,
   MessageCircle,
   Plus,
-  ReceiptText,
-  UserRound
+  ReceiptText
 } from "lucide-react";
 import { DashboardNotifications } from "@/components/dashboard-notifications";
 import { MobileDrawerMenu } from "@/components/mobile-drawer-menu";
 import { ReferralDashboardCard } from "@/components/referral-dashboard-card";
-import { SeekerDashboardReferenceSections } from "@/components/seeker-dashboard-reference-sections";
+import { SeekerBottomNav } from "@/components/seeker-bottom-nav";
 import { requireAccountType } from "@/lib/auth";
 import { SEEKER_DASHBOARD_NAV } from "@/lib/dashboard-nav";
 import { getReferralOverview } from "@/lib/referrals";
@@ -27,26 +24,16 @@ export default async function SeekerDashboardPage() {
 
   const { data: profile } = await supabase
     .from("home_seeker_profiles")
-    .select("home_seeker_id, full_name, phone, preferred_locations")
+    .select("home_seeker_id, full_name")
     .eq("user_id", user.id)
     .single();
 
   const { data: requestsData } = await supabase
     .from("housing_requests")
-    .select("*, request_responses(*, agent_profiles(agency_name, phone, whatsapp, rating, agent_plan))")
+    .select("request_id, status, request_responses(response_id)")
     .eq("home_seeker_id", profile?.home_seeker_id)
     .order("created_at", { ascending: false });
   const requests = requestsData ?? [];
-  const { data: paymentsData } = await supabase
-    .from("payments")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
-  const payments = paymentsData ?? [];
-  const { count: savedCount } = await supabase
-    .from("saved_properties")
-    .select("*", { count: "exact", head: true })
-    .eq("home_seeker_id", profile?.home_seeker_id || "");
   const { data: notificationsData } = await supabase
     .from("notifications")
     .select("notification_id, type, message, read, created_at")
@@ -126,69 +113,25 @@ export default async function SeekerDashboardPage() {
           <em>Tell verified agents exactly what you need.</em>
           <ChevronRight size={30} />
         </Link>
-        <a href="#requests">
+        <Link href="/dashboard/seeker/requests">
           <span className="gold">
             <Home size={32} />
           </span>
           <strong>Review request progress</strong>
           <em>See status, responses, and next actions.</em>
           <ChevronRight size={30} />
-        </a>
-        <a href="#transactions">
+        </Link>
+        <Link href="/dashboard/seeker/transactions">
           <span className="green">
             <ReceiptText size={32} />
           </span>
           <strong>Check transaction history</strong>
           <em>Follow routing fees and payment statuses.</em>
           <ChevronRight size={30} />
-        </a>
+        </Link>
       </section>
 
-      <SeekerDashboardReferenceSections
-        email={user.email || "No email attached"}
-        fullName={profile?.full_name || "Home Seeker"}
-        payments={payments}
-        phone={profile?.phone}
-        preferredLocations={profile?.preferred_locations ?? []}
-        requests={requests}
-        responseCount={responseCount}
-        savedCount={savedCount || 0}
-      />
-
-      <section className="reference-section seeker-messages-section" id="messages">
-        <div className="mobile-section-row">
-          <h2>Messages</h2>
-          <Link href="#requests">View responses</Link>
-        </div>
-        <p className="seeker-muted-line">Messages will appear after an agent responds to your request.</p>
-      </section>
-
-      <nav className="mobile-bottom-nav" aria-label="Home seeker navigation">
-        <Link className="active" href="/dashboard/seeker">
-          <Home size={28} />
-          Home
-        </Link>
-        <Link href="#requests">
-          <Grid2X2 size={28} />
-          Requests
-        </Link>
-        <Link href="/dashboard/seeker/messages">
-          <MessageCircle size={28} />
-          Messages
-        </Link>
-        <Link href="/dashboard/referrals">
-          <Gift size={28} />
-          Refer
-        </Link>
-        <Link href="#transactions">
-          <ReceiptText size={28} />
-          Transactions
-        </Link>
-        <Link href="#profile">
-          <UserRound size={28} />
-          Profile
-        </Link>
-      </nav>
+      <SeekerBottomNav active="dashboard" />
     </main>
   );
 }

@@ -86,6 +86,7 @@ type SeekerReferenceSectionsProps = {
   requests: HousingRequestItem[];
   payments: PaymentItem[];
   responseCount: number;
+  sections?: Array<"requests" | "transactions" | "profile">;
   savedCount: number;
 };
 
@@ -173,6 +174,7 @@ export function SeekerDashboardReferenceSections({
   requests,
   payments,
   responseCount,
+  sections = ["requests", "transactions", "profile"],
   savedCount
 }: SeekerReferenceSectionsProps) {
   const [transactionFilter, setTransactionFilter] = useState<TransactionFilter>("all");
@@ -197,9 +199,13 @@ export function SeekerDashboardReferenceSections({
     { label: "Completed", complete: latestRequest?.status === "fulfilled", date: latestRequest?.status === "fulfilled" ? "Done" : "Pending" }
   ];
   const location = preferredLocations[0] || latestRequest?.preferred_location || "Location not set";
+  const showRequests = sections.includes("requests");
+  const showTransactions = sections.includes("transactions");
+  const showProfile = sections.includes("profile");
 
   return (
     <>
+      {showRequests ? (
       <section className="seeker-reference-section seeker-reference-requests" id="requests">
         <div className="seeker-reference-head">
           <div>
@@ -284,11 +290,11 @@ export function SeekerDashboardReferenceSections({
                         <p>{response.message || response.property_title}</p>
                         <strong>{response.property_price || formatNaira(latestRequest.budget_min)}</strong>
                         <div className="seeker-agent-actions">
-                          <a className={!phoneHref ? "disabled" : ""} href={phoneHref || "#requests"}>
+                          <a className={!phoneHref ? "disabled" : ""} href={phoneHref || "/dashboard/seeker/requests"}>
                             <Phone size={20} />
                             Call
                           </a>
-                          <a className={!whatsappHref ? "disabled" : ""} href={whatsappHref || "#requests"} rel="noreferrer" target={whatsappHref ? "_blank" : undefined}>
+                          <a className={!whatsappHref ? "disabled" : ""} href={whatsappHref || "/dashboard/seeker/requests"} rel="noreferrer" target={whatsappHref ? "_blank" : undefined}>
                             <MessageCircle size={20} />
                             WhatsApp
                           </a>
@@ -354,17 +360,19 @@ export function SeekerDashboardReferenceSections({
           </article>
         )}
       </section>
+      ) : null}
 
+      {showTransactions ? (
       <section className="seeker-reference-section seeker-reference-transactions" id="transactions">
         <div className="seeker-reference-head">
           <div>
             <h2>Transaction History</h2>
             <p>View your payments and receipts.</p>
           </div>
-          <a className="seeker-reference-primary" href="#transactions">
+          <Link className="seeker-reference-primary" href="/dashboard/seeker/transactions">
             <FileText size={22} />
             View all
-          </a>
+          </Link>
         </div>
 
         <div className="seeker-transaction-tabs" role="tablist" aria-label="Transaction filters">
@@ -466,7 +474,9 @@ export function SeekerDashboardReferenceSections({
           )}
         </div>
       </section>
+      ) : null}
 
+      {showProfile ? (
       <section className="seeker-reference-section seeker-reference-profile" id="profile">
         <div className="seeker-reference-head">
           <div>
@@ -505,9 +515,9 @@ export function SeekerDashboardReferenceSections({
               {location}
             </p>
           </div>
-          <a aria-label="Edit profile details" href="#profile">
+          <Link aria-label="Edit profile details" href="/dashboard/seeker/profile">
             <ChevronRight size={30} />
-          </a>
+          </Link>
           <div className="seeker-profile-stat-row">
             <article>
               <span className="purple">
@@ -537,24 +547,24 @@ export function SeekerDashboardReferenceSections({
         </article>
 
         <article className="seeker-profile-menu-reference">
-          <a href="#profile">
+          <Link href="/dashboard/seeker/profile">
             <span>
               <UserRound size={24} />
             </span>
             <strong>Personal Information</strong>
             <small>Update your details</small>
             <ChevronRight size={26} />
-          </a>
-          <a href="#messages">
+          </Link>
+          <Link href="/dashboard/seeker/messages">
             <span>
               <Bell size={24} />
             </span>
             <strong>Notifications</strong>
             <small>Manage notifications</small>
             <ChevronRight size={26} />
-          </a>
+          </Link>
           <form action={sendPasswordResetAction}>
-            <input name="return_to" type="hidden" value="/dashboard/seeker#profile" />
+            <input name="return_to" type="hidden" value="/dashboard/seeker/profile" />
             <button type="submit">
               <span>
                 <Lock size={24} />
@@ -564,14 +574,14 @@ export function SeekerDashboardReferenceSections({
               <ChevronRight size={26} />
             </button>
           </form>
-          <a href="#transactions">
+          <Link href="/dashboard/seeker/transactions">
             <span>
               <CreditCard size={24} />
             </span>
             <strong>Payment Methods</strong>
             <small>Manage your payments</small>
             <ChevronRight size={26} />
-          </a>
+          </Link>
           <a href={VAV_SOCIAL_LINKS.whatsapp} rel="noreferrer" target="_blank">
             <span>
               <HelpCircle size={24} />
@@ -592,6 +602,7 @@ export function SeekerDashboardReferenceSections({
           </form>
         </article>
       </section>
+      ) : null}
     </>
   );
 }

@@ -1,5 +1,6 @@
 import { DashboardMessagesBoard } from "@/components/dashboard-messages-board";
 import { DashboardShell } from "@/components/dashboard-shell";
+import { SeekerBottomNav } from "@/components/seeker-bottom-nav";
 import { requireAccountType } from "@/lib/auth";
 import { SEEKER_DASHBOARD_NAV } from "@/lib/dashboard-nav";
 import { getDashboardConversations } from "@/lib/messages";
@@ -9,8 +10,9 @@ export default async function SeekerMessagesPage() {
   const conversations = await getDashboardConversations(user.id, "home_seeker");
 
   return (
-    <DashboardShell kicker="Home seeker dashboard" nav={SEEKER_DASHBOARD_NAV} title="Messages">
+    <DashboardShell className="agent-compact-shell seeker-compact-shell" kicker="Home seeker dashboard" nav={SEEKER_DASHBOARD_NAV} title="Messages">
       <DashboardMessagesBoard accountType="home_seeker" conversations={conversations} currentUserId={user.id} returnTo="/dashboard/seeker/messages" />
+      <SeekerBottomNav active="messages" />
     </DashboardShell>
   );
 }

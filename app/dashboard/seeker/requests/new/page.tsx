@@ -1,21 +1,18 @@
 import { DashboardShell } from "@/components/dashboard-shell";
+import { SeekerBottomNav } from "@/components/seeker-bottom-nav";
 import { createHousingRequestAction } from "@/lib/actions/requests";
 import { NIGERIA_STATES, PROPERTY_TYPES, RENT_DURATIONS } from "@/lib/constants";
 import { requireAccountType } from "@/lib/auth";
+import { SEEKER_DASHBOARD_NAV } from "@/lib/dashboard-nav";
 
 export default async function NewRequestPage() {
   await requireAccountType("home_seeker");
 
   return (
     <DashboardShell
+      className="agent-compact-shell seeker-compact-shell"
       kicker="Home seeker dashboard"
-      nav={[
-        ["Overview", "/dashboard/seeker"],
-        ["Create Apartment Request", "/dashboard/seeker/requests/new"],
-        ["Transaction History", "/dashboard/seeker#transactions"],
-        ["Messages", "/dashboard/seeker/messages"],
-        ["Profile Settings", "/dashboard/seeker#profile"]
-      ]}
+      nav={SEEKER_DASHBOARD_NAV}
       title="Create Apartment Request"
     >
       <form className="panel" action={createHousingRequestAction}>
@@ -77,6 +74,7 @@ export default async function NewRequestPage() {
           Submit request and pay routing fee
         </button>
       </form>
+      <SeekerBottomNav active="requests" />
     </DashboardShell>
   );
 }

@@ -178,25 +178,25 @@ function BottomNav({ accountType }: { accountType: AccountType }) {
     <nav className="mobile-bottom-nav referral-page-bottom-nav" aria-label="Home seeker navigation">
       <Link href="/dashboard/seeker">
         <Home size={24} />
-        Home
+        Dashboard
       </Link>
-      <Link href="/dashboard/seeker#requests">
+      <Link href="/dashboard/seeker/requests">
         <HousePlus size={24} />
         Requests
-      </Link>
-      <Link className="active" href="/dashboard/referrals">
-        <Gift size={24} />
-        Refer
       </Link>
       <Link href="/dashboard/seeker/messages">
         <MessageCircle size={24} />
         Messages
       </Link>
-      <Link href="/dashboard/seeker#transactions">
+      <Link className="active" href="/dashboard/referrals">
+        <Gift size={24} />
+        Refer
+      </Link>
+      <Link href="/dashboard/seeker/transactions">
         <ReceiptText size={24} />
         Transactions
       </Link>
-      <Link href="/dashboard/seeker#profile">
+      <Link href="/dashboard/seeker/profile">
         <UserRound size={24} />
         Profile
       </Link>
